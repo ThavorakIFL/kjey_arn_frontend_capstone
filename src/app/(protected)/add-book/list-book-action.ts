@@ -1,6 +1,6 @@
 "use server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 // Add a new book
 export async function addBook(formData: FormData) {
     try {

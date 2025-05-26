@@ -2,17 +2,17 @@ import { fetchBookData } from "@/app/(protected)/books/book-action";
 import EditBookPageClient from "@/app/(protected)/books/[id]/edit/EditBookPageClient";
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
-    searchParams: Record<string, string | string[] | undefined>;
+    }>;
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function EditBookPage({
     params,
     searchParams,
 }: PageProps) {
-    const { id } = params;
+    const { id } = await params;
     const book = await fetchBookData(id);
 
     return (

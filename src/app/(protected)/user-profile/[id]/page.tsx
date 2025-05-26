@@ -4,7 +4,7 @@ import { getOtherUserProfile, getOtherUserBooks } from "../user-profile-action";
 export default async function UserProfilePage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
     console.log("id", id);

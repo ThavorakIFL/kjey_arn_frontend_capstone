@@ -8,7 +8,7 @@ import BorrowRequestIdPageClient from "./BorrowRequestIdPageClient";
 export default async function BorrowRequestPage({
     params,
 }: {
-    params: { id: number };
+    params: Promise<{ id: number }>;
 }) {
     const { id } = await params;
     console.log("BorrowRequestPage id:", id);

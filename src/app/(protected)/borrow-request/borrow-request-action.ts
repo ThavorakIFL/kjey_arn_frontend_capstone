@@ -1,6 +1,6 @@
 "use server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 export async function fetchBorrowRequestData() {
     const session = await getServerSession(authOptions);

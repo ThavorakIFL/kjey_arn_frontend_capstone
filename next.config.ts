@@ -47,9 +47,9 @@ const nextConfig: NextConfig = {
             bodySizeLimit: "10mb", // ✅ this is the fix
         },
     },
-    typescript: {
-        ignoreBuildErrors: true,
-    },
+    // typescript: {
+    //     ignoreBuildErrors: true,
+    // },
 
     webpack(config) {
         // Add @ alias support

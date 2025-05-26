@@ -3,7 +3,7 @@ import { fetchBorrowEventByStatus } from "./activity-action";
 export default async function BorrowRequestPage({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const params = await searchParams;
     const borrowStatusId =

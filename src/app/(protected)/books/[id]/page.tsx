@@ -3,7 +3,7 @@ import BookPageClient from "../BookPageClient";
 import { fetchBookData } from "../book-action";
 
 interface BookPageProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 const BookPage = async ({ params }: BookPageProps) => {
