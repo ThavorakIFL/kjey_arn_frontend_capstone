@@ -1,11 +1,10 @@
-import { fetchNewlyAddedBooks } from "./homepage-action"; // API logic in a separate file
-import HomePageClient from "./HomePageClient"; // Client-side components for rendering
+import { fetchNewlyAddedBooks } from "./homepage-action";
+import HomePageClient from "./HomePageClient";
 
-// This is a Server Component now
 const HomePage = async () => {
     const response = await fetchNewlyAddedBooks({});
     const { books, error } = response;
-
+    console.log("Books fetched:", books);
     return (
         <main>
             <HomePageClient books={books} error={error} />

@@ -9,7 +9,7 @@ interface FetchBooksOptions {
 }
 
 export async function fetchNewlyAddedBooks({
-    limit = 20,
+    limit = 14,
 }: {
     limit?: number;
 } = {}): Promise<{ books: Book[]; error: string | null }> {

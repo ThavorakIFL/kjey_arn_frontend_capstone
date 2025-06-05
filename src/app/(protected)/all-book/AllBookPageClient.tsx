@@ -6,10 +6,9 @@ import { useSearchParams } from "next/navigation";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
 import Book from "@/components/bookComponent/Book";
 
-export default function SearchPageClient() {
+export default function AllBookClient() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
-    const type = searchParams.get("type") || "book";
     const genreIds = searchParams.get("genre_ids") || "";
 
     const [books, setBooks] = useState<any[]>([]);

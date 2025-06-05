@@ -6,9 +6,17 @@ import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { genreOptions } from "@/types/genre";
 import { Separator } from "@/components/ui/separator";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 
 interface SearchAndFilterBarProps {
-    searchTitle: string;
+    searchTitle?: string;
     defaultQuery?: string;
     defaultType?: string;
     defaultGenres?: string[];
@@ -16,7 +24,6 @@ interface SearchAndFilterBarProps {
 }
 
 const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
-    searchTitle = "all-book",
     defaultQuery = "",
     defaultType = "book",
     defaultGenres = [],
@@ -29,6 +36,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     const [showGenreFilter, setShowGenreFilter] = useState(false);
     const [showGenreFilterButton, setShowGenreFilterButton] = useState(false);
     const router = useRouter();
+
+    const getSearchDestination = () => {
+        return type === "book" ? "all-book" : "all-reader";
+    };
 
     const toggleGenre = (genre: string) => {
         setSelectedGenres((prev) =>
@@ -60,12 +71,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         };
     }, [showGenreFilter]);
 
-    const handleSearchType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedType = e.target.value;
-        setType(selectedType);
-        setShowGenreFilterButton(false);
-    };
-
     const handleSearch = () => {
         const genreMap: Record<string, number> = {
             Horror: 1,
@@ -89,20 +94,24 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             Classic: 19,
             "Comic Book/Graphic Novel": 20,
         };
-        const genre_ids = selectedGenres.map((g) => genreMap[g]);
+        const searchDestination = getSearchDestination();
         const url = new URLSearchParams();
         url.set("q", query);
         url.set("type", type);
-
-        if (genre_ids.length > 0) {
+        if (type === "book" && selectedGenres.length > 0) {
+            const genre_ids = selectedGenres.map((g) => genreMap[g]);
             url.set("genre_ids", genre_ids.join(",")); // ✅ Use IDs, not names
         }
-        router.push(`/${searchTitle}?${url.toString()}`);
+        router.push(`/${searchDestination}?${url.toString()}`);
     };
 
     return (
         <div className="flex flex-col gap-4 mb-4">
-            <div className="relative flex items-center space-x-8">
+            <div
+                className={`relative flex items-center space ${
+                    type === "book" && "space-x-4"
+                }`}
+            >
                 <div className=" h-14 space-x-4 flex items-center bg-white p-4 rounded-lg  w-full border border-gray-300 ">
                     <Icon icon="lucide:search" />
                     <input
@@ -113,23 +122,28 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         placeholder="Search..."
                     />
                     <Separator orientation="vertical" />
-                    <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        className="bg-white p-2 text-center "
-                    >
-                        <option value="book">Book</option>
-                        <option value="reader">Reader</option>
-                    </select>
+                    <Select value={type} onValueChange={setType}>
+                        <SelectTrigger className="w-24">
+                            <SelectValue placeholder="Book" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="book">Book</SelectItem>
+                                <SelectItem value="reader">Reader</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
-                <Button
-                    className="max-w-30 h-14 m-0 bg-gray-800 hover:bg-gray-700 cursor-pointer"
-                    type="button"
-                    onClick={() => setShowGenreFilter((prev) => !prev)}
-                >
-                    Filter Genre
-                    <Icon icon="lucide:filter" width="24" height="24" />
-                </Button>
+                {type === "book" && (
+                    <Button
+                        className=" max-w-30 h-14 m-0 bg-gray-800 hover:bg-gray-700 cursor-pointer"
+                        type="button"
+                        onClick={() => setShowGenreFilter((prev) => !prev)}
+                    >
+                        Filter Genre
+                        <Icon icon="lucide:filter" width="24" height="24" />
+                    </Button>
+                )}
                 <div
                     className="absolute w-full flex justify-end top-13 "
                     ref={dropdownRef}
@@ -162,7 +176,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     )}
                 </div>
             </div>
-            {selectedGenres.length > 0 && (
+            {selectedGenres.length > 0 && type === "book" && (
                 <div className="flex gap-2 flex-wrap">
                     {selectedGenres.map((genre) => (
                         <div
@@ -172,7 +186,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                             {genre}
                         </div>
                     ))}
-                    x
                 </div>
             )}
         </div>

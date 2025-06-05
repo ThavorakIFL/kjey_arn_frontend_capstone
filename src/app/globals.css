@@ -4,6 +4,7 @@
 /* @custom-variant dark (&:is(.dark *)); */
 
 @theme {
+    --color-sideColor: #767294;
     --color-backgroundColor: #f1f5f9;
     --color-sidebarColor: #383740;
     --color-secondary: #f5f5f5;
@@ -11,7 +12,6 @@
     --color-sidebarColorLine: #54525f;
     --color-bookBackground: #f0f0f0;
     --color-bookBackgroundStroke: #b2c0ce;
-
     --color-mainColor: #3730a3;
     --color-textColor: #112a46;
     --color-darkBackgroundColor: #e6f5fc;

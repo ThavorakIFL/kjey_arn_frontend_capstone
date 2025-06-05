@@ -28,7 +28,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
             {onAction ? (
                 <Button
                     onClick={onAction}
-                    className="bg-indigo-700 cursor-pointer max-w-30 hover:bg-indigo-600"
+                    className="bg-black cursor-pointer w-30 h-14 hover:bg-sidebarColor"
                 >
                     {actionTitle}
                 </Button>

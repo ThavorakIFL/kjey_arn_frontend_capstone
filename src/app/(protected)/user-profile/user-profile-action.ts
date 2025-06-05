@@ -15,7 +15,6 @@ export async function getOtherUserProfile(id: string) {
             throw new Error("Failed to fetch profile");
         }
         const profile = await response.json();
-
         if (profile.sub === session?.userSubId) {
             redirect("/my-profile");
         }
@@ -39,15 +38,37 @@ export async function getOtherUserBooks(sub: string) {
             }
         );
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to fetch user books");
+        const data = await response.json();
+
+        // Handle successful response
+        if (response.ok) {
+            return {
+                success: true,
+                message: data.message || "Books retrieved successfully",
+                data: data.data || [],
+            };
         }
 
-        const data = await response.json();
-        return data;
+        // Handle the "No books found" case - return empty array instead of throwing
+        if (data.message === "No books found for this user") {
+            return {
+                success: false,
+                message: "No books found for this user",
+                data: [],
+            };
+        }
+
+        // Handle other error cases
+        throw new Error(data.message || "Failed to fetch user books");
     } catch (error) {
         console.error("Error fetching user books", error);
-        throw error;
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Unknown error occurred",
+            data: [],
+        };
     }
 }

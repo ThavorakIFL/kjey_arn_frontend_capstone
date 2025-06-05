@@ -60,16 +60,34 @@ export async function fetchUserBook() {
                 cache: "no-store",
             }
         );
-        if (!response.ok) {
-            throw new Error("Failed to fetch user books");
-        }
+
         const data = await response.json();
-        return data;
+
+        if (response.ok) {
+            return {
+                success: true,
+                message: data.message || "Books retrieved successfully",
+                data: data.data || [],
+            };
+        }
+
+        if (data.message === "No books found for this user") {
+            return {
+                success: false,
+                message: "No books found for this user",
+                data: [],
+            };
+        }
+
+        throw new Error(data.message || "Failed to fetch user books");
     } catch (error: any) {
         console.error("Error fetching user books:", error.message);
         return {
             success: false,
-            message: error.message,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Unknown error occurred",
             data: [],
         };
     }

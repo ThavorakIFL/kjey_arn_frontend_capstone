@@ -707,7 +707,7 @@ export default function ActivityClient({
                 {session?.userSubId === borrowEventData.lender.sub && (
                     <Button onClick={handleReceiveBook}>
                         {" "}
-                        Confirm Received Book{" "}
+                        Owner Confirm Received Book{" "}
                     </Button>
                 )}
 

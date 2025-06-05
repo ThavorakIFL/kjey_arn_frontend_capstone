@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import { Book as bookType } from "@/types/book";
 import {
     Carousel,
@@ -17,10 +18,28 @@ interface HomePageClientProps {
 }
 const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
     const router = useRouter();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [books]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className="p-8">
-                <SearchAndFilterBar searchTitle="all-book" />
+                <SearchAndFilterBar />
                 {!error && books.length > 0 && (
                     <>
                         <TitleBar
@@ -30,26 +49,17 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
                             actionTitle="See All Book"
                             title="Newly Added Books"
                         />
-                        <div className="my-4 mx-14 relative py-2">
-                            <Carousel
-                                opts={{
-                                    align: "start",
-                                }}
-                                className="w-full"
-                            >
-                                <CarouselContent>
-                                    {books.map((book) => (
-                                        <CarouselItem
-                                            key={book.id}
-                                            className="basis-1/6"
-                                        >
-                                            <Book book={book} />
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselPrevious />
-                                <CarouselNext />
-                            </Carousel>
+                        <div className="my-4 relative py-2">
+                            {books.length === 0 && (
+                                <div className="text-center text-gray-500">
+                                    No books available.
+                                </div>
+                            )}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                                {books.map((book) => (
+                                    <Book key={book.id} book={book} />
+                                ))}
+                            </div>
                         </div>
                     </>
                 )}

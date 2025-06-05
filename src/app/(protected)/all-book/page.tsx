@@ -1,5 +1,5 @@
-import SearchPageClient from "./AllBookPageClient";
+import AllBookClient from "./AllBookPageClient";
 
-export default function SearchPage({}) {
-    return <SearchPageClient />;
+export default function AllBookPage({}) {
+    return <AllBookClient />;
 }
