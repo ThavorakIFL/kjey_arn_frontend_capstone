@@ -9,23 +9,24 @@ export default async function BorrowRequestPage({
     const borrowStatusId =
         typeof params.borrow_status_id === "string"
             ? params.borrow_status_id
-            : "1";
+            : "0"; // Default to "Pending" status if not specified
 
     const borrowEventDataRes = await fetchBorrowEventByStatus(borrowStatusId);
     const borrowEventData = (await borrowEventDataRes) || { data: [] };
     const statusNameMap = {
+        "0": "All Activities",
         "1": "Pending",
         "2": "Approved",
         "4": "In Progress",
+        "7": "Return",
+        "8": "Deposit",
     };
     const currentStatus =
-        statusNameMap[borrowStatusId as keyof typeof statusNameMap] ||
-        "Pending";
+        statusNameMap[borrowStatusId as keyof typeof statusNameMap] || "";
     return (
         <ActivityPageClient
             userBorrowEventData={borrowEventData.data}
             initialStatus={currentStatus}
-            initialStatusId={borrowStatusId}
         />
     );
 }

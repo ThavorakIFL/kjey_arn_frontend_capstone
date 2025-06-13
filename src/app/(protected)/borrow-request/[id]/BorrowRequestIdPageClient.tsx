@@ -1,17 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { BookDisplayCard } from "@/components/bookComponent/BookDisplayCard";
+import BorrowActivityDetail from "@/components/borrowComponent/BorrowActivityDetail";
+import { BorrowRequestAction } from "@/components/borrowComponent/BorrowRequestAction";
 interface BorrowRequestIdPageClientProps {
     borrowRequestData: BorrowEventType;
     setMeetUpDetail: (
@@ -35,63 +28,45 @@ export default function BorrowRequestIdPageClient({
     setMeetUpDetail,
     rejectBorrowRequest,
 }: BorrowRequestIdPageClientProps) {
-    const [formData, setFormData] = useState({
-        final_time: "08:00",
-        final_location: "",
-    });
-    const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [rejectReason, setRejectReason] = useState<string | null>(null);
+    const router = useRouter();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleAccept = async (meetUpData: {
+        final_time: string;
+        final_location: string;
+    }) => {
         setIsSubmitting(true);
         setError(null);
         try {
             const formDataToSend = new FormData();
-            formDataToSend.append("final_time", formData.final_time);
-            formDataToSend.append("final_location", formData.final_location);
+            formDataToSend.append("final_time", meetUpData.final_time);
+            formDataToSend.append("final_location", meetUpData.final_location);
             const result = await setMeetUpDetail(
                 borrowRequestData.id,
                 formDataToSend
             );
+
             if (result.success) {
-                alert(result.message);
+                router.push("/activity");
+            } else {
+                setError(result.message);
             }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            setError("An error occurred while submitting the form.");
+        } catch (err) {
+            console.error("Error setting meet up details:", err);
+            setError("Failed to set meet up details. Please try again.");
         } finally {
             setIsSubmitting(false);
-            router.push("/home");
         }
     };
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-    const handleTextChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
 
-    const handleRejectReason = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const { value } = e.target;
-        setRejectReason(value);
-    };
-
-    const handleRejectBorrow = async () => {
+    const handleReject = async (reason: string) => {
         setIsSubmitting(true);
         setError(null);
         try {
             const result = await rejectBorrowRequest(
                 borrowRequestData.id,
-                rejectReason || ""
+                reason
             );
             if (result.success) {
                 alert(result.message);
@@ -102,106 +77,43 @@ export default function BorrowRequestIdPageClient({
         } catch (error) {
             console.error("Error rejecting borrow request:", error);
             setError("An error occurred while rejecting the borrow request.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <div className="p-8">
             <h1 className="text-2xl font-bold">Borrow Request Details</h1>
-            <h2>{borrowRequestData.borrower.name}</h2>
-            <h2>{borrowRequestData.lender.name}</h2>
-            <h2>{borrowRequestData.book.title}</h2>
-            <h2>
-                Borrow Duration: {borrowRequestData.meet_up_detail.start_date} -{" "}
-                {borrowRequestData.meet_up_detail.end_date}
-            </h2>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button variant={"destructive"}>Reject</Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Reject Borrow Request</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to reject this borrow request?
-                            This action cannot be undone.
-                        </DialogDescription>
-                        <div className="w-full">
-                            <label
-                                htmlFor="rejectReason"
-                                className="block text-sm font-medium mb-2"
-                            >
-                                Reason For Rejection
-                            </label>
-                            <input
-                                className="w-full"
-                                onChange={handleRejectReason}
-                                id="rejectReason"
-                                value={rejectReason || ""}
-                                type="text"
-                                placeholder="Enter Reason for Rejection"
-                            />
-                        </div>
-                        <DialogFooter>
-                            <Button variant={"outline"}>Cancel</Button>
-                            <Button
-                                onClick={handleRejectBorrow}
-                                variant={"destructive"}
-                            >
-                                {" "}
-                                Confirm Reject
-                            </Button>
-                        </DialogFooter>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
-
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="meetUpTime">Meet Up Time</label>
-                    <select
-                        onChange={handleSelectChange}
-                        value={formData.final_time}
-                        id="meetUpTime"
-                        name="final_time"
-                        className="border border-gray-300 rounded-md p-2 w-full"
-                    >
-                        {Array.from({ length: 10 }, (_, i) => {
-                            const hour = i + 8; // Start from 8
-                            const displayHour = hour > 12 ? hour - 12 : hour;
-                            const amPm = hour < 12 ? "AM" : "PM";
-                            const value = `${hour
-                                .toString()
-                                .padStart(2, "0")}:00`;
-
-                            return (
-                                <option key={hour} value={value}>
-                                    {displayHour}:00 {amPm}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="meetUpLocation">Meet Up Location</label>
-                    <input
-                        value={formData.final_location}
-                        name="final_location"
-                        className="bg-red-300"
-                        id="meetUpLocation"
-                        onChange={handleTextChange}
-                        type="text"
+            <div className="grid grid-cols-12 gap-8 items-start py-8">
+                <div className="col-span-2">
+                    <BookDisplayCard
+                        bookImage={borrowRequestData.book.pictures[0].picture}
                     />
                 </div>
-                <Button
-                    className="cursor-pointer"
-                    type="submit"
-                    disabled={isSubmitting}
-                    variant={"default"}
-                >
-                    Set Meet Up Date
-                </Button>
-            </form>
+                <div className="col-span-6 space-y-4 ">
+                    <BorrowActivityDetail
+                        borrowStatus={
+                            borrowRequestData.borrow_status.borrow_status_id
+                        }
+                        bookTitle={borrowRequestData.book.title}
+                        bookAuthor={borrowRequestData.book.author}
+                        borrowerProfileImage={
+                            borrowRequestData.borrower.picture || ""
+                        }
+                        borrowerName={borrowRequestData.borrower.name}
+                        borrowerEmail={borrowRequestData.borrower.email}
+                        startDate={borrowRequestData.meet_up_detail.start_date}
+                        endDate={borrowRequestData.meet_up_detail.end_date}
+                    />
+                    <BorrowRequestAction
+                        onAccept={handleAccept}
+                        onReject={handleReject}
+                        isSubmitting={isSubmitting}
+                    />
+                </div>
+                <div className="col-span-4"></div>
+            </div>
         </div>
     );
 }

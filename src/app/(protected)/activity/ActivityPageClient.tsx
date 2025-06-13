@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import BorrowEvent from "@/components/borrowComponent/BorrowEvent";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
@@ -17,15 +17,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 const STATUS_MAP = {
+    "All Activities": "0",
     Pending: "1",
-    Approved: "2",
+    Accepted: "2",
     "In Progress": "4",
-};
-
-const STATUS_ID_MAP = {
-    "1": "Pending",
-    "2": "Approved",
-    "4": "In Progress",
+    Return: "7",
+    Deposit: "8",
 };
 
 interface BorrowEventData {
@@ -39,22 +36,22 @@ interface BorrowEventData {
 interface ActivityPageClientProps {
     userBorrowEventData: BorrowEventType[] | BorrowEventData;
     initialStatus?: string;
-    initialStatusId?: string;
 }
 
 export default function ActivityPageClient({
     userBorrowEventData = [],
-    initialStatus = "Pending",
-    initialStatusId = "1",
+    initialStatus = "",
 }: ActivityPageClientProps) {
+    const searchParams = useSearchParams();
     const [status, setStatus] = useState(initialStatus);
     const [isLoading, setIsLoading] = useState(false);
+    const [isStatusChanging, setIsStatusChanging] = useState(false);
     const router = useRouter();
-    const searchParams = useSearchParams();
 
     const isDataObject =
         !Array.isArray(userBorrowEventData) &&
         typeof userBorrowEventData === "object";
+
     const lenderEvents = isDataObject
         ? userBorrowEventData.lender_borrow_events ||
           (userBorrowEventData.lender_borrow_event
@@ -70,7 +67,7 @@ export default function ActivityPageClient({
         : [];
 
     const handleStatusChange = (value: string) => {
-        setIsLoading(true);
+        setIsStatusChanging(true);
         setStatus(value);
         const statusId = STATUS_MAP[value as keyof typeof STATUS_MAP];
         const params = new URLSearchParams(searchParams.toString());
@@ -80,30 +77,21 @@ export default function ActivityPageClient({
             params.delete("borrow_status_id");
         }
         router.push(`?${params.toString()}`, { scroll: false });
-        setIsLoading(false);
+        setTimeout(() => {
+            setIsStatusChanging(false);
+        }, 300);
     };
 
     const handleEventClick = (event: BorrowEventType) => {
         router.push(`/activity/${event.id}`);
     };
 
-    function statusTitle(status: string) {
-        switch (status) {
-            case "Pending":
-                return "Pending Borrow Requests";
-            case "Approved":
-                return "Approved Borrow Requests";
-            case "In Progress":
-                return "In Progress Borrow Requests";
-            default:
-                return "My Activities";
-        }
-    }
+    const showLoadingSpinner = isStatusChanging;
 
     return (
         <div className="p-8">
             <div className="flex justify-between mb-8">
-                <h1 className="text-3xl">My Activities</h1>
+                <h1 className="text-3xl">All Activities</h1>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -120,27 +108,89 @@ export default function ActivityPageClient({
                             value={status}
                             onValueChange={handleStatusChange}
                         >
-                            <DropdownMenuRadioItem value="Pending">
-                                Pending
+                            <DropdownMenuRadioItem value="All Activities">
+                                All Activities
                             </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Approved">
-                                Approved
+                            <DropdownMenuRadioItem value="Pending">
+                                Pending Request
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="Accepted">
+                                Accepted by Lender
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="In Progress">
-                                In Progress
+                                Borrowing in Progress
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="Return">
+                                Return Confirmation
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="Deposit">
+                                Book Deposit
                             </DropdownMenuRadioItem>
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
 
-            <h2 className="text-2xl mb-4">{statusTitle(status)}</h2>
-
-            {isLoading ? (
-                <div>
-                    <p>Loading...</p>
+            {showLoadingSpinner && (
+                <div className="flex items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
                 </div>
-            ) : status === "Pending" ? (
+            )}
+
+            {!showLoadingSpinner && status === "All Activities" && (
+                <div className="flex flex-col">
+                    <div>
+                        <h1 className="text-muted-foreground">
+                            Borrowing Activity
+                        </h1>
+                        <div className="my-4">
+                            {borrowerEvents.length > 0 && (
+                                <div className="flex space-x-4">
+                                    {borrowerEvents.map((borrowerEvent) => (
+                                        <BorrowEvent
+                                            onClick={handleEventClick}
+                                            key={borrowerEvent.id}
+                                            event={borrowerEvent}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                            {borrowerEvents.length === 0 && (
+                                <div className="w-full h-32 flex items-center justify-center">
+                                    <p className="text-center">
+                                        No borrowing activity found.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div>
+                        <h1 className="text-muted-foreground">
+                            Lending Activity
+                        </h1>
+                        <div>
+                            {lenderEvents.length > 0 && (
+                                <div className="flex space-x-4">
+                                    {lenderEvents.map((lenderEvent) => (
+                                        <BorrowEvent
+                                            onClick={handleEventClick}
+                                            key={lenderEvent.id}
+                                            event={lenderEvent}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                            {lenderEvents.length === 0 && (
+                                <div className="w-full h-32 flex items-center justify-center">
+                                    <p>No lending activity found.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {!showLoadingSpinner && status === "Pending" && (
                 <div>
                     {Array.isArray(userBorrowEventData) &&
                     userBorrowEventData.length > 0 ? (
@@ -152,41 +202,76 @@ export default function ActivityPageClient({
                             />
                         ))
                     ) : (
-                        <p>No pending borrow requests.</p>
-                    )}
-                </div>
-            ) : status === "Approved" || status === "In Progress" ? (
-                <div>
-                    {borrowerEvents.length > 0 && (
-                        <div className="mb-8">
-                            <h3>Borrowing Activity</h3>
-                            {borrowerEvents.map((borrowEvent) => (
-                                <BorrowEvent
-                                    onClick={handleEventClick}
-                                    key={borrowEvent.id}
-                                    event={borrowEvent}
-                                />
-                            ))}
+                        <div className="w-full h-32 flex items-center justify-center">
+                            <p>No pending borrow activity found.</p>
                         </div>
                     )}
-                    {lenderEvents.length > 0 && (
+                </div>
+            )}
+
+            {!showLoadingSpinner &&
+                (status === "Accepted" ||
+                    status === "In Progress" ||
+                    status === "Return" ||
+                    status === "Deposit") && (
+                    <div className="flex flex-col">
                         <div>
-                            <h3>Lending Activity</h3>
-                            {lenderEvents.map((borrowEvent) => (
-                                <BorrowEvent
-                                    onClick={handleEventClick}
-                                    key={borrowEvent.id}
-                                    event={borrowEvent}
-                                />
-                            ))}
+                            <h1 className="text-muted-foreground">
+                                Borrowing Activity
+                            </h1>
+                            <div className="my-4">
+                                {borrowerEvents.length > 0 && (
+                                    <div className="flex space-x-4">
+                                        {borrowerEvents.map((borrowerEvent) => (
+                                            <BorrowEvent
+                                                onClick={handleEventClick}
+                                                key={borrowerEvent.id}
+                                                event={borrowerEvent}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                                {borrowerEvents.length === 0 && (
+                                    <div className="w-full h-32 flex items-center justify-center">
+                                        <p className="text-center">
+                                            No borrowing activity found.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    )}
-                    {lenderEvents.length === 0 &&
-                        borrowerEvents.length === 0 && (
-                            <p>No {status.toLowerCase()} borrow requests.</p>
-                        )}
-                </div>
-            ) : null}
+                        <div>
+                            <h1 className="text-muted-foreground">
+                                Lending Activity
+                            </h1>
+                            <div className="my-4">
+                                {lenderEvents.length > 0 && (
+                                    <div className="flex space-x-4 ">
+                                        {lenderEvents.map((lenderEvent) => (
+                                            <div
+                                                className="flex-1/4"
+                                                key={lenderEvent.id}
+                                            >
+                                                <BorrowEvent
+                                                    onClick={handleEventClick}
+                                                    key={lenderEvent.id}
+                                                    event={lenderEvent}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {lenderEvents.length === 0 && (
+                                    <div className="w-full h-32 flex items-center justify-center">
+                                        <p className="text-center">
+                                            No lending activity found.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
         </div>
     );
 }

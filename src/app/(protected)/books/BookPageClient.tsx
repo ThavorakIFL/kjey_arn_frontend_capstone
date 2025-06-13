@@ -76,7 +76,6 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
             formData.append("end_date", formatDateLocal(endDate!));
 
             const response = await requestBorrow(formData);
-            console.log("Book borrow request successful:", response);
             alert("Book borrow request submitted successfully!");
             router.push("/activity");
         } catch (error) {
@@ -97,7 +96,6 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     if (!book) {
         return <div>Loading book details...</div>;
     }
-    console.log("Book details:", book.availability.availability_id);
     return (
         <div>
             <div className="p-6 flex">
@@ -119,7 +117,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                         key={index}
                                         className={`bg-white cursor-pointer shadow-md rounded-lg w-30 h-38 flex items-center justify-between transform transition-all duration-300 ease-in-out ${
                                             selectImageIndex === index
-                                                ? "scale-100 shadow-2xl border-indigo-800 border-2"
+                                                ? "scale-100 shadow-2xl border-black border-2"
                                                 : "scale-90"
                                         }`}
                                     >
@@ -172,7 +170,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                 book.availability.availability_id === 1 && (
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button className="cursor-pointer rounded-sm p-6 bg-indigo-700 hover:bg-indigo-600 text-white font-bold ml-auto">
+                                            <Button className="cursor-pointer rounded-sm p-6 bg-black  hover:sidebarColor text-white font-bold ml-auto">
                                                 <p className="font-light">
                                                     Borrow Now
                                                 </p>

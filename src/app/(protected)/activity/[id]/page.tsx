@@ -6,6 +6,7 @@ import {
     confirmReceiveBook,
     suggestMeetUpRequest,
     acceptSuggestion,
+    reportBorrowEvent,
 } from "../activity-action";
 import ActivityClient from "./ActivityClient";
 
@@ -19,6 +20,7 @@ export default async function BorrowRequestPage({
     const borrowEventData = borrowEvent.data;
     return (
         <ActivityClient
+            reportBorrowEvent={reportBorrowEvent}
             acceptSuggestion={acceptSuggestion}
             suggestMeetUpRequest={suggestMeetUpRequest}
             confirmReceiveBook={confirmReceiveBook}

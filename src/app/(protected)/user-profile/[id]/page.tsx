@@ -7,7 +7,6 @@ export default async function UserProfilePage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-    console.log("id", id);
     const otherUserProfile = await getOtherUserProfile(id);
     const otherUserBookDataRes = await getOtherUserBooks(id);
     const otherUserBookData = otherUserBookDataRes.success

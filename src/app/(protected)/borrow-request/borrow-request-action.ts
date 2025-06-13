@@ -32,7 +32,6 @@ export async function fetchBorrowRequestData() {
 }
 
 export async function sendMeetUpDetail(id: string, formData: FormData) {
-    console.log(formData);
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;
     try {
@@ -50,7 +49,6 @@ export async function sendMeetUpDetail(id: string, formData: FormData) {
             body: JSON.stringify(jsonData),
         });
         const data = await response.json();
-        console.log("Response data:", data);
         if (!response.ok) {
             return {
                 success: false,

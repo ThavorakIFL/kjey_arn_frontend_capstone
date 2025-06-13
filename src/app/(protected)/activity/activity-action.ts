@@ -46,7 +46,6 @@ export const fetchBorrowRequest = async (id: number) => {
             }
         );
         const data = await response.json();
-        console.log("Borrow request data:", data);
         if (!data) {
             console.log("No data returned from API");
             throw new Error("No data found.");
@@ -147,6 +146,7 @@ export const acceptMeetUpRequest = async (
 };
 
 export const setReturnDetail = async (id: string, formData: FormData) => {
+    console.log(id, formData);
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;
     try {
@@ -303,6 +303,45 @@ export const acceptSuggestion = async (id: string) => {
         return {
             success: false,
             message: error.message || "Failed to accept suggestion",
+            data: [],
+        };
+    }
+};
+
+export const reportBorrowEvent = async (id: string, reason: string) => {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+    try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}report-borrow-event/${id}`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ reason }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: data.message || "Failed to report borrow event",
+                errors: data.errors || {
+                    general: [
+                        "An error occurred while reporting the borrow event",
+                    ],
+                },
+            };
+        }
+        return {
+            success: true,
+            message: data.message || "Borrow event reported successfully",
+        };
+    } catch (error: any) {
+        console.error("Error reporting borrow event:", error);
+        return {
+            success: false,
+            message: error.message || "Failed to report borrow event",
             data: [],
         };
     }

@@ -32,6 +32,10 @@
     color: transparent;
 }
 
+body {
+    @apply bg-gray-100;
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

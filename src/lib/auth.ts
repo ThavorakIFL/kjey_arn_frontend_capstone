@@ -39,7 +39,6 @@ export const authOptions: NextAuthOptions = {
             if (user.email) {
                 const emailDomain = user.email.split("@")[1];
                 if (emailDomain !== "paragoniu.edu.kh") {
-                    console.log("Domain restriction failed: ", emailDomain);
                     return false;
                 }
             } else {
@@ -62,11 +61,8 @@ export const authOptions: NextAuthOptions = {
                         }),
                     }
                 );
-                console.log(user.image);
                 const data = await response.json();
                 if (response.ok && data.token) {
-                    console.log("User data posted successfully:", data);
-                    console.log("User picture value:", data.user.picture);
                     user.accessToken = data.token;
                     console.log("User access token:", user.accessToken);
                     if (data.picture) {

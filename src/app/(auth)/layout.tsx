@@ -13,7 +13,7 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <body className={`${ubuntuFont.className} `}>
+        <body>
             <Providers>
                 <main>
                     <div className="m-4">

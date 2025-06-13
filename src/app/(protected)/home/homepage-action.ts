@@ -1,7 +1,8 @@
 "use server";
 import { PaginatedBooks } from "@/types/paginated-books"; // Adjust import path
 import { Book } from "@/types/book"; // Adjust import path
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 interface FetchBooksOptions {
     perPage?: number;
     genres?: number[];
@@ -67,4 +68,50 @@ export async function fetchBooks({
 
     const data: PaginatedBooks = await response.json();
     return { books: data.data.books, error: null }; // Return books and no error
+}
+
+export async function checkBorrowEvent() {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}check-borrow-event`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Only treat actual errors as errors
+            console.error("API Error:", {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+            });
+
+            switch (response.status) {
+                case 401:
+                    throw new Error("Authentication required");
+                case 500:
+                    throw new Error("Server error occurred");
+                default:
+                    throw new Error(
+                        `Request failed: ${data.message || response.statusText}`
+                    );
+            }
+        }
+
+        // All 200 responses are successful, regardless of data content
+        return data;
+    } catch (error) {
+        console.error("Error checking borrow event", error);
+        throw error;
+    }
 }

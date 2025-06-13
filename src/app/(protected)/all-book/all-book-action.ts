@@ -30,6 +30,5 @@ export async function fetchSearchData(query: {
     if (!res.ok) {
         throw new Error("Failed to fetch data");
     }
-    console.log(res);
     return res.json();
 }

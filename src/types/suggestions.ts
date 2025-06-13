@@ -1,3 +1,4 @@
+import { SuggestionStatus } from "./suggestion-status";
 import { User } from "./user";
 
 export type Suggestions = {
@@ -7,6 +8,7 @@ export type Suggestions = {
     suggested_time: string;
     suggested_location: string;
     suggested_reason: string;
+    suggestion_status: SuggestionStatus;
     created_at: string;
     updated_at: string;
     user?: User;

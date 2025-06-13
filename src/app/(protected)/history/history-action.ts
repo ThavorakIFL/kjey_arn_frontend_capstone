@@ -16,7 +16,6 @@ export async function fetchUserHistoryBorrowEventData() {
             },
         });
         const data = await response.json();
-        console.log("History Borrow Event Data:", data);
         if (!data.success) {
             throw new Error("Failed to fetch borrow event data");
         }

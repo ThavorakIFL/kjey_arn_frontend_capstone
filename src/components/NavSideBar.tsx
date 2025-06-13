@@ -14,17 +14,24 @@ export default function NavSideBar({
     children: React.ReactNode;
 }) {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [showChevron, setShowChevron] = useState(!sidebarOpen);
+    const [showChevron, setShowChevron] = useState(false); // Start as false to prevent flicker
+    const [isClient, setIsClient] = useState(false); // Track if we're on client
+
     const toggleSideBar = () => {
         setSidebarOpen(!sidebarOpen);
     };
     const sidebarWidth = "w-[14.28%]";
-    const { data: session } = useSession();
+    const { data: session, status } = useSession(); // Get status to know loading state
     const router = useRouter();
 
     const handleNavigation = (route: string) => {
         router.push(route);
     };
+
+    // Handle client-side mounting
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     useEffect(() => {
         let timer: string | number | NodeJS.Timeout | undefined;
@@ -63,6 +70,11 @@ export default function NavSideBar({
             icon: "lucide:clock",
         },
     ];
+
+    // Don't render until we're on the client to prevent hydration issues
+    if (!isClient) {
+        return null;
+    }
 
     return (
         <>
@@ -164,7 +176,7 @@ export default function NavSideBar({
                                         </div>
                                     )}
                                     <p className="text-xl font-normal">
-                                        Paragon Internatioanl University
+                                        Paragon International University
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-6">
@@ -195,18 +207,28 @@ export default function NavSideBar({
                                     </div>
                                     <Popover>
                                         <PopoverTrigger asChild>
-                                            <div className="cursor-pointer w-12 h-12 rounded-3xl bg-gray-200 hover:bg-gray-300">
-                                                <Image
-                                                    layout="responsive"
-                                                    width={0}
-                                                    height={0}
-                                                    src={
-                                                        session?.user?.image ||
-                                                        "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
-                                                    }
-                                                    className="rounded-full"
-                                                    alt=""
-                                                />
+                                            <div className="cursor-pointer w-12 h-12 rounded-3xl bg-gray-200 hover:bg-gray-300 overflow-hidden">
+                                                {status === "loading" ? (
+                                                    // Show skeleton while loading
+                                                    <div className="w-full h-full bg-gray-300 animate-pulse rounded-full" />
+                                                ) : (
+                                                    <Image
+                                                        width={48}
+                                                        height={48}
+                                                        src={
+                                                            session?.user
+                                                                ?.image ||
+                                                            "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
+                                                        }
+                                                        className="rounded-full w-full h-full object-cover"
+                                                        alt="Profile"
+                                                        onError={(e) => {
+                                                            // Fallback if image fails to load
+                                                            e.currentTarget.src =
+                                                                "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg";
+                                                        }}
+                                                    />
+                                                )}
                                             </div>
                                         </PopoverTrigger>
                                         <PopoverContent
@@ -223,8 +245,11 @@ export default function NavSideBar({
                                         </PopoverContent>
                                     </Popover>
                                     <p className="text-xl">
-                                        {" "}
-                                        {session?.user?.name}
+                                        {status === "loading" ? (
+                                            <span className="inline-block w-20 h-6 bg-gray-300 animate-pulse rounded" />
+                                        ) : (
+                                            session?.user?.name || "Guest"
+                                        )}
                                     </p>
                                 </div>
                             </div>

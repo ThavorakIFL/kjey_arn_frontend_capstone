@@ -48,7 +48,6 @@ export async function updateUserBio(bio: string) {
 
 export async function fetchUserBook() {
     const session = await getServerSession(authOptions);
-    console.log("User Sub Id in FetchUserBook", session?.userSubId);
     try {
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}user-profile/${session?.userSubId}/get-books`,

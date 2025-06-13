@@ -11,7 +11,6 @@ export default async function BorrowRequestPage({
     params: Promise<{ id: number }>;
 }) {
     const { id } = await params;
-    console.log("BorrowRequestPage id:", id);
     const borrowRequestRes = await fetchBorrowRequest(id);
     const borrowRequestData = borrowRequestRes.data;
 
