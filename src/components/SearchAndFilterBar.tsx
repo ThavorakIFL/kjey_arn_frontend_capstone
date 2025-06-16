@@ -16,7 +16,7 @@ import {
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 
 interface SearchAndFilterBarProps {
-    searchTitle?: string;
+    globalSearch?: boolean;
     defaultQuery?: string;
     defaultType?: string;
     defaultGenres?: string[];
@@ -24,6 +24,7 @@ interface SearchAndFilterBarProps {
 }
 
 const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
+    globalSearch = true,
     defaultQuery = "",
     defaultType = "book",
     defaultGenres = [],
@@ -34,11 +35,14 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     const [selectedGenres, setSelectedGenres] =
         useState<string[]>(defaultGenres);
     const [showGenreFilter, setShowGenreFilter] = useState(false);
-    const [showGenreFilterButton, setShowGenreFilterButton] = useState(false);
     const router = useRouter();
 
     const getSearchDestination = () => {
-        return type === "book" ? "all-book" : "all-reader";
+        if (globalSearch === false) {
+            return "shelf";
+        } else {
+            return type === "book" ? "all-book" : "all-reader";
+        }
     };
 
     const toggleGenre = (genre: string) => {
@@ -121,18 +125,27 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         className="w-full focus:outline-none"
                         placeholder="Search..."
                     />
-                    <Separator orientation="vertical" />
-                    <Select value={type} onValueChange={setType}>
-                        <SelectTrigger className="w-24">
-                            <SelectValue placeholder="Book" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value="book">Book</SelectItem>
-                                <SelectItem value="reader">Reader</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+
+                    {globalSearch && (
+                        <>
+                            <Separator orientation="vertical" />
+                            <Select value={type} onValueChange={setType}>
+                                <SelectTrigger className="w-24">
+                                    <SelectValue placeholder="Book" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="book">
+                                            Book
+                                        </SelectItem>
+                                        <SelectItem value="reader">
+                                            Reader
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </>
+                    )}
                 </div>
                 {type === "book" && (
                     <Button

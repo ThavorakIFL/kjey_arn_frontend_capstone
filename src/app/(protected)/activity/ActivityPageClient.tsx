@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import TitleBar from "@/components/TitleBar";
 
 const STATUS_MAP = {
     "All Activities": "0",
@@ -66,6 +67,8 @@ export default function ActivityPageClient({
               : [])
         : [];
 
+    console.log("Lender Events:", lenderEvents);
+
     const handleStatusChange = (value: string) => {
         setIsStatusChanging(true);
         setStatus(value);
@@ -91,7 +94,7 @@ export default function ActivityPageClient({
     return (
         <div className="p-8">
             <div className="flex justify-between mb-8">
-                <h1 className="text-3xl">All Activities</h1>
+                <TitleBar title="All Activities" />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -108,24 +111,16 @@ export default function ActivityPageClient({
                             value={status}
                             onValueChange={handleStatusChange}
                         >
-                            <DropdownMenuRadioItem value="All Activities">
-                                All Activities
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Pending">
-                                Pending Request
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Accepted">
-                                Accepted by Lender
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="In Progress">
-                                Borrowing in Progress
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Return">
-                                Return Confirmation
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="Deposit">
-                                Book Deposit
-                            </DropdownMenuRadioItem>
+                            {Object.entries(STATUS_MAP).map(
+                                ([label, value]) => (
+                                    <DropdownMenuRadioItem
+                                        key={value}
+                                        value={label}
+                                    >
+                                        {label}
+                                    </DropdownMenuRadioItem>
+                                )
+                            )}
                         </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -145,7 +140,7 @@ export default function ActivityPageClient({
                         </h1>
                         <div className="my-4">
                             {borrowerEvents.length > 0 && (
-                                <div className="flex space-x-4">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     {borrowerEvents.map((borrowerEvent) => (
                                         <BorrowEvent
                                             onClick={handleEventClick}
@@ -170,7 +165,7 @@ export default function ActivityPageClient({
                         </h1>
                         <div>
                             {lenderEvents.length > 0 && (
-                                <div className="flex space-x-4">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     {lenderEvents.map((lenderEvent) => (
                                         <BorrowEvent
                                             onClick={handleEventClick}
@@ -221,7 +216,7 @@ export default function ActivityPageClient({
                             </h1>
                             <div className="my-4">
                                 {borrowerEvents.length > 0 && (
-                                    <div className="flex space-x-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                         {borrowerEvents.map((borrowerEvent) => (
                                             <BorrowEvent
                                                 onClick={handleEventClick}
@@ -246,18 +241,13 @@ export default function ActivityPageClient({
                             </h1>
                             <div className="my-4">
                                 {lenderEvents.length > 0 && (
-                                    <div className="flex space-x-4 ">
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
                                         {lenderEvents.map((lenderEvent) => (
-                                            <div
-                                                className="flex-1/4"
+                                            <BorrowEvent
+                                                onClick={handleEventClick}
                                                 key={lenderEvent.id}
-                                            >
-                                                <BorrowEvent
-                                                    onClick={handleEventClick}
-                                                    key={lenderEvent.id}
-                                                    event={lenderEvent}
-                                                />
-                                            </div>
+                                                event={lenderEvent}
+                                            />
                                         ))}
                                     </div>
                                 )}

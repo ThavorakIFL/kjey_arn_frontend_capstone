@@ -25,7 +25,7 @@ import { Checkbox } from "../ui/checkbox";
 import { useSession } from "next-auth/react";
 
 interface ReportDialogProps {
-    isTimeToReceive?: boolean;
+    isTimeToReturn?: boolean;
     sub: string;
     onReport: (reason: string) => void;
     isLoading: boolean;
@@ -35,7 +35,7 @@ export function ReportDialog({
     onReport,
     isLoading,
     sub,
-    isTimeToReceive,
+    isTimeToReturn,
 }: ReportDialogProps) {
     const { data: session } = useSession();
     const [reason, setReason] = useState("");
@@ -64,7 +64,7 @@ export function ReportDialog({
     };
 
     const handleAlertConfirm = () => {
-        if (isTimeToReceive) {
+        if (isTimeToReturn) {
             setIsSecondAlertOpen(true);
         }
         setIsAlertOpen(true);
@@ -150,7 +150,7 @@ export function ReportDialog({
                     <AlertDialogHeader>
                         <AlertDialogTitle>Confirm Report</AlertDialogTitle>
                         <AlertDialogDescription>
-                            {isTimeToReceive
+                            {isTimeToReturn
                                 ? isBorrower
                                     ? "Please deposit the book in the library and notify the librarian."
                                     : "The borrower have been notified please don't forget to get the book and confirm the deposit."

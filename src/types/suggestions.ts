@@ -8,7 +8,7 @@ export type Suggestions = {
     suggested_time: string;
     suggested_location: string;
     suggested_reason: string;
-    suggestion_status: SuggestionStatus;
+    suggestion_status?: SuggestionStatus[];
     created_at: string;
     updated_at: string;
     user?: User;

@@ -39,7 +39,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
     return (
         <>
             <div className="p-8">
-                <SearchAndFilterBar />
+                <SearchAndFilterBar globalSearch={true} />
                 {!error && books.length > 0 && (
                     <>
                         <TitleBar

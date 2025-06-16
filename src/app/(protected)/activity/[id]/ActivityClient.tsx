@@ -75,7 +75,8 @@ export default function ActivityClient({
 }: ActivityClientProps) {
     const { data: session } = useSession();
     const [isStartDate, setIsStartDate] = useState(false);
-    const [isTimeToReceive, setisTimeToReceive] = useState(false);
+    const [isTimeToReturn, setisTimeToReturn] = useState(false);
+
     const {
         isLoading,
         error,
@@ -113,19 +114,26 @@ export default function ActivityClient({
             session?.userSubId === borrowEventData.borrower.sub
         );
     };
-
-    const showOwnerReceiveBookButton = () => {
-        return (
-            session?.userSubId === borrowEventData.lender.sub && isTimeToReceive
-        );
-    };
-
     const showSuggestionDetail = () => {
         return (
             borrowEventData.meet_up_detail.suggestions &&
             borrowEventData.meet_up_detail.suggestions!.length > 0 &&
-            borrowEventData.meet_up_detail.suggestions![0].suggestion_status
-                ?.suggestion_status_id === 1
+            borrowEventData.meet_up_detail.suggestions![0].suggestion_status![0]
+                .suggestion_status_id === 1
+        );
+    };
+
+    const showReturnDetail = () => {
+        return (
+            borrowEventData.return_detail &&
+            borrowEventData.meet_up_detail.meet_up_detail_meet_up_status
+                ?.meet_up_status_id === 2
+        );
+    };
+
+    const showOwnerReceiveBookButton = () => {
+        return (
+            session?.userSubId === borrowEventData.lender.sub && isTimeToReturn
         );
     };
 
@@ -148,9 +156,9 @@ export default function ActivityClient({
 
             const returnDate = borrowEventData.return_detail.return_date;
             if (returnDate === formattedCurrentDate) {
-                setisTimeToReceive(true);
+                setisTimeToReturn(true);
             } else {
-                setisTimeToReceive(false);
+                setisTimeToReturn(false);
             }
         };
         checkReturnTimeAndDate();
@@ -206,15 +214,15 @@ export default function ActivityClient({
             );
         }
 
-        // Case 2: Exactly 1 suggestion
+        // Case 2: Exactly 1 suggestion (latest one will be suggestions[0])
         if (suggestions.length === 1) {
-            const firstSuggestion = suggestions[0];
-            const firstSuggestedByBorrower =
-                String(firstSuggestion.user?.sub) ===
+            const latestSuggestion = suggestions[0];
+            const suggestedByBorrower =
+                String(latestSuggestion.user?.sub) ===
                 String(borrowEventData.borrower.sub);
 
-            if (firstSuggestedByBorrower) {
-                // Borrower made first suggestion → Lender's turn to accept or counter-suggest
+            if (suggestedByBorrower) {
+                // Borrower made latest suggestion → Lender's turn
                 if (isLender) {
                     return (
                         <Button
@@ -227,7 +235,7 @@ export default function ActivityClient({
                     );
                 }
             } else {
-                // Edge case: Lender made first suggestion → Borrower should accept
+                // Lender made latest suggestion → Borrower's turn
                 if (isBorrower) {
                     return (
                         <Button
@@ -242,16 +250,16 @@ export default function ActivityClient({
             }
         }
 
-        // Case 3: Exactly 2 suggestions (borrower suggested, then lender counter-suggested)
+        // Case 3: Exactly 2 suggestions (latest is suggestions[0], previous is suggestions[1])
         if (suggestions.length === 2) {
-            const firstSuggestedByBorrower =
+            const latestSuggestedByLender =
                 String(suggestions[0].user?.sub) ===
-                String(borrowEventData.borrower.sub);
-            const secondSuggestedByLender =
-                String(suggestions[1].user?.sub) ===
                 String(borrowEventData.lender.sub);
+            const previousSuggestedByBorrower =
+                String(suggestions[1].user?.sub) ===
+                String(borrowEventData.borrower.sub);
 
-            if (firstSuggestedByBorrower && secondSuggestedByLender) {
+            if (latestSuggestedByLender && previousSuggestedByBorrower) {
                 if (isBorrower) {
                     return (
                         <Button
@@ -268,6 +276,7 @@ export default function ActivityClient({
 
         return null;
     };
+
     return (
         <div className="p-8">
             <h1 className="text-2xl font-bold">Borrow Request Details</h1>
@@ -322,26 +331,22 @@ export default function ActivityClient({
                             />
                         )}
 
-                    {!borrowEventData.meet_up_detail.suggestions &&
-                        !borrowEventData.return_detail && (
-                            <MeetUpDetail
-                                startDate={
-                                    borrowEventData.meet_up_detail.start_date
-                                }
-                                endDate={
-                                    borrowEventData.meet_up_detail.end_date
-                                }
-                                meetUpLocation={
-                                    borrowEventData.meet_up_detail
-                                        .final_location
-                                }
-                                meetUpTime={
-                                    borrowEventData.meet_up_detail.final_time
-                                }
-                            />
-                        )}
+                    {!showSuggestionDetail() && !showReturnDetail() && (
+                        <MeetUpDetail
+                            startDate={
+                                borrowEventData.meet_up_detail.start_date
+                            }
+                            endDate={borrowEventData.meet_up_detail.end_date}
+                            meetUpLocation={
+                                borrowEventData.meet_up_detail.final_location
+                            }
+                            meetUpTime={
+                                borrowEventData.meet_up_detail.final_time
+                            }
+                        />
+                    )}
 
-                    {borrowEventData.return_detail && (
+                    {showReturnDetail() && (
                         <ReturnDetail
                             endDate={borrowEventData.meet_up_detail.end_date}
                             startDate={
@@ -363,21 +368,21 @@ export default function ActivityClient({
                         />
                     )}
 
-                    {showSetReturnDetailButton() ||
-                        (isTimeToReceive &&
-                            borrowEventData.borrow_status.borrow_status_id ==
-                                7 && (
-                                <ReportDialog
-                                    isTimeToReceive={isTimeToReceive}
-                                    sub={borrowEventData.borrower.sub || ""}
-                                    isLoading={isLoading}
-                                    onReport={
-                                        isTimeToReceive
-                                            ? handleBorrowEventReport
-                                            : handleCancelRequest
-                                    }
-                                />
-                            ))}
+                    {(showSetReturnDetailButton() ||
+                        (isTimeToReturn &&
+                            borrowEventData.borrow_status.borrow_status_id ===
+                                7)) && (
+                        <ReportDialog
+                            isTimeToReturn={isTimeToReturn}
+                            sub={borrowEventData.borrower.sub || ""}
+                            isLoading={isLoading}
+                            onReport={
+                                isTimeToReturn
+                                    ? handleBorrowEventReport
+                                    : handleCancelRequest
+                            }
+                        />
+                    )}
 
                     {showCancelButton() && (
                         <CancelBorrowRequestDialog

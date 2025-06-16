@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import formatDateString from "@/utils/DateFormatConverter";
+import formatTimeString from "@/utils/TimeConverter";
 interface MeetUpDetailProps {
     meetUpTime?: string;
     meetUpLocation?: string;
@@ -34,9 +35,9 @@ export function MeetUpDetail({
                 <div className="flex space-x-4 items-center bg-gray-50 h-12 rounded-lg px-2">
                     <Icon className="w-5 h-5" icon="lucide:clock" />
                     <h4>
-                        {meetUpTime === null
+                        {meetUpTime === null || meetUpTime === undefined
                             ? "Waiting for lender to set"
-                            : meetUpTime}
+                            : formatTimeString(meetUpTime)}
                     </h4>
                 </div>
             </div>

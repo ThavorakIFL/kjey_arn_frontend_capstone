@@ -1,34 +1,30 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import BorrowStatus from "./BorrowStatus";
+import BorrowStatus from "@/components/borrowComponent/BorrowStatus";
 
-interface BorrowActivityDetailProps {
+interface HistoryDetailProps {
     borrowStatus: number;
     bookTitle: string;
     bookAuthor: string;
     borrowerProfileImage: string;
     borrowerName: string;
     borrowerEmail: string;
-    startDate: string;
-    endDate: string;
 }
 
-export default function BorrowActivityDetail({
+export default function HistoryDetail({
     borrowStatus,
     bookTitle,
     bookAuthor,
     borrowerProfileImage,
     borrowerName,
     borrowerEmail,
-    startDate,
-    endDate,
-}: BorrowActivityDetailProps) {
+}: HistoryDetailProps) {
     return (
         <div className=" bg-white shadow-md p-4 rounded-lg h-auto flex flex-col space-y-4">
             <div>
                 <div className="flex justify-between">
                     {" "}
-                    <h2 className="text-2xl font-bold">Borrow Activities</h2>
+                    <h2 className="text-2xl font-bold">History</h2>
                     <BorrowStatus statusId={borrowStatus} />
                 </div>
 

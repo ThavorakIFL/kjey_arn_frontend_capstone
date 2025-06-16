@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import formatDateString from "@/utils/DateFormatConverter";
+import formatTimeString from "@/utils/TimeConverter";
 interface ReturnDetailProps {
     returnTime?: string;
     returnLocation?: string;
@@ -34,9 +35,9 @@ export function ReturnDetail({
                 <div className="flex space-x-4 items-center bg-gray-50 h-12 rounded-lg px-2">
                     <Icon className="w-5 h-5" icon="lucide:clock" />
                     <h4>
-                        {returnTime === null
+                        {returnTime === null || returnTime === undefined
                             ? "Waiting for lender to set"
-                            : returnTime}
+                            : formatTimeString(returnTime)}
                     </h4>
                 </div>
             </div>

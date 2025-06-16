@@ -40,7 +40,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { requestBorrow } from "./book-action";
-import { CalculatorIcon } from "lucide-react";
 
 interface BookPageClientProps {
     book: bookType;
@@ -74,9 +73,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
             formData.append("book_id", String(book.id));
             formData.append("start_date", formatDateLocal(startDate!));
             formData.append("end_date", formatDateLocal(endDate!));
-
             const response = await requestBorrow(formData);
-            alert("Book borrow request submitted successfully!");
             router.push("/activity");
         } catch (error) {
             setIsBorrow(false);

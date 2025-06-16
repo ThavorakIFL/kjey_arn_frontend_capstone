@@ -14,9 +14,11 @@ export default function BorrowRequestPageClient({
     return (
         <div className="p-8">
             <TitleBar title="Borrow Requests" />
-            <div className="grid grid-cols-4 gap-4">
-                {userBorrowRequestData.length > 0 ? (
-                    userBorrowRequestData.map((borrowEvent) => (
+
+            {userBorrowRequestData.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4">
+                    {" "}
+                    {userBorrowRequestData.map((borrowEvent) => (
                         <div
                             onClick={() => {
                                 router.push(
@@ -27,13 +29,11 @@ export default function BorrowRequestPageClient({
                         >
                             <BorrowEvent event={borrowEvent} />
                         </div>
-                    ))
-                ) : (
-                    <div className="text-center text-gray-500">
-                        No borrow requests found.
-                    </div>
-                )}
-            </div>
+                    ))}{" "}
+                </div>
+            ) : (
+                <div className=" text-gray-500">No borrow requests found.</div>
+            )}
         </div>
     );
 }

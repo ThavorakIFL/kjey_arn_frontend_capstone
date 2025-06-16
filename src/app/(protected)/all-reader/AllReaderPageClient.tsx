@@ -37,7 +37,7 @@ export default function AllReaderPageClient() {
 
     return (
         <div className="mb-4 p-8">
-            <SearchAndFilterBar searchTitle="all-book" />
+            <SearchAndFilterBar />
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold">
                     {query ? `Search Results for "${query}"` : "All Readers"}

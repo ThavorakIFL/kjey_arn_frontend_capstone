@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import formatTimeString from "@/utils/TimeConverter";
 interface SuggestMeetUpDetailProps {
     suggestMeetUpTime?: string;
     suggestMeetUpLocation?: string;
@@ -34,7 +35,11 @@ export function SuggestMeetUpDetail({
                 <h3>Suggest Meet Up Time</h3>
                 <div className="flex space-x-4 items-center bg-gray-50 h-12 rounded-lg px-2">
                     <Icon className="w-5 h-5" icon="lucide:clock" />
-                    <h4>{suggestMeetUpTime}</h4>
+                    <h4>
+                        {suggestMeetUpTime
+                            ? formatTimeString(suggestMeetUpTime)
+                            : ""}
+                    </h4>
                 </div>
             </div>
             <div>
