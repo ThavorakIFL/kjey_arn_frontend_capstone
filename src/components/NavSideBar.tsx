@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import ActivityBell from "./activityComponent/ActivityBell";
 
 export default function NavSideBar({
     children,
@@ -193,17 +194,8 @@ export default function NavSideBar({
                                         />
                                     </div>
 
-                                    <div
-                                        onClick={() => {
-                                            router.push("/shelf");
-                                        }}
-                                        className="container flex justify-center items-center w-12 h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300 cursor-pointer "
-                                    >
-                                        <Icon
-                                            icon="lucide:bell"
-                                            width="24"
-                                            height="24"
-                                        />
+                                    <div className="z-50 container flex justify-center items-center w-12 h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300 cursor-pointer ">
+                                        <ActivityBell />
                                     </div>
                                     <Popover>
                                         <PopoverTrigger asChild>

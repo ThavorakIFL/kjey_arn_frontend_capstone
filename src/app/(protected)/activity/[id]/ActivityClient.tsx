@@ -127,7 +127,9 @@ export default function ActivityClient({
         return (
             borrowEventData.return_detail &&
             borrowEventData.meet_up_detail.meet_up_detail_meet_up_status
-                ?.meet_up_status_id === 2
+                ?.meet_up_status_id === 2 &&
+            isStartDate &&
+            borrowEventData.return_detail.return_time
         );
     };
 
@@ -301,7 +303,12 @@ export default function ActivityClient({
                         startDate={borrowEventData.meet_up_detail.start_date}
                         endDate={borrowEventData.meet_up_detail.end_date}
                     />
-                    <GuideMessage />
+                    <GuideMessage
+                        borrowEventData={borrowEventData}
+                        userSubId={session?.userSubId}
+                        isStartDate={isStartDate}
+                        isTimeToReturn={isTimeToReturn}
+                    />
                 </div>
                 <div className="col-span-3 flex flex-col space-y-6 h-full">
                     {borrowEventData.meet_up_detail.suggestions &&

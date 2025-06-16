@@ -10,11 +10,11 @@ const BorrowStatus: React.FC<BorrowStatusProps> = ({ statusId }) => {
 
     switch (statusId) {
         case 1:
-            statusText = "Pending";
+            statusText = "Pending Request";
             statusColor = "text-blue-800 bg-blue-100 border border-blue-200";
             break;
         case 2:
-            statusText = "Approved";
+            statusText = "Accepted by Lender";
             statusColor =
                 "text-yellow-800 bg-yellow-100 border border-yellow-200";
             break;
@@ -23,7 +23,7 @@ const BorrowStatus: React.FC<BorrowStatusProps> = ({ statusId }) => {
             statusColor = "text-red-800 bg-red-100 border border-red-200";
             break;
         case 4:
-            statusText = "In Progress";
+            statusText = "Borrowing in Progress";
             statusColor = "text-green-800 bg-green-100 border border-green-200";
             break;
         case 5:
@@ -36,7 +36,7 @@ const BorrowStatus: React.FC<BorrowStatusProps> = ({ statusId }) => {
             statusColor = "text-amber-800 bg-amber-100 border border-amber-200";
             break;
         case 7:
-            statusText = "Due Return";
+            statusText = "Return Confirmation";
             statusColor =
                 "text-purple-800 bg-purple-100 border border-purple-200";
             break;

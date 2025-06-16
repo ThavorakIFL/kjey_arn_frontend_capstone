@@ -17,7 +17,7 @@ export default function HistoryPageClient({
             <TitleBar title="History" />
             {historyBorrowEventData.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    {historyBorrowEventData.slice(0, 4).map((event) => (
+                    {historyBorrowEventData.map((event) => (
                         <Link href={`/history/${event.id} `} key={event.id}>
                             <BorrowEvent event={event} />
                         </Link>

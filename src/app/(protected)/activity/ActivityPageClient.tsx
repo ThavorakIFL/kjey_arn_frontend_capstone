@@ -19,10 +19,10 @@ import TitleBar from "@/components/TitleBar";
 
 const STATUS_MAP = {
     "All Activities": "0",
-    Pending: "1",
-    Accepted: "2",
-    "In Progress": "4",
-    Return: "7",
+    "Pending Request": "1",
+    "Accepted by Lender": "2",
+    "Borrowing in Progress": "4",
+    "Return Confirmation": "7",
     Deposit: "8",
 };
 
@@ -185,7 +185,7 @@ export default function ActivityPageClient({
                 </div>
             )}
 
-            {!showLoadingSpinner && status === "Pending" && (
+            {!showLoadingSpinner && status === "Pending Request" && (
                 <div>
                     {Array.isArray(userBorrowEventData) &&
                     userBorrowEventData.length > 0 ? (
@@ -198,16 +198,16 @@ export default function ActivityPageClient({
                         ))
                     ) : (
                         <div className="w-full h-32 flex items-center justify-center">
-                            <p>No pending borrow activity found.</p>
+                            <p>No pending requests found.</p>
                         </div>
                     )}
                 </div>
             )}
 
             {!showLoadingSpinner &&
-                (status === "Accepted" ||
-                    status === "In Progress" ||
-                    status === "Return" ||
+                (status === "Accepted by Lender" ||
+                    status === "Borrowing in Progress" ||
+                    status === "Return Confirmation" ||
                     status === "Deposit") && (
                     <div className="flex flex-col">
                         <div>
