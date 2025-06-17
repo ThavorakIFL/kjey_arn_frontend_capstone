@@ -36,7 +36,7 @@ export default function AllReaderPageClient() {
     }, [query]);
 
     return (
-        <div className="mb-4 p-8">
+        <div className="mb-4 p-8 bg-gradient-to-br from-slate-50 to-blue-50">
             <SearchAndFilterBar />
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-bold">

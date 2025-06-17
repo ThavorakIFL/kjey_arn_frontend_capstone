@@ -92,7 +92,7 @@ export default function ActivityPageClient({
     const showLoadingSpinner = isStatusChanging;
 
     return (
-        <div className="p-8">
+        <div className="p-8  bg-gradient-to-br from-slate-50 to-blue-50">
             <div className="flex justify-between mb-8">
                 <TitleBar title="All Activities" />
                 <DropdownMenu>

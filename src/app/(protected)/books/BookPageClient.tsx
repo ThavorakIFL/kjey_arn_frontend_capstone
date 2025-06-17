@@ -94,8 +94,8 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
         return <div>Loading book details...</div>;
     }
     return (
-        <div>
-            <div className="p-6 flex">
+        <div className="w-full h-full ">
+            <div className="p-6 flex  ">
                 <div className="w-1/10 my-10">
                     <Carousel
                         opts={{

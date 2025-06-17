@@ -179,7 +179,7 @@ export default function ActivityBell() {
                                     {activities.length} recent activities
                                 </p>
                                 {/* Debug: Clear localStorage button */}
-                                <button
+                                {/* <button
                                     onClick={() => {
                                         localStorage.removeItem(
                                             "activities_last_viewed"
@@ -189,7 +189,7 @@ export default function ActivityBell() {
                                     className="mt-2 text-xs bg-red-100 text-red-600 px-2 py-1 rounded w-full"
                                 >
                                     Reset "Last Viewed" (Debug)
-                                </button>
+                                </button> */}
                             </div>
                         )}
                     </div>,

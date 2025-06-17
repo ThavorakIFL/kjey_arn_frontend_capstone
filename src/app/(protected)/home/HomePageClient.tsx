@@ -2,13 +2,6 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { Book as bookType } from "@/types/book";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel";
 import TitleBar from "@/components/TitleBar";
 import Book from "@/components/bookComponent/Book";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
@@ -38,7 +31,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
 
     return (
         <>
-            <div className="p-8">
+            <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
                 <SearchAndFilterBar globalSearch={true} />
                 {!error && books.length > 0 && (
                     <>

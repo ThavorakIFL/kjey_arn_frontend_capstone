@@ -280,7 +280,7 @@ export default function ActivityClient({
     };
 
     return (
-        <div className="p-8">
+        <div className="p-8  bg-gradient-to-br from-slate-50 to-blue-50">
             <h1 className="text-2xl font-bold">Borrow Request Details</h1>
             <div className="grid grid-cols-12 gap-8 items-start py-8">
                 <div className="col-span-2">

@@ -23,8 +23,7 @@ const genres = genreOptions.map((genreName, index) => ({
 
 export default function AddBookPage() {
     return (
-        <div className="p-8">
-            <TitleBar title="List a New Book" />
+        <div>
             <AddBookPageClient genres={genres} />
         </div>
     );
