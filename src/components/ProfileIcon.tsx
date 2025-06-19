@@ -27,13 +27,19 @@ const ProfileIcon: React.FC<ProfileIconProps> = ({
     const safeSrc = isValidSrc(finalSrc) ? finalSrc : "/default-profile.jpg";
 
     return (
-        <div className={cn("rounded-full overflow-hidden", className)}>
+        <div
+            className={cn(
+                "relative rounded-full overflow-hidden bg-gray-200 aspect-square",
+                className
+            )}
+        >
             <Image
-                layout="responsive"
-                width={0}
-                height={0}
                 src={safeSrc || "/default-profile.jpg"}
                 alt="User Profile Picture"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, (max-width: 1024px) 160px, 192px"
+                priority
             />
         </div>
     );

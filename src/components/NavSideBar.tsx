@@ -301,7 +301,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                     {/* Mobile menu button */}
                                     <div
                                         onClick={() => setMobileMenuOpen(true)}
-                                        className="lg:hidden cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
+                                        className="md:hidden cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
                                     >
                                         <Icon
                                             icon="ic:baseline-menu"

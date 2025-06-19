@@ -1,6 +1,7 @@
 // components/common/StatusIndicator.tsx
 "use client";
 import { Icon } from "@iconify/react";
+
 type StatusIndicatorProps = {
     borrowStatus?: string;
     isAvailable?: number;
@@ -53,18 +54,24 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
 
     return (
         <div
-            className={`inline-flex items-center px-3 py-1 rounded-full
+            className={`inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium
         ${color} 
         `}
         >
             {isAvailable === 1 ? (
-                <Icon icon="lucide:check" className="mr-1" />
+                <Icon
+                    icon="lucide:check"
+                    className="mr-1 w-3 h-3 sm:w-4 sm:h-4"
+                />
             ) : isAvailable === 2 ? (
-                <Icon icon="lucide:x" className="mr-1" />
+                <Icon icon="lucide:x" className="mr-1 w-3 h-3 sm:w-4 sm:h-4" />
             ) : (
-                <Icon icon="lucide:clock" className="mr-1" />
+                <Icon
+                    icon="lucide:clock"
+                    className="mr-1 w-3 h-3 sm:w-4 sm:h-4"
+                />
             )}
-            <p>{label}</p>
+            <p className="leading-tight">{label}</p>
         </div>
     );
 };

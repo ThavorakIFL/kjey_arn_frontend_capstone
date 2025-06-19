@@ -53,7 +53,7 @@ const BorrowStatus: React.FC<BorrowStatusProps> = ({ statusId }) => {
     return (
         <div>
             <span
-                className={`${statusColor} inline-flex items-center px-3 py-1 text-sm font-medium  rounded-full`}
+                className={`${statusColor} inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm font-medium rounded-full whitespace-nowrap`}
             >
                 {statusText}
             </span>

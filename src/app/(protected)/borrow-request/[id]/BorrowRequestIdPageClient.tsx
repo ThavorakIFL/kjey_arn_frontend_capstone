@@ -7,8 +7,6 @@ import { BookDisplayCard } from "@/components/bookComponent/BookDisplayCard";
 import BorrowActivityDetail from "@/components/borrowComponent/BorrowActivityDetail";
 import { BorrowRequestAction } from "@/components/borrowComponent/BorrowRequestAction";
 import TitleBar from "@/components/TitleBar";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { MeetUpDetail } from "@/components/activityComponent/MeetUpDetail";
 
 interface BorrowRequestIdPageClientProps {
