@@ -53,7 +53,7 @@ export default function ActivityPageClient({
 }: ActivityPageClientProps) {
     const searchParams = useSearchParams();
     const [status, setStatus] = useState(initialStatus);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [isStatusChanging, setIsStatusChanging] = useState(false);
     const router = useRouter();
     const isDataObject =

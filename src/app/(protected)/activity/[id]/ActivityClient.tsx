@@ -76,6 +76,7 @@ export default function ActivityClient({
     const { data: session } = useSession();
     const [isStartDate, setIsStartDate] = useState(false);
     const [isTimeToReturn, setisTimeToReturn] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const {
         isLoading,
@@ -278,6 +279,21 @@ export default function ActivityClient({
 
         return null;
     };
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [borrowEventData]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-8  bg-gradient-to-br from-slate-50 to-blue-50">
