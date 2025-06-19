@@ -101,32 +101,23 @@ export function BorrowRequestAction({
 
     return (
         <>
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="bg-black text-white p-3 sm:p-4 md:p-6">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-semibold">
-                        Actions
-                    </h2>
-                </div>
-                <div className="p-3 sm:p-4 md:p-6">
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        <Button
-                            onClick={() => setShowRejectDialog(true)}
-                            variant="destructive"
-                            className="flex-1 cursor-pointer text-sm sm:text-base"
-                            disabled={isSubmitting}
-                        >
-                            <XCircle className="h-4 w-4 mr-2" />
-                            Reject Request
-                        </Button>
-                        <Button
-                            onClick={() => setShowAcceptDialog(true)}
-                            className="flex-1 bg-green-600 hover:bg-green-700 cursor-pointer text-sm sm:text-base"
-                            disabled={isSubmitting}
-                        >
-                            <CheckCircle className="h-4 w-4 mr-2" />
-                            Accept Request
-                        </Button>
-                    </div>
+            <div className="px-4 sm:p-0   ">
+                <div className="flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4">
+                    <Button
+                        onClick={() => setShowRejectDialog(true)}
+                        variant="destructive"
+                        className="h-12 w-full sm:w-40 cursor-pointer text-sm sm:text-base  "
+                        disabled={isSubmitting}
+                    >
+                        Reject Request
+                    </Button>
+                    <Button
+                        onClick={() => setShowAcceptDialog(true)}
+                        className="h-12  w-full sm:w-40 bg-black hover:bg-black/60  cursor-pointer text-sm sm:text-base"
+                        disabled={isSubmitting}
+                    >
+                        Accept Request
+                    </Button>
                 </div>
             </div>
 

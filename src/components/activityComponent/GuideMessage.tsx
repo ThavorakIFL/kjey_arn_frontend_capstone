@@ -145,7 +145,7 @@ export function GuideMessage({
     };
 
     return (
-        <div className="w-full min-h-12 rounded-lg bg-white border-black border-2 flex flex-col sm:flex-row overflow-hidden shadow-sm">
+        <div className="min-h-12 rounded-lg bg-white border-black border-2 flex flex-col sm:flex-row overflow-hidden shadow-sm">
             {/* Header Section */}
             <div className="bg-black font-medium text-white px-3 sm:px-4 py-2 sm:py-0 flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 flex-shrink-0">
                 <Icon

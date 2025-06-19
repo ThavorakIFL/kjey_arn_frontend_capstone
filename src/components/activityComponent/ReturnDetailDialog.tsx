@@ -42,7 +42,7 @@ export function ReturnDetailDialog({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button className="w-full h-12 cursor-pointer">
+                <Button className="w-full md:w-40 h-12 cursor-pointer whitespace-normal text-sm leading-tight">
                     Confirm Received Book
                 </Button>
             </DialogTrigger>

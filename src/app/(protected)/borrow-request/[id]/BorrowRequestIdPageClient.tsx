@@ -112,22 +112,22 @@ export default function BorrowRequestIdPageClient({
                         title="Borrow Request Details"
                         className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
                     />
-                    <p className="text-sm sm:text-base text-gray-600 mt-2 sm:mt-3">
-                        Review and respond to this borrowing request
-                    </p>
                 </div>
 
                 {/* Content Layout */}
                 <div className="space-y-6 lg:space-y-0">
                     {/* Mobile & Tablet Layout (Stacked) */}
                     <div className="lg:hidden space-y-6">
-                        {/* Book Display */}
-                        <div className="w-full max-w-sm mx-auto sm:mx-0">
-                            <BookDisplayCard
-                                bookImage={
-                                    borrowRequestData.book.pictures[0].picture
-                                }
-                            />
+                        <div className="lg:hidden flex justify-center">
+                            {/* Book Display */}
+                            <div className="w-48 sm:w-56">
+                                <BookDisplayCard
+                                    bookImage={
+                                        borrowRequestData.book.pictures[0]
+                                            .picture
+                                    }
+                                />
+                            </div>
                         </div>
 
                         {/* Main Details */}

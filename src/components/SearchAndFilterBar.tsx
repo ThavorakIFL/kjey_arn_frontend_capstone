@@ -54,6 +54,17 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     };
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const handleClearAllGenres = () => {
+        setSelectedGenres([]);
+        // Trigger search with empty genres
+        const searchDestination = getSearchDestination();
+        const url = new URLSearchParams();
+        url.set("q", query);
+        url.set("type", type);
+        // Don't set genre_ids since we're clearing all genres
+        router.push(`/${searchDestination}?${url.toString()}`);
+    };
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -219,7 +230,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
 
                 {/* Genre Filter Dropdown */}
                 <div
-                    className="absolute w-full sm:w-auto top-full mt-2 z-20 flex justify-end"
+                    className="absolute w-full sm:w-auto top-full mt-2 z-20 sm:right-0"
                     ref={dropdownRef}
                 >
                     {showGenreFilter && (
@@ -268,7 +279,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                 <div className="flex flex-col sm:flex-row justify-between gap-2 pt-3 border-t">
                                     <Button
                                         variant="outline"
-                                        onClick={() => setSelectedGenres([])}
+                                        onClick={() => handleClearAllGenres()}
                                         type="button"
                                         size="sm"
                                         className="text-xs sm:text-sm"
@@ -276,17 +287,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                         Clear All
                                     </Button>
                                     <div className="flex gap-2">
-                                        <Button
-                                            variant="outline"
-                                            onClick={() =>
-                                                setShowGenreFilter(false)
-                                            }
-                                            type="button"
-                                            size="sm"
-                                            className="text-xs sm:text-sm"
-                                        >
-                                            Cancel
-                                        </Button>
                                         <Button
                                             onClick={() => {
                                                 handleSearch();

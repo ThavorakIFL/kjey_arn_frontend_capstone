@@ -99,7 +99,7 @@ export function ReportDialog({
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <Button
-                        className="h-12 w-full cursor-pointer"
+                        className="h-12 w-full md:w-40 cursor-pointer whitespace-normal text-sm leading-tight"
                         variant="destructive"
                     >
                         Report

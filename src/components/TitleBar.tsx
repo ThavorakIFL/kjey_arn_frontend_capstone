@@ -20,7 +20,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
     return (
         <div
             className={cn(
-                " sm:h-16 flex flex-col sm:flex-row justify-between  items-start sm:items-center gap-3 sm:gap-0 mb-4 px-2 sm:px-0 py-2 sm:py-0",
+                " sm:h-16 flex flex-col sm:flex-row justify-between  items-start sm:items-center gap-3 sm:gap-0 mb-4  sm:px-0 py-2 sm:py-0",
                 className
             )}
         >

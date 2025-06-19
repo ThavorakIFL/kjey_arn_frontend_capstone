@@ -31,7 +31,7 @@ export function CancelBorrowRequestDialog({
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button
-                    className="h-12 w-full md:w-auto cursor-pointer"
+                    className="h-12 w-full lg:w-40  cursor-pointer"
                     variant="destructive"
                 >
                     Cancel Borrowing

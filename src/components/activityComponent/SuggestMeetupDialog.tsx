@@ -50,7 +50,7 @@ export function SuggestMeetupDialog({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button className="h-12 w-40 whitespace-normal text-sm leading-tight">
+                <Button className="h-12 w-full md:w-40 whitespace-normal text-sm leading-tight">
                     Suggest New Meet Up Time
                 </Button>
             </DialogTrigger>
