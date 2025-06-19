@@ -53,12 +53,15 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     };
     const [isBorrow, setIsBorrow] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     const [startDate, setStartDate] = useState<Date | undefined>(
         addDays(new Date(), 1)
     );
     const [endDate, setEndDate] = useState<Date | undefined>(
         addDays(new Date(), 7)
     );
+    const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
+    const [isEndDatePickerOpen, setIsEndDatePickerOpen] = useState(false);
     const { data: session } = useSession();
     const router = useRouter();
     const handleBorrowBook = async () => {
@@ -97,6 +100,18 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
         }
     };
     const [selectImageIndex, setSelectImageIndex] = useState(0);
+
+    const handleStartDateSelect = (date: Date | undefined) => {
+        setStartDate(date);
+        if (date && endDate && endDate <= date) {
+            setEndDate(addDays(date, 7));
+        }
+    };
+
+    const handleEndDateSelect = (date: Date | undefined) => {
+        setEndDate(date);
+    };
+
     useEffect(() => {
         if (book && book.pictures && book.pictures.length > 0) {
         }
@@ -104,6 +119,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     if (!book) {
         return <div>Loading book details...</div>;
     }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
@@ -481,11 +497,14 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                 </div>
 
                 {/* Borrow Dialog */}
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <Dialog
+                    open={isDialogOpen}
+                    onOpenChange={setIsDialogOpen} // Simplified handler
+                >
                     <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl">
                         <DialogHeader>
                             <DialogTitle className="text-lg sm:text-xl">
-                                Borrow {book.title} by {book.author}
+                                Borrow a book
                             </DialogTitle>
                             <DialogDescription>
                                 Select Borrow Period
@@ -494,11 +513,16 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                         <div className="space-y-4">
                             <div>
                                 <h3 className="font-light mb-2">Start Date:</h3>
-                                <Popover>
+                                <Popover
+                                    open={isStartDatePickerOpen}
+                                    onOpenChange={setIsStartDatePickerOpen}
+                                    modal={true} // Fix for dialog interaction
+                                >
                                     <PopoverTrigger asChild>
                                         <Button
                                             variant="outline"
                                             className="w-full justify-between"
+                                            type="button" // Explicit button type
                                         >
                                             {startDate
                                                 ? format(startDate, "LLL dd, y")
@@ -506,22 +530,39 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                             <Icon icon="lucide:calendar" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent>
+                                    <PopoverContent
+                                        className="w-auto p-0 pointer-events-auto"
+                                        align="start"
+                                        side="bottom"
+                                        sideOffset={4}
+                                    >
                                         <Calendar
                                             mode="single"
                                             selected={startDate}
-                                            onSelect={setStartDate}
+                                            onSelect={(date) => {
+                                                handleStartDateSelect(date);
+                                                setIsStartDatePickerOpen(false);
+                                            }}
+                                            disabled={(date) =>
+                                                date < new Date()
+                                            }
+                                            initialFocus
                                         />
                                     </PopoverContent>
                                 </Popover>
                             </div>
                             <div>
                                 <h3 className="font-light mb-2">End Date:</h3>
-                                <Popover>
+                                <Popover
+                                    open={isEndDatePickerOpen}
+                                    onOpenChange={setIsEndDatePickerOpen}
+                                    modal={true}
+                                >
                                     <PopoverTrigger asChild>
                                         <Button
                                             variant="outline"
                                             className="w-full justify-between"
+                                            type="button" // Explicit button type
                                         >
                                             {endDate
                                                 ? format(endDate, "LLL dd, y")
@@ -529,30 +570,48 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                             <Icon icon="lucide:calendar" />
                                         </Button>
                                     </PopoverTrigger>
-                                    <PopoverContent>
+                                    <PopoverContent
+                                        className="w-auto p-0 pointer-events-auto"
+                                        align="start"
+                                        side="bottom"
+                                        sideOffset={4}
+                                    >
                                         <Calendar
                                             mode="single"
                                             selected={endDate}
-                                            onSelect={setEndDate}
+                                            onSelect={(date) => {
+                                                handleEndDateSelect(date);
+                                                setIsEndDatePickerOpen(false);
+                                            }}
+                                            disabled={(date) =>
+                                                date < new Date() ||
+                                                !!(
+                                                    startDate &&
+                                                    date <= startDate
+                                                )
+                                            }
+                                            initialFocus
                                         />
                                     </PopoverContent>
                                 </Popover>
                             </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-end">
+                        <DialogFooter className="flex flex-col sm:flex-row gap-4 justify-end">
                             <Button
                                 variant="destructive"
                                 onClick={() => setIsDialogOpen(false)}
+                                type="button"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 onClick={handleBorrowBook}
                                 disabled={isBorrow}
+                                type="button"
                             >
                                 {isBorrow ? "Processing..." : "Confirm"}
                             </Button>
-                        </div>
+                        </DialogFooter>
                     </DialogContent>
                 </Dialog>
             </div>

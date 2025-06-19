@@ -21,56 +21,15 @@ export default function Home() {
                                     What is
                                 </span>
                                 <br />
-                                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                                    KjeyArn?
-                                </span>
+                                <span className=" bg-clip-text ">KjeyArn?</span>
                             </h1>
 
                             <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                                A revolutionary platform that connects
-                                passionate readers with their perfect books
-                                through intelligent recommendations and
-                                community-driven insights.
+                                A student-to-student book sharing platform
+                                designed specifically for Paragon IU, to find,
+                                borrow, and lend reading materials within the
+                                university community.
                             </p>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 text-lg transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl">
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                    />
-                                </svg>
-                                <span>Find A Book</span>
-                            </button>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="flex justify-evenly pt-8 border-t border-gray-200">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-gray-900">
-                                    10K+
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    Books
-                                </div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-gray-900">
-                                    5K+
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                    Readers
-                                </div>
-                            </div>
                         </div>
                     </div>
 

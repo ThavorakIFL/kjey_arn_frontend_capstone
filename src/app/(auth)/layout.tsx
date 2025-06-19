@@ -17,7 +17,7 @@ export default function AuthLayout({
     return (
         <body className={interFont.className}>
             <Providers>
-                <main className="bg-gray-50 min-h-screen">
+                <main className="min-h-screen">
                     <AuthNavbar />
                     <div className="pt-20">{children}</div>
                 </main>
