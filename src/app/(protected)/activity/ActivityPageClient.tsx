@@ -83,8 +83,13 @@ export default function ActivityPageClient({
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            <div className="flex items-center justify-center min-h-screen px-4">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-sm sm:text-base text-gray-600">
+                        Loading activities...
+                    </p>
+                </div>
             </div>
         );
     }
@@ -119,15 +124,15 @@ export default function ActivityPageClient({
         };
 
         return (
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="p-12 text-center">
-                    <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Activity className="h-12 w-12 text-gray-400" />
+            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
+                <div className="p-6 sm:p-8 lg:p-12 text-center">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                        <Activity className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                         {messages[type]}
                     </h3>
-                    <p className="text-gray-600 max-w-sm mx-auto">
+                    <p className="text-sm sm:text-base text-gray-600 max-w-sm mx-auto leading-relaxed">
                         {type === "borrowing" &&
                             "You haven't borrowed any books yet. Start exploring books to request them!"}
                         {type === "lending" &&
@@ -147,22 +152,35 @@ export default function ActivityPageClient({
         type: "borrowing" | "lending"
     ) => {
         return (
-            <div className="space-y-6">
-                <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div className="bg-black text-white p-4">
-                        <div className="flex items-center gap-3">
-                            {icon}
-                            <h2 className="text-2xl font-semibold">{title}</h2>
+            <div className="space-y-4 sm:space-y-6">
+                <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
+                    <div className="bg-black text-white p-3 sm:p-4 lg:p-6">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <div className="flex-shrink-0">
+                                {React.cloneElement(
+                                    icon as React.ReactElement<any>,
+                                    {
+                                        className: "h-5 w-5 sm:h-6 sm:w-6",
+                                    }
+                                )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold truncate">
+                                    {title}
+                                </h2>
+                                <p className="text-gray-300 text-xs sm:text-sm mt-1">
+                                    {events.length}{" "}
+                                    {events.length === 1
+                                        ? "activity"
+                                        : "activities"}
+                                </p>
+                            </div>
                         </div>
-                        <p className="text-gray-300 text-sm mt-1">
-                            {events.length}{" "}
-                            {events.length === 1 ? "activity" : "activities"}
-                        </p>
                     </div>
 
-                    <div className="p-4">
+                    <div className="p-3 sm:p-4 lg:p-6">
                         {events.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                                 {events.map((event) => (
                                     <BorrowEvent
                                         onClick={handleEventClick}
@@ -172,12 +190,12 @@ export default function ActivityPageClient({
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12 text-gray-500">
-                                <Activity className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                                <p className="text-lg font-medium text-gray-800 mb-2">
+                            <div className="text-center py-8 sm:py-12 text-gray-500">
+                                <Activity className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-gray-300" />
+                                <p className="text-base sm:text-lg font-medium text-gray-800 mb-2">
                                     No {type} activity
                                 </p>
-                                <p className="text-gray-600">
+                                <p className="text-sm sm:text-base text-gray-600">
                                     {type === "borrowing"
                                         ? "You haven't borrowed any books yet"
                                         : "You haven't lent any books yet"}
@@ -191,41 +209,48 @@ export default function ActivityPageClient({
     };
 
     return (
-        <div className=" bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                        <div>
+                <div className="mb-6 sm:mb-8">
+                    <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-6">
+                        {/* Title Section */}
+                        <div className="text-center sm:text-left">
                             <TitleBar
                                 title="All Activities"
-                                className="text-4xl font-bold text-gray-800"
+                                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
                             />
-                            <p className="text-gray-600 mt-2">
+                            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
                                 Track your borrowing and lending activities
                             </p>
                         </div>
 
                         {/* Status Filter */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex justify-center sm:justify-start">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="outline"
-                                        className="bg-white border-gray-300 hover:bg-gray-50 min-w-48"
+                                        className="bg-white border-gray-300 hover:bg-gray-50 w-full sm:w-auto sm:min-w-48 max-w-xs"
                                         disabled={isStatusChanging}
                                     >
-                                        <Filter className="h-4 w-4 mr-2" />
-                                        {status || "All Activities"}
+                                        <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
+                                        <span className="truncate">
+                                            {status || "All Activities"}
+                                        </span>
                                         {isStatusChanging ? (
-                                            <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+                                            <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 ml-2 animate-spin flex-shrink-0" />
                                         ) : (
-                                            <ChevronDown className="h-4 w-4 ml-2" />
+                                            <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 ml-2 flex-shrink-0" />
                                         )}
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56">
-                                    <DropdownMenuLabel>
+                                <DropdownMenuContent
+                                    className="w-56 sm:w-64"
+                                    align="start"
+                                    sideOffset={5}
+                                >
+                                    <DropdownMenuLabel className="text-sm font-medium">
                                         Filter by status
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
@@ -238,6 +263,7 @@ export default function ActivityPageClient({
                                                 <DropdownMenuRadioItem
                                                     key={value}
                                                     value={label}
+                                                    className="text-sm"
                                                 >
                                                     {label}
                                                 </DropdownMenuRadioItem>
@@ -252,10 +278,10 @@ export default function ActivityPageClient({
 
                 {/* Loading State */}
                 {showLoadingSpinner && (
-                    <div className="flex items-center justify-center py-24">
+                    <div className="flex items-center justify-center py-16 sm:py-24">
                         <div className="text-center">
-                            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-500" />
-                            <p className="text-gray-600">
+                            <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin mx-auto mb-3 sm:mb-4 text-blue-500" />
+                            <p className="text-sm sm:text-base text-gray-600">
                                 Loading activities...
                             </p>
                         </div>
@@ -264,7 +290,7 @@ export default function ActivityPageClient({
 
                 {/* Content */}
                 {!showLoadingSpinner && (
-                    <div className="space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
                         {/* All Activities View */}
                         {status === "All Activities" && (
                             <>
@@ -285,23 +311,25 @@ export default function ActivityPageClient({
 
                         {/* Pending Request View */}
                         {status === "Pending Request" && (
-                            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="bg-black text-white p-6">
-                                    <div className="flex items-center gap-3">
-                                        <Activity className="h-6 w-6" />
-                                        <h2 className="text-2xl font-semibold">
-                                            Pending Requests
-                                        </h2>
+                            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
+                                <div className="bg-black text-white p-4 sm:p-6">
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <Activity className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+                                        <div className="min-w-0 flex-1">
+                                            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">
+                                                Pending Requests
+                                            </h2>
+                                            <p className="text-gray-300 text-xs sm:text-sm mt-1">
+                                                Requests waiting for response
+                                            </p>
+                                        </div>
                                     </div>
-                                    <p className="text-gray-300 text-sm mt-1">
-                                        Requests waiting for response
-                                    </p>
                                 </div>
 
-                                <div className="p-6">
+                                <div className="p-4 sm:p-6">
                                     {Array.isArray(userBorrowEventData) &&
                                     userBorrowEventData.length > 0 ? (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                                             {userBorrowEventData.map(
                                                 (borrowEvent) => (
                                                     <BorrowEvent
@@ -315,12 +343,12 @@ export default function ActivityPageClient({
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="text-center py-12 text-gray-500">
-                                            <Activity className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                                            <p className="text-lg font-medium text-gray-800 mb-2">
+                                        <div className="text-center py-8 sm:py-12 text-gray-500">
+                                            <Activity className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-gray-300" />
+                                            <p className="text-base sm:text-lg font-medium text-gray-800 mb-2">
                                                 No pending requests
                                             </p>
-                                            <p className="text-gray-600">
+                                            <p className="text-sm sm:text-base text-gray-600">
                                                 All your requests have been
                                                 processed
                                             </p>

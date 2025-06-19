@@ -81,7 +81,6 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                 setIsDialogOpen(false);
                 router.push("/activity");
             } else {
-                // Handle the case when success is false
                 toast.error(
                     response.message || "Failed to submit borrow request"
                 );
@@ -106,53 +105,15 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
         return <div>Loading book details...</div>;
     }
     return (
-        <div className="w-full h-full ">
-            <div className="p-6 flex  ">
-                <div className="w-1/10 my-10">
-                    <Carousel
-                        opts={{
-                            align: "start",
-                        }}
-                        orientation="vertical"
-                        className="w-full"
-                    >
-                        <CarouselContent className=" h-[55vh]">
-                            {book.pictures?.map((pictureObject, index) => (
-                                <CarouselItem key={index} className="basis-1/3">
-                                    <div
-                                        onClick={() =>
-                                            setSelectImageIndex(index)
-                                        }
-                                        key={index}
-                                        className={`bg-white cursor-pointer shadow-md rounded-lg w-30 h-38 flex items-center justify-between transform transition-all duration-300 ease-in-out ${
-                                            selectImageIndex === index
-                                                ? "scale-100 shadow-2xl border-black border-2"
-                                                : "scale-90"
-                                        }`}
-                                    >
-                                        <img
-                                            className="object-contain w-2/3 mx-auto"
-                                            src={
-                                                process.env
-                                                    .NEXT_PUBLIC_IMAGE_PATH +
-                                                pictureObject.picture
-                                            }
-                                            alt=""
-                                        />
-                                    </div>
-                                </CarouselItem>
-                            ))}
-                        </CarouselContent>
-                        <CarouselPrevious className=" cursor-pointer left-15 -top-8" />
-                        <CarouselNext className=" cursor-pointer left-15 -bottom-8" />
-                    </Carousel>
-                </div>
-                <div className="flex rounded-lg overflow-hidden shadow-md w-9/10">
-                    <div className=" w-1/5 grid place-content-center py-6 bg-gray-50 border-r ">
-                        <div className=" rounded flex justify-center shadow-lg overflow-hidden w-56">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+                {/* Mobile Layout */}
+                <div className="lg:hidden space-y-6">
+                    {/* Main Image */}
+                    <div className="bg-white rounded-lg shadow-lg p-4">
+                        <div className="flex justify-center">
                             <img
-                                style={{ transitionDelay: "0.3s" }}
-                                className=" w-full h-auto transition-all duration-500 ease-in-out transform"
+                                className="w-48 sm:w-56 h-auto rounded shadow-lg"
                                 src={
                                     process.env.NEXT_PUBLIC_IMAGE_PATH +
                                     book.pictures[selectImageIndex].picture
@@ -161,297 +122,439 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                             />
                         </div>
                     </div>
-                    <div className="w-4/5 overflow-auto col-span-2 bg-white shadow-md p-8  flex flex-col space-y-6">
-                        <div className="flex">
-                            <div className="flex flex-col space-y-2">
-                                <h1 className="font-bold text-2xl">
+
+                    {/* Thumbnail Carousel */}
+                    <div className="bg-white rounded-lg shadow-lg p-4">
+                        <Carousel className="w-full">
+                            <CarouselContent>
+                                {book.pictures?.map((pictureObject, index) => (
+                                    <CarouselItem
+                                        key={index}
+                                        className="basis-1/4"
+                                    >
+                                        <div
+                                            onClick={() =>
+                                                setSelectImageIndex(index)
+                                            }
+                                            className={`cursor-pointer rounded-lg p-2 ${
+                                                selectImageIndex === index
+                                                    ? "bg-gray-100 border-2 border-black"
+                                                    : "bg-gray-50"
+                                            }`}
+                                        >
+                                            <img
+                                                className="w-full aspect-[3/4] object-cover rounded"
+                                                src={
+                                                    process.env
+                                                        .NEXT_PUBLIC_IMAGE_PATH +
+                                                    pictureObject.picture
+                                                }
+                                                alt=""
+                                            />
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                        </Carousel>
+                    </div>
+
+                    {/* Book Info */}
+                    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 space-y-6">
+                        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                            <div className="flex-1">
+                                <h1 className="font-bold text-xl sm:text-2xl">
                                     {book.title}
                                 </h1>
-                                {book.author ? (
-                                    <h2 className="text-gray-600 text-light">
+                                {book.author && (
+                                    <h2 className="text-gray-600 mt-1">
                                         by {book.author}
                                     </h2>
-                                ) : (
-                                    <></>
                                 )}
                             </div>
                             {session?.userSubId !== book.user?.sub &&
                                 book.availability.availability_id === 1 && (
-                                    <Dialog
-                                        open={isDialogOpen}
-                                        onOpenChange={setIsDialogOpen}
-                                    >
-                                        <DialogTrigger asChild>
-                                            <Button className="cursor-pointer rounded-sm p-6 bg-black  hover:sidebarColor text-white font-bold ml-auto">
-                                                <p className="font-light">
-                                                    Borrow Now
-                                                </p>
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="w-[1000px]">
-                                            <DialogHeader className="">
-                                                <DialogTitle>
-                                                    Borrow {book.title} by{" "}
-                                                    {book.author}
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Select Borrow Period
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="flex flex-col space-y-4">
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <div className="flex flex-col">
-                                                            <h1 className="font-light ">
-                                                                Start Date:
-                                                            </h1>
-                                                            <Button
-                                                                id="date"
-                                                                variant="outline"
-                                                                className="justify-between"
-                                                            >
-                                                                {startDate ? (
-                                                                    <>
-                                                                        {" "}
-                                                                        {format(
-                                                                            startDate,
-                                                                            "LLL dd, y"
-                                                                        )}
-                                                                    </>
-                                                                ) : (
-                                                                    "Select a start date"
-                                                                )}
-                                                                <Icon
-                                                                    icon="lucide:calendar"
-                                                                    width="24"
-                                                                    height="24"
-                                                                />
-                                                            </Button>
-                                                        </div>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent
-                                                        className="w-auto p-0 pointer-events-auto"
-                                                        align="start"
-                                                    >
-                                                        <Calendar
-                                                            initialFocus
-                                                            mode="single"
-                                                            defaultMonth={
-                                                                startDate
-                                                            }
-                                                            selected={startDate}
-                                                            onSelect={
-                                                                setStartDate
-                                                            }
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <div className="flex flex-col">
-                                                            <h1 className="font-light ">
-                                                                End Date:
-                                                            </h1>
-                                                            <Button
-                                                                id="date"
-                                                                variant="outline"
-                                                                className="justify-between"
-                                                            >
-                                                                {endDate ? (
-                                                                    <>
-                                                                        {" "}
-                                                                        {format(
-                                                                            endDate,
-                                                                            "LLL dd, y"
-                                                                        )}
-                                                                    </>
-                                                                ) : (
-                                                                    "Select a start date"
-                                                                )}
-                                                                <Icon
-                                                                    icon="lucide:calendar"
-                                                                    width="24"
-                                                                    height="24"
-                                                                />
-                                                            </Button>
-                                                        </div>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent
-                                                        className="w-auto p-0 pointer-events-auto"
-                                                        align="start"
-                                                    >
-                                                        <Calendar
-                                                            initialFocus
-                                                            mode="single"
-                                                            defaultMonth={
-                                                                endDate
-                                                            }
-                                                            selected={endDate}
-                                                            onSelect={
-                                                                setEndDate
-                                                            }
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                            </div>
-                                            <div className="flex space-x-4 justify-end ">
-                                                <Button
-                                                    onClick={() =>
-                                                        setIsDialogOpen(false)
-                                                    }
-                                                    variant={"destructive"}
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    className="cursor-pointer"
-                                                    onClick={() =>
-                                                        handleBorrowBook()
-                                                    }
-                                                    disabled={isBorrow}
-                                                >
-                                                    {isBorrow
-                                                        ? "Processing..."
-                                                        : "Confirm"}
-                                                </Button>
-                                            </div>
-                                        </DialogContent>
-                                    </Dialog>
-                                )}
-                        </div>
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="flex flex-col space-y-2">
-                                <h1 className="text-gray-600 font-light">
-                                    Listed By
-                                </h1>
-
-                                <HoverCard>
-                                    <HoverCardTrigger asChild>
-                                        <Button
-                                            onClick={() => {
-                                                router.push(
-                                                    `/user-profile/${book.user?.sub}`
-                                                );
-                                            }}
-                                            className="p-0 flex justify-start focus:outline-none cursor-pointer"
-                                            variant="link"
-                                        >
-                                            {book.user?.name}
-                                        </Button>
-                                    </HoverCardTrigger>
-                                    <HoverCardContent className="w-80">
-                                        <div className="grid grid-cols-6 space-x-4 ">
-                                            <Avatar className="col-span-1 cursor-pointer">
-                                                <AvatarImage
-                                                    onClick={() => {
-                                                        router.push(
-                                                            `/user-profile/${book.user?.sub}`
-                                                        );
-                                                    }}
-                                                    src={
-                                                        process.env
-                                                            .NEXT_PUBLIC_IMAGE_PATH +
-                                                        book.user?.picture!
-                                                    }
-                                                />
-                                                <AvatarFallback>
-                                                    US
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="space-y-1 col-span-5">
-                                                <h4 className="text-sm font-semibold">
-                                                    {book.user?.email}
-                                                </h4>
-                                                <p className="text-sm text-gray-500">
-                                                    {book.user?.bio}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </HoverCardContent>
-                                </HoverCard>
-                            </div>
-                            <div className="flex flex-col space-y-2">
-                                <h1 className="text-gray-600 font-light ">
-                                    Genre
-                                </h1>
-                                <div className="flex flex-wrap gap-2">
-                                    {book.genres && book.genres.length > 0 ? (
-                                        book.genres.map((genre, index) => (
-                                            <Badge
-                                                key={index}
-                                                text={
-                                                    typeof genre === "object"
-                                                        ? genre.genre ||
-                                                          JSON.stringify(genre)
-                                                        : genre
-                                                }
-                                                color={
-                                                    genre.id
-                                                        ? ((genre.id <= 5
-                                                              ? genre.id
-                                                              : ((genre.id -
-                                                                    1) %
-                                                                    5) +
-                                                                1) as any)
-                                                        : undefined
-                                                }
-                                            />
-                                        ))
-                                    ) : (
-                                        <span className="text-gray-500">
-                                            No genres specified
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="flex flex-col space-y-2">
-                                <h2 className="text-gray-600 font-light">
-                                    Condition
-                                </h2>
-                                <Progress value={Number(book.condition)} />
-                                <h2 className="text-gray-600 font-light text-end">
-                                    {Number(book.condition)}%
-                                </h2>
-                            </div>
-                            <div className="flex flex-col space-y-2">
-                                <h2 className="text-gray-600 font-light">
-                                    Status
-                                </h2>
-                                <div>
-                                    <StatusIndicator
-                                        isAvailable={
-                                            book.availability.availability_id
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex flex-col space-y-2">
-                            <h2 className="text-gray-600 font-light">
-                                Description
-                            </h2>
-                            <p className="">{book.description}</p>
-                        </div>
-                        <div className="flex flex-grow justify-end items-end mt-4">
-                            {session?.userSubId === book.user?.sub &&
-                                book.availability.availability_id === 1 && (
                                     <Button
-                                        className="flex items-center px-4 py-4 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition cursor-pointer"
-                                        onClick={() => {
-                                            router.push(
-                                                `/books/${book.id}/edit`
-                                            );
-                                        }}
+                                        className="w-full sm:w-auto bg-black hover:bg-gray-800"
+                                        onClick={() => setIsDialogOpen(true)}
                                     >
-                                        <Icon icon={"lucide:edit-2"} />
-                                        Edit
+                                        Borrow Now
                                     </Button>
                                 )}
                         </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <h3 className="text-gray-600 font-light mb-2">
+                                    Listed By
+                                </h3>
+                                <Button
+                                    onClick={() =>
+                                        router.push(
+                                            `/user-profile/${book.user?.sub}`
+                                        )
+                                    }
+                                    variant="link"
+                                    className="p-0 h-auto"
+                                >
+                                    {book.user?.name}
+                                </Button>
+                            </div>
+                            <div>
+                                <h3 className="text-gray-600 font-light mb-2">
+                                    Genre
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {book.genres?.map((genre, index) => (
+                                        <Badge
+                                            key={index}
+                                            text={
+                                                typeof genre === "object"
+                                                    ? genre.genre
+                                                    : genre
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <h3 className="text-gray-600 font-light mb-2">
+                                    Condition
+                                </h3>
+                                <Progress value={Number(book.condition)} />
+                                <p className="text-right text-sm text-gray-600 mt-1">
+                                    {Number(book.condition)}%
+                                </p>
+                            </div>
+                            <div>
+                                <h3 className="text-gray-600 font-light mb-2">
+                                    Status
+                                </h3>
+                                <StatusIndicator
+                                    isAvailable={
+                                        book.availability.availability_id
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="text-gray-600 font-light mb-2">
+                                Description
+                            </h3>
+                            <p className="text-sm sm:text-base">
+                                {book.description}
+                            </p>
+                        </div>
+
+                        {session?.userSubId === book.user?.sub &&
+                            book.availability.availability_id === 1 && (
+                                <div className="flex justify-end">
+                                    <Button
+                                        className="bg-gray-800 hover:bg-gray-900"
+                                        onClick={() =>
+                                            router.push(
+                                                `/books/${book.id}/edit`
+                                            )
+                                        }
+                                    >
+                                        <Icon
+                                            icon="lucide:edit-2"
+                                            className="mr-2"
+                                        />
+                                        Edit
+                                    </Button>
+                                </div>
+                            )}
                     </div>
                 </div>
+
+                {/* Desktop Layout */}
+                <div className="hidden lg:flex gap-6">
+                    {/* Thumbnail Carousel */}
+                    <div className="w-24">
+                        <Carousel orientation="vertical" className="w-full">
+                            <CarouselContent className="h-[60vh]">
+                                {book.pictures?.map((pictureObject, index) => (
+                                    <CarouselItem
+                                        key={index}
+                                        className="basis-1/3"
+                                    >
+                                        <div
+                                            onClick={() =>
+                                                setSelectImageIndex(index)
+                                            }
+                                            className={`cursor-pointer rounded-lg p-2 ${
+                                                selectImageIndex === index
+                                                    ? "bg-white shadow-lg border-2 border-black"
+                                                    : "bg-gray-100"
+                                            }`}
+                                        >
+                                            <img
+                                                className="w-full aspect-[3/4] object-cover rounded"
+                                                src={
+                                                    process.env
+                                                        .NEXT_PUBLIC_IMAGE_PATH +
+                                                    pictureObject.picture
+                                                }
+                                                alt=""
+                                            />
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                        </Carousel>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="flex-1 bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div className="flex h-full">
+                            {/* Main Image */}
+                            <div className="w-1/3 bg-gray-50 border-r flex items-center justify-center p-6">
+                                <img
+                                    className="max-w-full max-h-96 rounded shadow-lg"
+                                    src={
+                                        process.env.NEXT_PUBLIC_IMAGE_PATH +
+                                        book.pictures[selectImageIndex].picture
+                                    }
+                                    alt={book.title || "Book Image"}
+                                />
+                            </div>
+
+                            {/* Book Details */}
+                            <div className="w-2/3 p-8 space-y-6 overflow-auto">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h1 className="font-bold text-3xl">
+                                            {book.title}
+                                        </h1>
+                                        {book.author && (
+                                            <h2 className="text-gray-600 text-lg mt-2">
+                                                by {book.author}
+                                            </h2>
+                                        )}
+                                    </div>
+                                    {session?.userSubId !== book.user?.sub &&
+                                        book.availability.availability_id ===
+                                            1 && (
+                                            <Button
+                                                className="bg-black hover:bg-gray-800 px-6 py-3"
+                                                onClick={() =>
+                                                    setIsDialogOpen(true)
+                                                }
+                                            >
+                                                Borrow Now
+                                            </Button>
+                                        )}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <h3 className="text-gray-600 font-light mb-2">
+                                            Listed By
+                                        </h3>
+                                        <HoverCard>
+                                            <HoverCardTrigger asChild>
+                                                <Button
+                                                    onClick={() =>
+                                                        router.push(
+                                                            `/user-profile/${book.user?.sub}`
+                                                        )
+                                                    }
+                                                    variant="link"
+                                                    className="p-0 h-auto"
+                                                >
+                                                    {book.user?.name}
+                                                </Button>
+                                            </HoverCardTrigger>
+                                            <HoverCardContent className="w-80">
+                                                <div className="flex items-center space-x-4">
+                                                    <Avatar>
+                                                        <AvatarImage
+                                                            src={
+                                                                (process.env
+                                                                    .NEXT_PUBLIC_IMAGE_PATH ||
+                                                                    "") +
+                                                                (book.user
+                                                                    ?.picture ||
+                                                                    "")
+                                                            }
+                                                        />
+                                                        <AvatarFallback>
+                                                            US
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <h4 className="font-semibold">
+                                                            {book.user?.email}
+                                                        </h4>
+                                                        <p className="text-sm text-gray-500">
+                                                            {book.user?.bio}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </HoverCardContent>
+                                        </HoverCard>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-gray-600 font-light mb-2">
+                                            Genre
+                                        </h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {book.genres?.map(
+                                                (genre, index) => (
+                                                    <Badge
+                                                        key={index}
+                                                        text={
+                                                            typeof genre ===
+                                                            "object"
+                                                                ? genre.genre
+                                                                : genre
+                                                        }
+                                                    />
+                                                )
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <h3 className="text-gray-600 font-light mb-2">
+                                            Condition
+                                        </h3>
+                                        <Progress
+                                            value={Number(book.condition)}
+                                        />
+                                        <p className="text-right text-gray-600 mt-1">
+                                            {Number(book.condition)}%
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-gray-600 font-light mb-2">
+                                            Status
+                                        </h3>
+                                        <StatusIndicator
+                                            isAvailable={
+                                                book.availability
+                                                    .availability_id
+                                            }
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-gray-600 font-light mb-2">
+                                        Description
+                                    </h3>
+                                    <p>{book.description}</p>
+                                </div>
+
+                                {session?.userSubId === book.user?.sub &&
+                                    book.availability.availability_id === 1 && (
+                                        <div className="flex justify-end">
+                                            <Button
+                                                className="bg-gray-800 hover:bg-gray-900"
+                                                onClick={() =>
+                                                    router.push(
+                                                        `/books/${book.id}/edit`
+                                                    )
+                                                }
+                                            >
+                                                <Icon
+                                                    icon="lucide:edit-2"
+                                                    className="mr-2"
+                                                />
+                                                Edit
+                                            </Button>
+                                        </div>
+                                    )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Borrow Dialog */}
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl">
+                        <DialogHeader>
+                            <DialogTitle className="text-lg sm:text-xl">
+                                Borrow {book.title} by {book.author}
+                            </DialogTitle>
+                            <DialogDescription>
+                                Select Borrow Period
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="font-light mb-2">Start Date:</h3>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-between"
+                                        >
+                                            {startDate
+                                                ? format(startDate, "LLL dd, y")
+                                                : "Select start date"}
+                                            <Icon icon="lucide:calendar" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <Calendar
+                                            mode="single"
+                                            selected={startDate}
+                                            onSelect={setStartDate}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                            <div>
+                                <h3 className="font-light mb-2">End Date:</h3>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full justify-between"
+                                        >
+                                            {endDate
+                                                ? format(endDate, "LLL dd, y")
+                                                : "Select end date"}
+                                            <Icon icon="lucide:calendar" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                        <Calendar
+                                            mode="single"
+                                            selected={endDate}
+                                            onSelect={setEndDate}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-end">
+                            <Button
+                                variant="destructive"
+                                onClick={() => setIsDialogOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleBorrowBook}
+                                disabled={isBorrow}
+                            >
+                                {isBorrow ? "Processing..." : "Confirm"}
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );

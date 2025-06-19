@@ -7,21 +7,49 @@ interface BookDisplayCardProps {
 
 export function BookDisplayCard({ bookImage }: BookDisplayCardProps) {
     return (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="w-full bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            {/* Header */}
             <div className="bg-black text-white p-3 sm:p-4">
                 <div className="flex items-center gap-2 sm:gap-3">
-                    <h2 className="text-lg sm:text-xl font-semibold">
+                    <Book className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                    <h2 className="text-sm sm:text-lg md:text-xl font-semibold truncate">
                         Book Image
                     </h2>
                 </div>
             </div>
-            <div className="p-4 sm:p-6 flex items-center justify-center">
-                <div className="w-full max-w-xs sm:max-w-sm md:max-w-md">
+
+            {/* Image Container */}
+            <div className="p-3 sm:p-4 lg:p-6">
+                <div className="relative w-full">
                     <img
-                        className="w-full aspect-[3/4] rounded-lg shadow-md object-cover"
+                        className="w-full h-auto aspect-[2/3] sm:aspect-[3/4] rounded-lg shadow-md object-cover bg-gray-100"
                         src={process.env.NEXT_PUBLIC_IMAGE_PATH + bookImage}
-                        alt="Book Image"
+                        alt="Book Cover"
+                        loading="lazy"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = "none";
+                            const fallback =
+                                target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = "flex";
+                        }}
                     />
+
+                    {/* Fallback when image fails to load */}
+                    <div
+                        className="hidden w-full aspect-[2/3] sm:aspect-[3/4] rounded-lg shadow-md bg-gray-100 items-center justify-center border-2 border-dashed border-gray-300"
+                        style={{ display: "none" }}
+                    >
+                        <div className="text-center p-4">
+                            <Book className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-2" />
+                            <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                                Book Image
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                                Image not available
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

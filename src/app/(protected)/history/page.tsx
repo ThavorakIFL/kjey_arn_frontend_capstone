@@ -1,4 +1,3 @@
-// HistoryPage.tsx
 import { fetchUserHistoryBorrowEventData } from "./history-action";
 import HistoryPageClient from "./HistoryPageClient";
 

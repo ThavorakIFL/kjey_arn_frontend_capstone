@@ -15,6 +15,8 @@ import {
 import { updateUserBio } from "./profile-action";
 import { User } from "@/types/user";
 import Book from "@/components/bookComponent/Book";
+import { BookOpen, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProfilePageClientProps {
     initialUserData: User;
@@ -45,8 +47,15 @@ export default function ProfilePageClient({
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-screen px-4">
-                <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500"></div>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+                <div className="flex items-center justify-center min-h-screen px-4">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                        <p className="text-sm sm:text-base text-gray-600">
+                            Loading your profile...
+                        </p>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -82,7 +91,7 @@ export default function ProfilePageClient({
     };
 
     return (
-        <>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-12">
                 <div className="flex flex-col space-y-6 sm:space-y-8">
                     {/* Profile Card */}
@@ -120,12 +129,9 @@ export default function ProfilePageClient({
                                             onValueChange={handleAction}
                                         >
                                             <SelectTrigger className="w-full sm:w-auto">
-                                                <SelectValue
-                                                    className="bg-indigo-400"
-                                                    placeholder="More Actions"
-                                                />
+                                                <SelectValue placeholder="More Actions" />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-indigo-400">
+                                            <SelectContent>
                                                 <SelectGroup>
                                                     <SelectItem value="edit_bio">
                                                         Edit Bio
@@ -138,7 +144,7 @@ export default function ProfilePageClient({
 
                                 {/* Bio Section */}
                                 <div className="space-y-3 sm:space-y-4">
-                                    <h2 className="text-xl sm:text-2xl font-semibold">
+                                    <h2 className="text-xl sm:text-2xl font-semibold text-center sm:text-left">
                                         Bio
                                     </h2>
                                     {editingBio ? (
@@ -172,7 +178,7 @@ export default function ProfilePageClient({
                                             </div>
                                         </div>
                                     ) : (
-                                        <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                                        <p className="text-gray-700 text-sm sm:text-base leading-relaxed text-center sm:text-left">
                                             {userData.bio ||
                                                 "No bio available."}
                                         </p>
@@ -184,25 +190,58 @@ export default function ProfilePageClient({
 
                     {/* Books Section */}
                     <div>
-                        <TitleBar title="My Shelf" />
-                        <div className="mt-4 sm:mt-6">
-                            {userBookData.length > 0 ? (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-                                    {userBookData.map((book) => (
-                                        <Book key={book.id} book={book} />
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-8 sm:py-12">
-                                    <p className="text-gray-500 text-sm sm:text-base">
-                                        No books available.
-                                    </p>
-                                </div>
-                            )}
+                        <div className="mb-4 sm:mb-6">
+                            <TitleBar
+                                title="My Shelf"
+                                className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800"
+                            />
+                            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
+                                Manage and showcase your book collection
+                            </p>
                         </div>
+
+                        {/* Books Grid */}
+                        {userBookData.length > 0 ? (
+                            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                                <div className="p-4 sm:p-6 lg:p-8">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                                        {userBookData.map((book) => (
+                                            <Book key={book.id} book={book} />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            /* Enhanced Empty State */
+                            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                                <div className="flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20 text-center px-4 sm:px-6">
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                                        <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-gray-400" />
+                                    </div>
+                                    <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 mb-2 sm:mb-3">
+                                        Your shelf is empty
+                                    </h3>
+                                    <p className="text-sm sm:text-base text-gray-600 max-w-sm sm:max-w-md lg:max-w-lg leading-relaxed mb-6">
+                                        Start building your personal library!
+                                        Add books to share with other readers
+                                        and discover new titles.
+                                    </p>
+                                    <Button
+                                        onClick={() =>
+                                            (window.location.href = "/add-book")
+                                        }
+                                        className="w-full sm:w-auto"
+                                        size="lg"
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add Your First Book
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

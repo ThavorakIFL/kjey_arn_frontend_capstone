@@ -145,16 +145,23 @@ export function GuideMessage({
     };
 
     return (
-        <div className="w-full h-12 rounded-lg bg-white border-black border-2 flex overflow-clip">
-            <div className="bg-black font-medium text-white px-4 flex h-full items-center justify-center space-x-4">
+        <div className="w-full min-h-12 rounded-lg bg-white border-black border-2 flex flex-col sm:flex-row overflow-hidden shadow-sm">
+            {/* Header Section */}
+            <div className="bg-black font-medium text-white px-3 sm:px-4 py-2 sm:py-0 flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 flex-shrink-0">
                 <Icon
-                    className={`h-6 w-6 ${getIconColor()}`}
+                    className={`h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 ${getIconColor()} flex-shrink-0`}
                     icon="lucide:lightbulb"
                 />
-                <p>Guide Message</p>
+                <p className="text-sm sm:text-base font-semibold whitespace-nowrap">
+                    Guide Message
+                </p>
             </div>
-            <div className="h-auto flex flex-col items-center justify-center px-4">
-                <p className="text-sm">{getGuideMessage()}</p>
+
+            {/* Content Section */}
+            <div className="flex-1 flex items-center px-3 sm:px-4 py-3 sm:py-2 min-h-0">
+                <p className="text-sm sm:text-base text-gray-800 leading-relaxed">
+                    {getGuideMessage()}
+                </p>
             </div>
         </div>
     );
