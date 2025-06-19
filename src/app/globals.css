@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
 /* @custom-variant dark (&:is(.dark *)); */
 
 @theme {
@@ -32,9 +34,9 @@
     color: transparent;
 }
 
-body {
+/* body {
     @apply bg-gradient-to-br from-slate-50 to-blue-50;
-}
+} */
 
 /* Add these animations to your existing globals.css file */
 
@@ -83,6 +85,25 @@ html {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
+
+/* Add to your globals.css */
+:root {
+    --sidebar-color: #1f2937; /* Your dark sidebar color */
+    --side-color: #374151; /* Your hover/active color */
+    --sidebar-color-line: #4b5563; /* Your separator color */
+}
+
+/* Custom sidebar styling */
+[data-sidebar] {
+    --sidebar-background: var(--sidebar-color);
+    --sidebar-foreground: white;
+    --sidebar-primary: var(--side-color);
+    --sidebar-primary-foreground: white;
+    --sidebar-accent: var(--side-color);
+    --sidebar-accent-foreground: white;
+    --sidebar-border: var(--sidebar-color-line);
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

@@ -31,7 +31,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
 
     return (
         <>
-            <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="p-8 ">
                 <SearchAndFilterBar globalSearch={true} />
                 {!error && books.length > 0 && (
                     <>
@@ -48,7 +48,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
                                     No books available.
                                 </div>
                             )}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7  gap-4">
                                 {books.map((book) => (
                                     <Book key={book.id} book={book} />
                                 ))}
