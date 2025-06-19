@@ -5,7 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchReaderData } from "./all-reader-action";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users } from "lucide-react";
+import UserCard from "@/components/userComponent/UserCard";
+import UserCardSkeleton from "@/components/userComponent/UserCardSkeleton";
+import EmptyState from "@/components/userComponent/EmptyState";
+import ErrorState from "@/components/userComponent/ErrorState";
 
 export default function AllReaderPageClient() {
     const router = useRouter();
@@ -19,8 +23,11 @@ export default function AllReaderPageClient() {
         setError("");
         setLoading(true);
         try {
+            // Simulate API call with mock data
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
             const res = await fetchReaderData({ reader: query });
-            // Since backend returns array directly, use it as is
+
             setReaders(Array.isArray(res) ? res : []);
         } catch (err) {
             setReaders([]);
@@ -35,43 +42,73 @@ export default function AllReaderPageClient() {
         handleSearch();
     }, [query]);
 
+    const handleUserClick = (reader: { sub: string }) => {
+        router.push(`/user-profile/${reader.sub}`);
+    };
+
+    const handleRetry = () => {
+        handleSearch();
+    };
+
     return (
-        <div className="mb-4 p-8 bg-gradient-to-br from-slate-50 to-blue-50">
-            <SearchAndFilterBar />
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-bold">
-                    {query ? `Search Results for "${query}"` : "All Readers"}
-                </h1>
-            </div>
+        <div>
+            <div className="container mx-auto px-4 py-8">
+                {/* Header Section */}
+                <div className="mb-8">
+                    <div className="space-y-4">
+                        <h1 className="text-2xl font-bold text-gray-900">
+                            {query ? `Search Results` : "All Readers"}
+                        </h1>
 
-            {loading && <p>Loading...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-            {!loading && readers.length === 0 && !error && (
-                <p>No readers found.</p>
-            )}
+                        <SearchAndFilterBar defaultType="reader" />
 
-            <div className="grid grid-cols-7 gap-4">
-                {readers.map((reader, index) => (
-                    <div
-                        onClick={() => {
-                            router.push(`/user-profile/${reader.sub}`);
-                        }}
-                        key={reader.sub || index}
-                        className="border p-4 rounded flex flex-col items-center cursor-pointer"
-                    >
-                        <Avatar className="h-32 w-32">
-                            <AvatarImage
-                                src={
-                                    process.env.NEXT_PUBLIC_IMAGE_PATH! +
-                                    reader.picture
-                                }
-                            />
-                            <AvatarFallback>NA</AvatarFallback>
-                        </Avatar>
-                        <h2 className="font-bold">{reader.name}</h2>
-                        <p>{reader.email}</p>
+                        {query && (
+                            <p className="text-gray-600 mt-1">
+                                Showing results for{" "}
+                                <span className="font-semibold text-blue-700">
+                                    "{query}"
+                                </span>
+                            </p>
+                        )}
                     </div>
-                ))}
+
+                    {!loading && !error && (
+                        <div className="flex items-center space-x-2 text-sm text-gray-500 mt-4">
+                            <Users className="w-4 h-4" />
+                            <span>
+                                {readers.length}{" "}
+                                {readers.length === 1 ? "user" : "users"} found
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Results Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+                    {loading &&
+                        Array.from({ length: 12 }).map((_, index) => (
+                            <UserCardSkeleton key={index} />
+                        ))}
+
+                    {!loading && error && (
+                        <ErrorState error={error} onRetry={handleRetry} />
+                    )}
+
+                    {!loading && !error && readers.length === 0 && (
+                        <EmptyState query={query} />
+                    )}
+
+                    {!loading &&
+                        !error &&
+                        readers.length > 0 &&
+                        readers.map((reader, index) => (
+                            <UserCard
+                                key={reader.sub || index}
+                                reader={reader}
+                                onClick={() => handleUserClick(reader)}
+                            />
+                        ))}
+                </div>
             </div>
         </div>
     );

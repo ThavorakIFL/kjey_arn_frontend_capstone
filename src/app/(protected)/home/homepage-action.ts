@@ -160,3 +160,48 @@ export async function checkUnconfirmedMeetups() {
         throw error;
     }
 }
+
+export async function checkUnacceptedBorrowRequests() {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}check-unaccepted-borrow-requests`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Only treat actual errors as errors
+            console.error("API Error:", {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+            });
+
+            switch (response.status) {
+                case 401:
+                    throw new Error("Authentication required");
+                case 500:
+                    throw new Error("Server error occurred");
+                default:
+                    throw new Error(
+                        `Request failed: ${data.message || response.statusText}`
+                    );
+            }
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Error checking unaccepted borrow requests", error);
+        throw error;
+    }
+}

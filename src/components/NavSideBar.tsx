@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ActivityBell from "./activityComponent/ActivityBell";
+import kjeyarnlogo from "@/assets/kjeyarnlogo.png"; // Adjust the path as necessary
 
 export default function NavSideBar({
     children,
@@ -90,13 +91,15 @@ export default function NavSideBar({
                 >
                     <div className="">
                         <div className=" bg-sidebarColor flex flex-col items-center h-screen  relative">
-                            <div className="w-full px-8 h-[80px] flex items-center justify-between">
-                                <h1
+                            <div className="w-full px-4 h-[80px] flex items-center justify-between">
+                                <Image
+                                    className="cursor-pointer"
                                     onClick={() => handleNavigation("/home")}
-                                    className="  cursor-pointer text-2xl font-bold text-white "
-                                >
-                                    KjeyArn
-                                </h1>
+                                    src={kjeyarnlogo}
+                                    alt="KjeyArn logo"
+                                    width={160}
+                                    height={120}
+                                />
                                 <div
                                     onClick={toggleSideBar}
                                     className="container flex justify-center items-center w-12 h-12 rounded-3xl hover:bg-sideColor transition-all duration-300 cursor-pointer "

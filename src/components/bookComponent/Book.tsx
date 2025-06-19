@@ -16,7 +16,7 @@ const Book: React.FC<BookProps> = ({ book }) => {
         <Link href={`/books/${book.id}`}>
             <div className="w-48 h-72 relative group  rounded-lg overflow-hidden bg-gray-200 cursor-pointer card-shadow">
                 <div className=" bg-black w-full h-full z-0 absolute opacity-0 group-hover:opacity-80 transition-opacity duration-300"></div>
-                <div className=" z-10 absolute  h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-2 space-y-6">
+                <div className=" z-10 absolute  w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-2 space-y-6">
                     <div className="flex-grow">
                         <h1 className="text-lg text-white ">
                             Title: <span>{book.title}</span>
@@ -33,7 +33,7 @@ const Book: React.FC<BookProps> = ({ book }) => {
                             ))}
                         </h1>
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end w-full">
                         <StatusIndicator
                             isAvailable={book.availability?.availability_id}
                         />

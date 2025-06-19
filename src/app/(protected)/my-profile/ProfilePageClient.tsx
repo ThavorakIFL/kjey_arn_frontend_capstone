@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import ProfileIcon from "@/components/ProfileIcon";
 import TitleBar from "@/components/TitleBar";
@@ -27,11 +27,29 @@ export default function ProfilePageClient({
 }: ProfilePageClientProps) {
     const { data: session } = useSession();
 
+    const [loading, setLoading] = useState(true);
+
     const [userData, setUserData] = useState<User>(initialUserData);
     const [bio, setBio] = useState(initialUserData.bio || "");
     const [editingBio, setEditingBio] = useState(false);
     const [selectAction, setSelectAction] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [userBookData]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
 
     const handleAction = (value: string) => {
         setSelectAction(value);

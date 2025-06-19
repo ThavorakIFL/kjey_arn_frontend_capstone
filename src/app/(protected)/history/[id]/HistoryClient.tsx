@@ -2,12 +2,30 @@
 import HistoryDetail from "@/components/activityComponent/HistoryDetail";
 import { BookDisplayCard } from "@/components/bookComponent/BookDisplayCard";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
+import { useEffect, useState } from "react";
 
 interface HistoryClientProps {
     borrowEventData: BorrowEventType;
 }
 
 export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, [borrowEventData]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-8">
             <h1 className="text-2xl font-bold">Borrow History Details</h1>
@@ -25,25 +43,34 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                             borrowEventData.borrow_status.borrow_status_id
                         }
                         borrowerEmail={borrowEventData.borrower.email}
+                        lenderEmail={borrowEventData.lender.email}
                         borrowerName={borrowEventData.borrower.name}
+                        lenderName={borrowEventData.lender.name}
                         borrowerProfileImage={
                             borrowEventData.borrower.picture || ""
                         }
+                        lenderProfileImage={
+                            borrowEventData.lender.picture || ""
+                        }
                     />
+                </div>
+                <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden col-span-3">
+                    <div className="bg-black text-white p-4">
+                        <h2 className="text-2xl font-semibold">
+                            Reason for{" "}
+                            {borrowEventData.borrow_status.borrow_status_id ===
+                            3
+                                ? "rejection"
+                                : "cancellation"}
+                        </h2>
+                    </div>
                     {(borrowEventData.borrow_event_reject_reason ||
                         borrowEventData.borrow_event_cancel_reason) && (
                         <div className="bg-white shadow-md p-4 rounded-lg h-full">
-                            <h1 className="text-lg font-semibold">
-                                Reason for{" "}
-                                {borrowEventData.borrow_status
-                                    .borrow_status_id === 3
-                                    ? "rejection"
-                                    : "cancellation"}
-                            </h1>
+                            <h1 className="text-lg font-semibold"></h1>
                             <h3>
                                 {borrowEventData.borrow_status
                                     .borrow_status_id === 3 ? (
-                                    // Show reject reason if it exists
                                     borrowEventData.borrow_event_reject_reason ? (
                                         <p>
                                             {
@@ -55,8 +82,7 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                                     ) : (
                                         <p>No rejection reason provided</p>
                                     )
-                                ) : // Show cancel reason if it exists
-                                borrowEventData.borrow_event_cancel_reason ? (
+                                ) : borrowEventData.borrow_event_cancel_reason ? (
                                     <p>
                                         {
                                             borrowEventData

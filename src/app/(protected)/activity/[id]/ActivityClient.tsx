@@ -300,6 +300,11 @@ export default function ActivityClient({
                         borrowerProfileImage={
                             borrowEventData.borrower.picture || ""
                         }
+                        lenderProfileImage={
+                            borrowEventData.lender.picture || ""
+                        }
+                        lenderEmail={borrowEventData.lender.email}
+                        lenderName={borrowEventData.lender.name}
                         startDate={borrowEventData.meet_up_detail.start_date}
                         endDate={borrowEventData.meet_up_detail.end_date}
                     />
@@ -314,6 +319,12 @@ export default function ActivityClient({
                     {borrowEventData.meet_up_detail.suggestions &&
                         showSuggestionDetail() && (
                             <SuggestMeetUpDetail
+                                startDate={
+                                    borrowEventData.meet_up_detail.start_date
+                                }
+                                endDate={
+                                    borrowEventData.meet_up_detail.end_date
+                                }
                                 suggestMeetUpTime={
                                     borrowEventData.meet_up_detail
                                         .suggestions[0].suggested_time

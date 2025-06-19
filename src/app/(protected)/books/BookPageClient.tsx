@@ -1,10 +1,9 @@
 "use client";
+import { toast } from "sonner";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import { addDays, format, set } from "date-fns";
-import { DateRange } from "react-day-picker";
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import Badge from "@/components/bookComponent/Badge";
 import { Icon } from "@iconify/react";
@@ -53,6 +52,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
         return `${year}-${month}-${day}`;
     };
     const [isBorrow, setIsBorrow] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [startDate, setStartDate] = useState<Date | undefined>(
         addDays(new Date(), 1)
     );
@@ -74,15 +74,27 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
             formData.append("start_date", formatDateLocal(startDate!));
             formData.append("end_date", formatDateLocal(endDate!));
             const response = await requestBorrow(formData);
-            router.push("/activity");
+            if (response.success) {
+                toast.success(
+                    response.message || "Borrow request submitted successfully!"
+                );
+                setIsDialogOpen(false);
+                router.push("/activity");
+            } else {
+                // Handle the case when success is false
+                toast.error(
+                    response.message || "Failed to submit borrow request"
+                );
+            }
         } catch (error) {
-            setIsBorrow(false);
             console.error("Failed to borrow book:", error);
-            alert(
-                `Failed to request book: ${
-                    error instanceof Error ? error.message : "Unknown error"
-                }`
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred"
             );
+        } finally {
+            setIsBorrow(false);
         }
     };
     const [selectImageIndex, setSelectImageIndex] = useState(0);
@@ -165,7 +177,10 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                             </div>
                             {session?.userSubId !== book.user?.sub &&
                                 book.availability.availability_id === 1 && (
-                                    <Dialog>
+                                    <Dialog
+                                        open={isDialogOpen}
+                                        onOpenChange={setIsDialogOpen}
+                                    >
                                         <DialogTrigger asChild>
                                             <Button className="cursor-pointer rounded-sm p-6 bg-black  hover:sidebarColor text-white font-bold ml-auto">
                                                 <p className="font-light">
@@ -280,7 +295,12 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                                 </Popover>
                                             </div>
                                             <div className="flex space-x-4 justify-end ">
-                                                <Button variant={"destructive"}>
+                                                <Button
+                                                    onClick={() =>
+                                                        setIsDialogOpen(false)
+                                                    }
+                                                    variant={"destructive"}
+                                                >
                                                     Cancel
                                                 </Button>
                                                 <Button
@@ -288,8 +308,11 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                                     onClick={() =>
                                                         handleBorrowBook()
                                                     }
+                                                    disabled={isBorrow}
                                                 >
-                                                    Confirm
+                                                    {isBorrow
+                                                        ? "Processing..."
+                                                        : "Confirm"}
                                                 </Button>
                                             </div>
                                         </DialogContent>

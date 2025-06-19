@@ -1,10 +1,12 @@
-import { Ubuntu } from "next/font/google";
+// AuthLayout.jsx
+import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import AuthNavbar from "@/components/AuthNavbar";
 import { Providers } from "../provider";
-const ubuntuFont = Ubuntu({
+
+const interFont = Inter({
     subsets: ["latin"],
-    weight: ["300", "400", "500", "700"],
+    weight: ["300", "400", "500", "600", "700"],
 });
 
 export default function AuthLayout({
@@ -13,13 +15,11 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <body>
+        <body className={interFont.className}>
             <Providers>
-                <main>
-                    <div className="m-4">
-                        <AuthNavbar />
-                        {children}
-                    </div>
+                <main className="bg-gray-50 min-h-screen">
+                    <AuthNavbar />
+                    <div className="pt-20">{children}</div>
                 </main>
             </Providers>
         </body>
