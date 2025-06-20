@@ -41,24 +41,24 @@ export default function BorrowActivityDetail({
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-4 sm:space-y-6 px-4 sm:px-0">
+        <div className="w-full max-w-4xl mx-auto space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6 px-2 sm:px-4 lg:px-0">
             {/* Book Information */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="bg-black text-white p-3 sm:p-4 lg:p-6">
-                    <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold">
+                <div className="bg-black text-white p-2 sm:p-3 lg:p-4 xl:p-6">
+                    <h2 className="text-sm sm:text-base lg:text-lg xl:text-xl font-semibold">
                         Request Details
                     </h2>
                 </div>
-                <div className="p-3 sm:p-4 lg:p-6">
-                    <div className="space-y-4 sm:space-y-6">
+                <div className="p-2 sm:p-3 lg:p-4 xl:p-6">
+                    <div className="space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6">
                         {/* Title and Status */}
-                        <div className="flex flex-col gap-3 sm:gap-4">
-                            <div className="flex flex-col xs:flex-row xs:items-start xs:justify-between gap-3">
+                        <div className="flex flex-col gap-2 sm:gap-3">
+                            <div className="flex flex-col xs:flex-row xs:items-start xs:justify-between gap-2 sm:gap-3">
                                 <div className="min-w-0 flex-1">
-                                    <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+                                    <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 leading-tight">
                                         {bookTitle}
                                     </h3>
-                                    <p className="text-sm sm:text-base md:text-lg text-gray-600 mt-1 sm:mt-2">
+                                    <p className="text-xs sm:text-sm lg:text-base text-gray-600 mt-0.5 sm:mt-1">
                                         by {bookAuthor}
                                     </p>
                                 </div>
@@ -69,16 +69,16 @@ export default function BorrowActivityDetail({
                         </div>
 
                         {/* Users Information */}
-                        <div className="space-y-4 sm:space-y-6">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                        <div className="space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 lg:gap-6 xl:gap-8">
                                 {/* Borrower */}
-                                <div className="space-y-2 sm:space-y-3">
-                                    <h4 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
-                                        <User className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <div className="space-y-1 sm:space-y-2">
+                                    <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
+                                        <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                         Borrower
                                     </h4>
-                                    <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex-shrink-0">
+                                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg">
+                                        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0">
                                             <AvatarImage
                                                 src={
                                                     process.env
@@ -87,18 +87,18 @@ export default function BorrowActivityDetail({
                                                 }
                                                 alt={`${borrowerName}'s profile`}
                                             />
-                                            <AvatarFallback className="text-sm sm:text-base lg:text-lg font-semibold">
+                                            <AvatarFallback className="text-xs sm:text-sm lg:text-base font-semibold">
                                                 {borrowerName
                                                     .charAt(0)
                                                     .toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="min-w-0 flex-1">
-                                            <h5 className="text-sm sm:text-base lg:text-lg font-medium text-gray-800 truncate">
+                                            <h5 className="text-xs sm:text-sm lg:text-base font-medium text-gray-800 truncate">
                                                 {borrowerName}
                                             </h5>
-                                            <div className="flex items-center gap-1 sm:gap-2 mt-1">
-                                                <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                                            <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
+                                                <Mail className="w-2.5 h-2.5 sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-gray-500 flex-shrink-0" />
                                                 <p className="text-xs sm:text-sm text-gray-600 truncate">
                                                     {borrowerEmail}
                                                 </p>
@@ -108,33 +108,33 @@ export default function BorrowActivityDetail({
                                 </div>
 
                                 {/* Lender */}
-                                <div className="space-y-2 sm:space-y-3">
-                                    <h4 className="text-base sm:text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
-                                        <User className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <div className="space-y-1 sm:space-y-2">
+                                    <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
+                                        <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                         Lender
                                     </h4>
-                                    <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex-shrink-0">
+                                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg">
+                                        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0">
                                             <AvatarImage
                                                 src={
                                                     process.env
                                                         .NEXT_PUBLIC_IMAGE_PATH +
                                                     lenderProfileImage
                                                 }
-                                                alt={`${borrowerName}'s profile`}
+                                                alt={`${lenderName}'s profile`}
                                             />
-                                            <AvatarFallback className="text-sm sm:text-base lg:text-lg font-semibold">
+                                            <AvatarFallback className="text-xs sm:text-sm lg:text-base font-semibold">
                                                 {lenderName
                                                     .charAt(0)
                                                     .toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="min-w-0 flex-1">
-                                            <h5 className="text-sm sm:text-base lg:text-lg font-medium text-gray-800 truncate">
+                                            <h5 className="text-xs sm:text-sm lg:text-base font-medium text-gray-800 truncate">
                                                 {lenderName}
                                             </h5>
-                                            <div className="flex items-center gap-1 sm:gap-2 mt-1">
-                                                <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 flex-shrink-0" />
+                                            <div className="flex items-center gap-1 mt-0.5 sm:mt-1">
+                                                <Mail className="w-2.5 h-2.5 sm:w-3 sm:h-3 lg:w-4 lg:h-4 text-gray-500 flex-shrink-0" />
                                                 <p className="text-xs sm:text-sm text-gray-600 truncate">
                                                     {lenderEmail}
                                                 </p>

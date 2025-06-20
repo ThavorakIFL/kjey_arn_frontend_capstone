@@ -50,33 +50,33 @@ export function MeetUpDetail({
     // Use different wrapper classes based on variant
     const wrapperClasses =
         variant === "sidebar"
-            ? "w-full" // No max-width or centering for sidebar
-            : "w-full max-w-2xl mx-auto px-4 sm:px-0"; // Original classes for standalone
+            ? "w-full"
+            : "w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-0";
 
     return (
         <div className={wrapperClasses}>
             <div className="bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex flex-col">
                 {/* Header */}
-                <div className="bg-black text-white p-3 sm:p-4">
-                    <h1 className="text-sm sm:text-lg font-semibold">
+                <div className="bg-black text-white p-3 sm:p-4 lg:p-5">
+                    <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold">
                         Meet Up Details
                     </h1>
                 </div>
 
                 {/* Content */}
-                <div className="p-3 sm:p-4">
-                    <div className="space-y-3 sm:space-y-4">
+                <div className="p-3 sm:p-4 lg:p-6">
+                    <div className="space-y-3 sm:space-y-4 lg:space-y-5">
                         {meetUpItems.map((item, index) => (
                             <div key={index} className="space-y-1 sm:space-y-2">
-                                <h3 className="text-xs sm:text-sm font-medium text-gray-800">
+                                <h3 className="text-xs sm:text-sm lg:text-base font-medium text-gray-800">
                                     {item.label}
                                 </h3>
-                                <div className="flex items-center gap-2 sm:gap-3 bg-gray-50 min-h-[2.5rem] sm:min-h-[3rem] rounded-lg px-2 sm:px-3 py-2">
+                                <div className="flex items-start sm:items-center gap-2 sm:gap-3 bg-gray-50 min-h-[2.5rem] sm:min-h-[3rem] lg:min-h-[3.5rem] rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 transition-colors hover:bg-gray-100">
                                     <Icon
-                                        className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 flex-shrink-0"
                                         icon={item.icon}
+                                        className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-gray-600 flex-shrink-0 mt-0.5 sm:mt-0"
                                     />
-                                    <h4 className="text-xs sm:text-sm text-gray-900 leading-relaxed break-words">
+                                    <h4 className="text-xs sm:text-sm lg:text-base text-gray-900 leading-relaxed break-words flex-1">
                                         {item.value}
                                     </h4>
                                 </div>

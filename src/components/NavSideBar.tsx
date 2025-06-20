@@ -65,7 +65,7 @@ function MobileSidebar({
             {/* Backdrop */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-50 xl:hidden"
+                    className="fixed inset-0 bg-black/50 z-50 lg:hidden"
                     onClick={onClose}
                 />
             )}
@@ -189,10 +189,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
 
             <div className="flex h-screen w-full">
                 {/* Desktop Sidebar */}
-                <Sidebar
-                    className="hidden xl:flex border-r-0"
-                    collapsible="icon"
-                >
+                <Sidebar className=" border-r-0" collapsible="icon">
                     <div className="bg-sidebarColor h-full flex flex-col">
                         {/* Sidebar Header - Logo */}
                         <SidebarHeader className="p-4">
@@ -301,7 +298,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                     {/* Mobile menu button */}
                                     <div
                                         onClick={() => setMobileMenuOpen(true)}
-                                        className="xl:hidden cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
+                                        className="lg:hidden cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-all duration-300"
                                     >
                                         <Icon
                                             icon="ic:baseline-menu"
