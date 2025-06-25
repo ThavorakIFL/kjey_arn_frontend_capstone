@@ -1,3 +1,4 @@
+import { fetchLocationData } from "../../borrow-request/borrow-request-action";
 import {
     fetchBorrowRequest,
     cancelBorrowRequest,
@@ -17,9 +18,11 @@ export default async function BorrowRequestPage({
 }) {
     const { id } = await params;
     const borrowEvent = await fetchBorrowRequest(id);
+    const locationData = await fetchLocationData();
     const borrowEventData = borrowEvent.data;
     return (
         <ActivityClient
+            locationData={locationData}
             reportBorrowEvent={reportBorrowEvent}
             acceptSuggestion={acceptSuggestion}
             suggestMeetUpRequest={suggestMeetUpRequest}

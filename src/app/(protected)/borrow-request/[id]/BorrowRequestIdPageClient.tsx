@@ -25,9 +25,15 @@ interface BorrowRequestIdPageClientProps {
         success: boolean;
         message: string;
     }>;
+    locationData: {
+        success: boolean;
+        message: string;
+        data: any[];
+    };
 }
 
 export default function BorrowRequestIdPageClient({
+    locationData,
     borrowRequestData,
     setMeetUpDetail,
     rejectBorrowRequest,
@@ -36,7 +42,6 @@ export default function BorrowRequestIdPageClient({
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
@@ -171,6 +176,7 @@ export default function BorrowRequestIdPageClient({
                             {borrowRequestData.book.availability
                                 .availability_id === 1 ? (
                                 <BorrowRequestAction
+                                    locationData={locationData}
                                     onAccept={handleAccept}
                                     onReject={handleReject}
                                     isSubmitting={isSubmitting}
@@ -260,6 +266,7 @@ export default function BorrowRequestIdPageClient({
                             {borrowRequestData.book.availability
                                 .availability_id === 1 ? (
                                 <BorrowRequestAction
+                                    locationData={locationData}
                                     onAccept={handleAccept}
                                     onReject={handleReject}
                                     isSubmitting={isSubmitting}

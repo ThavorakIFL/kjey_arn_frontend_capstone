@@ -12,6 +12,7 @@ export default async function BorrowRequestPage({
             : "0"; // Default to "Pending" status if not specified
 
     const borrowEventDataRes = await fetchBorrowEventByStatus(borrowStatusId);
+
     const borrowEventData = (await borrowEventDataRes) || { data: [] };
     const statusNameMap = {
         "0": "All Activities",

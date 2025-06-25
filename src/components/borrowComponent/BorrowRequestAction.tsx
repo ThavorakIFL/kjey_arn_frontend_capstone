@@ -31,13 +31,20 @@ interface BorrowRequestActionProps {
     }) => void;
     onReject: (reason: string) => void;
     isSubmitting: boolean;
+    locationData: {
+        success: boolean;
+        message: string;
+        data: any[];
+    };
 }
 
 export function BorrowRequestAction({
     onAccept,
     onReject,
     isSubmitting,
+    locationData,
 }: BorrowRequestActionProps) {
+    console.log("Location Data in Popup", locationData);
     const [showAcceptDialog, setShowAcceptDialog] = useState(false);
     const [showRejectDialog, setShowRejectDialog] = useState(false);
     const [meetUpData, setMeetUpData] = useState({
@@ -162,25 +169,41 @@ export function BorrowRequestAction({
                             </Select>
                         </div>
 
-                        {/* Meeting Location */}
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                                 <MapPin className="h-4 w-4" />
                                 Meeting Location
                             </label>
-                            <textarea
+                            <Select
                                 value={meetUpData.final_location}
-                                onChange={(e) =>
+                                onValueChange={(value) =>
                                     setMeetUpData((prev) => ({
                                         ...prev,
-                                        final_location: e.target.value,
+                                        final_location: value,
                                     }))
                                 }
-                                placeholder="Enter the meeting location..."
-                                className="w-full px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
-                                rows={3}
-                                required
-                            />
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select meeting location" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {locationData.success &&
+                                    locationData.data?.length > 0 ? (
+                                        locationData.data.map((location) => (
+                                            <SelectItem
+                                                key={location.id}
+                                                value={location.location}
+                                            >
+                                                {location.location}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value="" disabled>
+                                            No locations available
+                                        </SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Error Display */}

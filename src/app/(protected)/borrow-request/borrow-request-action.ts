@@ -31,6 +31,40 @@ export async function fetchBorrowRequestData() {
     }
 }
 
+export async function fetchLocationData() {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+    try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}admin/locations`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await response.json();
+        if (!data.success) {
+            return {
+                success: false,
+                message: data.message || "Failed to fetch location data",
+                data: [], // Add data property to match expected type
+            };
+        }
+        return {
+            success: true,
+            message: "Location data fetched successfully",
+            data: data.data || [],
+        };
+    } catch (error: any) {
+        console.error("Error fetching location data:", error);
+        // Add return statement in catch block
+        return {
+            success: false,
+            message: "An error occurred while fetching location data",
+            data: [], // Include data property
+        };
+    }
+}
 export async function sendMeetUpDetail(id: string, formData: FormData) {
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;

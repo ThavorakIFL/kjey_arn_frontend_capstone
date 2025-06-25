@@ -62,6 +62,11 @@ interface ActivityClientProps {
         success: boolean;
         message: string;
     }>;
+    locationData: {
+        success: boolean;
+        message: string;
+        data: any[];
+    };
 }
 
 export default function ActivityClient({
@@ -73,7 +78,9 @@ export default function ActivityClient({
     cancelBorrowRequest,
     reportBorrowEvent,
     borrowEventData,
+    locationData,
 }: ActivityClientProps) {
+    console.log("Borrow Event Data:", borrowEventData);
     const { data: session } = useSession();
     const [isStartDate, setIsStartDate] = useState(false);
     const [isTimeToReturn, setisTimeToReturn] = useState(false);
@@ -307,6 +314,14 @@ export default function ActivityClient({
         );
     }
 
+    const hasReport = () => {
+        return borrowEventData.borrow_event_report !== null;
+    };
+
+    const bookDepositConfirmed = () => {
+        return borrowEventData.borrow_event_report?.status;
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
             <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-3 sm:py-4 md:py-6 lg:py-8">
@@ -504,6 +519,7 @@ export default function ActivityClient({
                             {getMeetupActionButton()}
                             {showSetReturnDetailButton() && (
                                 <ReturnDetailDialog
+                                    locationData={locationData}
                                     isSubmitting={isSubmitting}
                                     onSubmit={handleReturnSubmit}
                                 />
@@ -550,6 +566,7 @@ export default function ActivityClient({
                             {getMeetupActionButton()}
                             {showSetReturnDetailButton() && (
                                 <ReturnDetailDialog
+                                    locationData={locationData}
                                     isSubmitting={isSubmitting}
                                     onSubmit={handleReturnSubmit}
                                 />
@@ -569,7 +586,17 @@ export default function ActivityClient({
                                     }
                                 />
                             )}
-                            {showOwnerReceiveBookButton() && (
+                            {showOwnerReceiveBookButton() &&
+                                hasReport() &&
+                                bookDepositConfirmed() && (
+                                    <Button
+                                        className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                        onClick={handleReceiveBook}
+                                    >
+                                        Received Book
+                                    </Button>
+                                )}
+                            {showOwnerReceiveBookButton() && !hasReport() && (
                                 <Button
                                     className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
                                     onClick={handleReceiveBook}
@@ -580,9 +607,7 @@ export default function ActivityClient({
                         </div>
                     </div>
 
-                    {/* Extra Large Desktop Sidebar - Only for very large screens */}
                     <div className="hidden 2xl:block 2xl:col-span-3 space-y-3 sm:space-y-4 md:space-y-6">
-                        {/* Suggestion Detail */}
                         {borrowEventData.meet_up_detail.suggestions &&
                             showSuggestionDetail() && (
                                 <div className="w-full">
@@ -622,7 +647,6 @@ export default function ActivityClient({
                                 </div>
                             )}
 
-                        {/* Regular Meetup Detail */}
                         {!showSuggestionDetail() && !showReturnDetail() && (
                             <div className="w-full overflow-hidden">
                                 <MeetUpDetail

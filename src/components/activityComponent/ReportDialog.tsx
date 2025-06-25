@@ -50,13 +50,23 @@ export function ReportDialog({
 
     const reportMessage = useMemo(() => {
         return isBorrower
-            ? "Lender didn't show up."
+            ? "Lender didn't show up. "
             : "Borrower didn't show up.";
+    }, [isBorrower]);
+
+    const reportMessageForReturn = useMemo(() => {
+        return isBorrower
+            ? "Lender didn't show up. Borrower has reqeuest to deposit book in the library."
+            : "Borrower didn't show up. Lender has reequest book to be deposit in the library.";
     }, [isBorrower]);
 
     const handleReport = () => {
         if (isChecked) {
-            onReport(reason);
+            if (isTimeToReturn) {
+                onReport(reportMessageForReturn);
+            } else {
+                onReport(reason);
+            }
             setIsOpen(false);
             setReason("");
             setIsChecked(false);

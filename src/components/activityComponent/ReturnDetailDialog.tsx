@@ -9,15 +9,28 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { TimeSelector } from "../TimeSelector";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select";
 
 interface ReturnDetailDialogProps {
     onSubmit: (data: { return_time: string; return_location: string }) => void;
     isSubmitting: boolean;
+    locationData: {
+        success: boolean;
+        message: string;
+        data: any[];
+    };
 }
 
 export function ReturnDetailDialog({
     onSubmit,
     isSubmitting,
+    locationData,
 }: ReturnDetailDialogProps) {
     const [formData, setFormData] = useState({
         return_time: "08:00",
@@ -68,15 +81,36 @@ export function ReturnDetailDialog({
                         >
                             Return Location
                         </label>
-                        <input
-                            onChange={handleTextChange}
+                        <Select
                             value={formData.return_location}
-                            id="return_location"
-                            name="return_location"
-                            type="text"
-                            className="border border-gray-300 rounded-md p-2 w-full"
-                            placeholder="Enter location"
-                        />
+                            onValueChange={(value) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    return_location: value,
+                                }))
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select return location" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {locationData.success &&
+                                locationData.data?.length > 0 ? (
+                                    locationData.data.map((location) => (
+                                        <SelectItem
+                                            key={location.id}
+                                            value={location.location}
+                                        >
+                                            {location.location}
+                                        </SelectItem>
+                                    ))
+                                ) : (
+                                    <SelectItem value="" disabled>
+                                        No locations available
+                                    </SelectItem>
+                                )}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex justify-end space-x-4">
                         <Button

@@ -5,6 +5,7 @@ import { MeetUpDetail } from "./meet-up-detail";
 import { ReturnDetail } from "./return-detail";
 import { RejectReason } from "./reject-reason";
 import { CancelReason } from "./cancel-reason";
+import { BorrowEventReport } from "./borrow-event-report";
 
 export type BorrowEvent = {
     id: string;
@@ -20,4 +21,5 @@ export type BorrowEvent = {
     updated_at?: string;
     borrow_event_reject_reason?: RejectReason;
     borrow_event_cancel_reason?: CancelReason;
+    borrow_event_report?: BorrowEventReport;
 };
