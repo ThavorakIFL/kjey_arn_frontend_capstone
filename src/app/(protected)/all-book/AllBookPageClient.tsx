@@ -113,7 +113,7 @@ export default function AllBookClient() {
 
     return (
         <div>
-            <div className=" mx-auto px-4 py-8">
+            <div>
                 {/* Header Section */}
                 <div className="mb-8">
                     <div className="space-y-4">

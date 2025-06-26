@@ -222,7 +222,7 @@ export default function ActivityClient({
         if (!hasSuggestions && isBorrower) {
             return (
                 <Button
-                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                    className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
                     onClick={handleConfirmMeetUp}
                     variant={"default"}
                 >
@@ -243,7 +243,7 @@ export default function ActivityClient({
                 if (isLender) {
                     return (
                         <Button
-                            className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -256,7 +256,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -280,7 +280,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[180px] text-xs sm:text-sm"
+                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[180px] text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -319,17 +319,17 @@ export default function ActivityClient({
     };
 
     const bookDepositConfirmed = () => {
-        return borrowEventData.borrow_event_report?.status;
+        return borrowEventData.borrow_event_report?.status === 1;
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-3 sm:py-4 md:py-6 lg:py-8">
+        <div>
+            <div>
                 {/* Header */}
                 <div className="mb-4 sm:mb-6 lg:mb-8">
                     <TitleBar
                         title="Borrow Request Details"
-                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800"
+                        subTitle="View and Manage Your Borrowing Requests."
                     />
                 </div>
 
@@ -358,45 +358,58 @@ export default function ActivityClient({
                     </div>
 
                     {/* Main Content Area */}
-                    <div className="flex flex-col 2xl:col-span-7 space-y-3 sm:space-y-4 md:space-y-6">
+                    <div className="flex flex-col 2xl:col-span-7 space-y-3 sm:space-y-4 md:space-y-6 justify-between">
                         {/* Mobile/Tablet/Desktop Guide Message */}
-                        <div className="block 2xl:hidden mb-3 sm:mb-4 px-2 sm:px-4 md:px-2">
-                            <GuideMessage
-                                borrowEventData={borrowEventData}
-                                userSubId={session?.userSubId}
-                                isStartDate={isStartDate}
-                                isTimeToReturn={isTimeToReturn}
-                            />
-                        </div>
+                        <div>
+                            <div className="block 2xl:hidden mb-3 sm:mb-4 px-2 sm:px-4 md:px-2">
+                                <GuideMessage
+                                    borrowEventData={borrowEventData}
+                                    userSubId={session?.userSubId}
+                                    isStartDate={isStartDate}
+                                    isTimeToReturn={isTimeToReturn}
+                                />
+                            </div>
 
-                        {/* Borrow Activity Detail */}
-                        <div className="mb-3 sm:mb-4 md:mb-6">
-                            <BorrowActivityDetail
-                                bookAuthor={borrowEventData.book.author}
-                                bookTitle={borrowEventData.book.title}
-                                borrowStatus={
-                                    borrowEventData.borrow_status
-                                        .borrow_status_id
-                                }
-                                borrowerEmail={borrowEventData.borrower.email}
-                                borrowerName={borrowEventData.borrower.name}
-                                borrowerProfileImage={
-                                    borrowEventData.borrower.picture || ""
-                                }
-                                lenderProfileImage={
-                                    borrowEventData.lender.picture || ""
-                                }
-                                lenderEmail={borrowEventData.lender.email}
-                                lenderName={borrowEventData.lender.name}
-                                startDate={
-                                    borrowEventData.meet_up_detail.start_date
-                                }
-                                endDate={
-                                    borrowEventData.meet_up_detail.end_date
-                                }
-                            />
-                        </div>
+                            {/* Borrow Activity Detail */}
+                            <div className="mb-3 sm:mb-4 md:mb-6">
+                                <BorrowActivityDetail
+                                    bookAuthor={borrowEventData.book.author}
+                                    bookTitle={borrowEventData.book.title}
+                                    borrowStatus={
+                                        borrowEventData.borrow_status
+                                            .borrow_status_id
+                                    }
+                                    borrowerEmail={
+                                        borrowEventData.borrower.email
+                                    }
+                                    borrowerName={borrowEventData.borrower.name}
+                                    borrowerProfileImage={
+                                        borrowEventData.borrower.picture || ""
+                                    }
+                                    lenderProfileImage={
+                                        borrowEventData.lender.picture || ""
+                                    }
+                                    lenderEmail={borrowEventData.lender.email}
+                                    lenderName={borrowEventData.lender.name}
+                                    startDate={
+                                        borrowEventData.meet_up_detail
+                                            .start_date
+                                    }
+                                    endDate={
+                                        borrowEventData.meet_up_detail.end_date
+                                    }
+                                />
+                            </div>
 
+                            <div className="hidden 2xl:block">
+                                <GuideMessage
+                                    borrowEventData={borrowEventData}
+                                    userSubId={session?.userSubId}
+                                    isStartDate={isStartDate}
+                                    isTimeToReturn={isTimeToReturn}
+                                />
+                            </div>
+                        </div>
                         {/* Mobile/Tablet/Desktop: Meet Up Details - Full Width Below Request Details */}
                         <div className="2xl:hidden">
                             {/* Suggestion Detail */}
@@ -493,25 +506,20 @@ export default function ActivityClient({
                         </div>
 
                         {/* Extra Large Desktop Guide Message */}
-                        <div className="hidden 2xl:block">
-                            <GuideMessage
-                                borrowEventData={borrowEventData}
-                                userSubId={session?.userSubId}
-                                isStartDate={isStartDate}
-                                isTimeToReturn={isTimeToReturn}
-                            />
-                        </div>
 
                         {/* Mobile/Tablet/Desktop Action Buttons */}
                         <div className="2xl:hidden flex flex-wrap gap-2 justify-center sm:justify-start">
                             {showCancelButton() && (
-                                <CancelBorrowRequestDialog
-                                    onCancel={handleCancelRequest}
-                                    isLoading={isLoading}
-                                />
+                                <div className="w-full px-2">
+                                    <CancelBorrowRequestDialog
+                                        onCancel={handleCancelRequest}
+                                        isLoading={isLoading}
+                                    />
+                                </div>
                             )}
                             {canSuggestMeetUp() && (
                                 <SuggestMeetupDialog
+                                    locationData={locationData}
                                     onSuggest={handleSuggestSubmit}
                                     isSubmitting={isSubmitting}
                                 />
@@ -539,18 +547,20 @@ export default function ActivityClient({
                                     }
                                 />
                             )}
-                            {showOwnerReceiveBookButton() && (
-                                <Button
-                                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
-                                    onClick={handleReceiveBook}
-                                >
-                                    Received Book
-                                </Button>
-                            )}
+                            {showOwnerReceiveBookButton() &&
+                                hasReport() &&
+                                bookDepositConfirmed() && (
+                                    <Button
+                                        className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                        onClick={handleReceiveBook}
+                                    >
+                                        Received Book
+                                    </Button>
+                                )}
                         </div>
 
                         {/* Extra Large Desktop Action Buttons */}
-                        <div className="hidden 2xl:flex 2xl:flex-wrap 2xl:gap-2 3xl:gap-3 2xl:justify-end 2xl:items-center">
+                        <div className=" hidden 2xl:flex 2xl:gap-2 3xl:gap-3 2xl:justify-end 2xl:items-center">
                             {showCancelButton() && (
                                 <CancelBorrowRequestDialog
                                     onCancel={handleCancelRequest}
@@ -559,6 +569,7 @@ export default function ActivityClient({
                             )}
                             {canSuggestMeetUp() && (
                                 <SuggestMeetupDialog
+                                    locationData={locationData}
                                     onSuggest={handleSuggestSubmit}
                                     isSubmitting={isSubmitting}
                                 />

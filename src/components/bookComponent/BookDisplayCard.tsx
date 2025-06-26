@@ -9,10 +9,10 @@ export function BookDisplayCard({ bookImage }: BookDisplayCardProps) {
     return (
         <div className="w-full bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             {/* Header */}
-            <div className="bg-black text-white p-3 sm:p-4 lg:p-5">
+            <div className="bg-sidebarColor text-white p-3 sm:p-4 lg:p-5">
                 <div className="flex items-center gap-2 sm:gap-3">
                     <Book className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 flex-shrink-0" />
-                    <h2 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold truncate">
+                    <h2 className="text-sm sm:text-lg md:text-xl  font-semibold truncate">
                         Book Image
                     </h2>
                 </div>

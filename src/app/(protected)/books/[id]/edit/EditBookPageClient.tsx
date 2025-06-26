@@ -20,6 +20,7 @@ import {
     Image,
     GripVertical,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface EditBookPageClientProps {
     book: bookType;
@@ -264,11 +265,15 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
 
             const response = await updateBook(formData, String(book.id));
             if (!response.success) {
-                console.error("Update failed:", response.message);
-                alert("❌ " + response.message);
+                toast.error("Failed to update book: " + response.message);
             } else {
-                router.push("/books/" + book.id);
+                toast.success("Book updated successfully!");
+                setTimeout(() => {
+                    router.push("/books/" + book.id);
+                }, 1500);
             }
+        } catch (error) {
+            toast.error("An unexpected error occurred while updating the book");
         } finally {
             setIsSubmitting(false);
         }
@@ -304,7 +309,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="">
             {previewImage && (
                 <ImagePreviewModal
                     imageUrl={previewImage}
@@ -312,16 +317,13 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                 />
             )}
 
-            <div className="container mx-auto px-4 py-8">
+            <div>
                 <div className="mb-8">
                     <TitleBar
                         title="Edit Book"
-                        className="text-4xl font-bold text-gray-800"
+                        subTitle="Update your book information and manage images. Drag
+                        images to reorder them."
                     />
-                    <p className="text-gray-600 mt-2">
-                        Update your book information and manage images. Drag
-                        images to reorder them.
-                    </p>
                 </div>
 
                 <form
@@ -337,7 +339,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                         {/* Image Management Panel */}
                         <div className="xl:col-span-1">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="bg-black text-white p-6">
+                                <div className="bg-sidebarColor text-white p-6">
                                     <div className="flex items-center gap-3">
                                         <Image className="h-6 w-6" />
                                         <h2 className="text-xl font-semibold">
@@ -368,7 +370,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                                                     fileInputRef.current?.click()
                                                 }
                                                 type="button"
-                                                className="w-full cursor-pointer bg-black text-white border-0 h-12 text-sm font-medium duration-200"
+                                                className="w-full cursor-pointer bg-sidebarColor text-white border-0 h-12 text-sm font-medium duration-200"
                                                 disabled={
                                                     allImages.length >=
                                                     MAX_IMAGES
@@ -514,7 +516,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                         {/* Book Details Panel */}
                         <div className="xl:col-span-2">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="bg-black text-white p-6">
+                                <div className="bg-sidebarColor text-white p-6">
                                     <h2 className="text-2xl font-semibold">
                                         Book Information
                                     </h2>
@@ -590,7 +592,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                                                 {genres.map((genre) => (
                                                     <div
                                                         key={genre.id}
-                                                        className="flex items-center gap-2 bg-black text-white rounded-full px-4 py-2 text-sm font-medium"
+                                                        className="flex items-center gap-2 bg-sidebarColor text-white rounded-full px-4 py-2 text-sm font-medium"
                                                     >
                                                         <input
                                                             type="hidden"
@@ -662,7 +664,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                             variant="destructive"
                             onClick={handleDelete}
                             disabled={isDeleting || isSubmitting}
-                            className="w-full sm:w-auto flex items-center gap-2 bg-red-500 hover:bg-red-600"
+                            className=" cursor-pointer w-full sm:w-auto flex items-center gap-2 bg-red-500 hover:bg-red-600"
                         >
                             <Trash2 className="h-4 w-4" />
                             {isDeleting ? "Deleting..." : "Delete Book"}
@@ -674,14 +676,14 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({ book }) => {
                                 variant="outline"
                                 onClick={() => router.back()}
                                 disabled={isSubmitting || isDeleting}
-                                className="flex-1 sm:flex-none"
+                                className=" cursor-pointer flex-1 sm:flex-none"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={isSubmitting || isDeleting}
-                                className="flex-1 sm:flex-none bg-black text-white border-0 flex items-center gap-2"
+                                className="cursor-pointer flex-1 sm:flex-none bg-primaryBlue hover:bg-primaryBlue/90 text-white border-0 flex items-center gap-2"
                             >
                                 <Save className="h-4 w-4" />
                                 {isSubmitting ? "Saving..." : "Save Changes"}

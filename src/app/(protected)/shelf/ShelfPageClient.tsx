@@ -151,7 +151,7 @@ export default function ShelfPage({}) {
 
     return (
         <div className="">
-            <div className="container px-3 sm:px-4 lg:px-6 xl:px-4 py-4 sm:py-6 lg:py-8">
+            <div>
                 {/* Search and Filter Bar */}
                 <SearchAndFilterBar globalSearch={false} />
 

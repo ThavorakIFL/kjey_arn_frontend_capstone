@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { TimeSelector } from "../TimeSelector";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface SuggestMeetupDialogProps {
     onSuggest: (data: {
@@ -18,11 +25,17 @@ interface SuggestMeetupDialogProps {
         suggested_reason: string;
     }) => void;
     isSubmitting: boolean;
+    locationData: {
+        success: boolean;
+        message: string;
+        data: any[];
+    };
 }
 
 export function SuggestMeetupDialog({
     onSuggest,
     isSubmitting,
+    locationData,
 }: SuggestMeetupDialogProps) {
     const [formData, setFormData] = useState({
         suggested_time: "08:00",
@@ -39,6 +52,10 @@ export function SuggestMeetupDialog({
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleLocationChange = (value: string) => {
+        setFormData((prev) => ({ ...prev, suggested_location: value }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -73,15 +90,35 @@ export function SuggestMeetupDialog({
                                 <label htmlFor="suggested_location">
                                     Suggest Location
                                 </label>
-                                <input
-                                    onChange={handleTextChange}
+                                <Select
                                     value={formData.suggested_location}
-                                    id="suggested_location"
-                                    name="suggested_location"
-                                    type="text"
-                                    className="border border-gray-300 rounded-md p-2 w-full"
-                                    placeholder="Suggest location"
-                                />
+                                    onValueChange={handleLocationChange}
+                                >
+                                    <SelectTrigger className="w-full cursor-pointer">
+                                        <SelectValue placeholder="Suggest location" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {locationData.success &&
+                                        locationData.data?.length > 0 ? (
+                                            locationData.data.map(
+                                                (location) => (
+                                                    <SelectItem
+                                                        key={location.id}
+                                                        value={
+                                                            location.location
+                                                        }
+                                                    >
+                                                        {location.location}
+                                                    </SelectItem>
+                                                )
+                                            )
+                                        ) : (
+                                            <SelectItem value="" disabled>
+                                                No locations available
+                                            </SelectItem>
+                                        )}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="suggested_reason">

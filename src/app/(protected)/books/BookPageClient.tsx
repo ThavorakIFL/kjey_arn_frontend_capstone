@@ -66,7 +66,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     const router = useRouter();
     const handleBorrowBook = async () => {
         if (!startDate || !endDate) {
-            alert("Please select both start and end dates");
+            toast.error("Please select both start and end dates.");
             return;
         }
         try {
@@ -270,7 +270,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                             book.availability.availability_id === 1 && (
                                 <div className="flex justify-end">
                                     <Button
-                                        className="bg-gray-800 hover:bg-gray-900"
+                                        className="bg-primaryBlue hover:bg-primaryBlue/90 cursor-pointer"
                                         onClick={() =>
                                             router.push(
                                                 `/books/${book.id}/edit`

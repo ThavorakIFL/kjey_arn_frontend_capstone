@@ -209,18 +209,15 @@ export default function ActivityPageClient({
     };
 
     return (
-        <div className="">
-            <div className=" px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
+        <div>
+            <div>
                 {/* Header */}
                 <div className="mb-6 sm:mb-8">
-                    <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-6">
-                        {/* Title Section */}
-
+                    <div className=" ">
                         <TitleBar
                             subTitle="Track your borrowing and lending activities"
                             title="All Activities"
                         />
-
                         {/* Status Filter */}
                         <div className="flex justify-center sm:justify-end">
                             <DropdownMenu>
@@ -242,7 +239,7 @@ export default function ActivityPageClient({
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
-                                    className="w-56 sm:w-64"
+                                    className="w-56 sm:w-full"
                                     align="start"
                                     sideOffset={5}
                                 >

@@ -36,10 +36,10 @@ export function SuggestMeetUpDetail({
     const [isOpen, setIsOpen] = React.useState(false);
 
     return (
-        <div className="bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex-col flex">
+        <div className="mx-2 bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex-col flex">
             {/* Header */}
-            <div className="bg-black text-white p-3 sm:p-4">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-tight">
+            <div className="bg-sidebarColor text-white p-3 sm:p-5">
+                <h1 className="text-lg sm:text-xl  font-semibold leading-tight">
                     Suggested Meet Up Details
                 </h1>
             </div>

@@ -110,7 +110,7 @@ export default function BorrowRequestPageClient({
 
     return (
         <div className="">
-            <div className="container px-4 py-6 sm:py-8">
+            <div>
                 <TitleBar
                     title="Borrow Requests"
                     subTitle="  Manage requests from borrowers who want to borrow your books"

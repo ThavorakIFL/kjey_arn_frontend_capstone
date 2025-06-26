@@ -26,7 +26,7 @@ const TitleBar: React.FC<TitleBarProps> = ({
                 className
             )}
         >
-            <div className="flex flex-col justify-between h-full">
+            <div className="flex flex-col justify-between h-full space-y-2 sm:space-y-0">
                 <h1 className="  text-xl  sm:text-lg md:text-xl lg:text-2xl font-semibold text-gray-900 leading-tight   ">
                     {title}
                 </h1>

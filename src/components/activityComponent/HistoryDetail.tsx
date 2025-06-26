@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BorrowStatus from "@/components/borrowComponent/BorrowStatus";
+import { User } from "lucide-react";
 
 interface HistoryDetailProps {
     borrowStatus: number;
@@ -28,7 +29,7 @@ export default function HistoryDetail({
     return (
         <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
             {/* Header */}
-            <div className="bg-black text-white p-3 sm:p-4">
+            <div className="bg-sidebarColor text-white p-3 sm:p-5">
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">
                     Request Details
                 </h2>
@@ -38,7 +39,7 @@ export default function HistoryDetail({
             <div className="p-4 sm:p-6">
                 <div className="space-y-4 sm:space-y-6">
                     {/* Book Info and Status */}
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="flex  sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div className="min-w-0 flex-1">
                             <h3 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">
                                 {bookTitle}
@@ -56,9 +57,10 @@ export default function HistoryDetail({
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
                         {/* Borrower */}
                         <div className="space-y-3 flex-1">
-                            <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                            <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
+                                <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                 Borrower
-                            </h1>
+                            </h4>
                             <div className="flex items-center space-x-3 sm:space-x-4">
                                 <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
                                     <AvatarImage
@@ -84,9 +86,10 @@ export default function HistoryDetail({
 
                         {/* Lender */}
                         <div className="space-y-3 flex-1">
-                            <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                            <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
+                                <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                 Lender
-                            </h1>
+                            </h4>
                             <div className="flex items-center space-x-3 sm:space-x-4">
                                 <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
                                     <AvatarImage

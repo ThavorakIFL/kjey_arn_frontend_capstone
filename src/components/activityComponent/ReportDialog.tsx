@@ -105,7 +105,7 @@ export function ReportDialog({
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full sm:w-auto">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <Button

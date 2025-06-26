@@ -382,7 +382,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 </div>
             )}
 
-            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-4 xl:py-8 ">
+            <div>
                 <div className="mb-8">
                     <TitleBar
                         title="List a New Book"
@@ -698,7 +698,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full sm:w-auto bg-black text-white border-0 flex items-center gap-2 px-8"
+                            className="w-full sm:w-auto bg-primaryBlue text-white border-0 flex items-center gap-2 px-8"
                         >
                             <Save className="h-4 w-4" />
                             {isSubmitting ? "Listing Book..." : "List Book"}

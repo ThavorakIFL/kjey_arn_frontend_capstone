@@ -44,7 +44,7 @@ export default function BorrowActivityDetail({
         <div className="w-full max-w-4xl mx-auto space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6 px-2 sm:px-4 lg:px-0">
             {/* Book Information */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div className="bg-black text-white p-2 sm:p-3 lg:p-4 xl:p-6">
+                <div className="bg-sidebarColor text-white p-2 sm:p-3 lg:p-5">
                     <h2 className="text-sm sm:text-base lg:text-lg xl:text-xl font-semibold">
                         Request Details
                     </h2>
@@ -52,8 +52,8 @@ export default function BorrowActivityDetail({
                 <div className="p-2 sm:p-3 lg:p-4 xl:p-6">
                     <div className="space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6">
                         {/* Title and Status */}
-                        <div className="flex flex-col gap-2 sm:gap-3">
-                            <div className="flex flex-col xs:flex-row xs:items-start xs:justify-between gap-2 sm:gap-3">
+                        <div className=" gap-2 sm:gap-3">
+                            <div className="flex  xs:items-start xs:justify-between gap-2 sm:gap-3">
                                 <div className="min-w-0 flex-1">
                                     <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-800 leading-tight">
                                         {bookTitle}

@@ -31,7 +31,7 @@ export default function OtherUserProfilePage({
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <div>
                 <div className="flex items-center justify-center min-h-screen px-4">
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -45,8 +45,8 @@ export default function OtherUserProfilePage({
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+        <div>
+            <div>
                 <div className="flex flex-col space-y-6 sm:space-y-8">
                     {/* Profile Card */}
                     <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
@@ -101,18 +101,17 @@ export default function OtherUserProfilePage({
                         <div className="mb-4 sm:mb-6">
                             <TitleBar
                                 title={`${userData.name}'s Shelf`}
-                                className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800"
+                                subTitle={`                Explore ${
+                                    userData.name?.split(" ")[0]
+                                }'s book
+                                collection`}
                             />
-                            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-                                Explore {userData.name?.split(" ")[0]}'s book
-                                collection
-                            </p>
                         </div>
 
                         {/* Books Grid */}
                         {otherUserBookData.length > 0 ? (
-                            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="p-4 sm:p-6 lg:p-8">
+                            <div>
+                                <div>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                                         {otherUserBookData.map((book) => (
                                             <Book key={book.id} book={book} />

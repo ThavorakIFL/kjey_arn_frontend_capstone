@@ -153,7 +153,7 @@ export function BorrowRequestAction({
                                 value={selectedTime}
                                 onValueChange={setSelectedTime}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full cursor-pointer">
                                     <SelectValue placeholder="Select meeting time (8:00 AM - 5:00 PM)" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -183,7 +183,7 @@ export function BorrowRequestAction({
                                     }))
                                 }
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="w-full cursor-pointer">
                                     <SelectValue placeholder="Select meeting location" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -218,18 +218,18 @@ export function BorrowRequestAction({
                             </div>
                         )}
                     </div>
-                    <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-3 ">
                         <Button
                             onClick={() => setShowAcceptDialog(false)}
                             variant="outline"
-                            className="w-full sm:w-auto text-sm sm:text-base"
+                            className="w-full sm:w-auto text-sm sm:text-base cursor-pointer"
                             disabled={isSubmitting}
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={handleAccept}
-                            className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-sm sm:text-base"
+                            className="w-full sm:w-auto bg-primaryBlue hover:bg-primaryBlue/90 text-sm sm:text-base cursor-pointer"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Processing..." : "Confirm Accept"}

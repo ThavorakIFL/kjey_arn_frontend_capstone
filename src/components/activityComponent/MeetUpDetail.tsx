@@ -51,14 +51,14 @@ export function MeetUpDetail({
     const wrapperClasses =
         variant === "sidebar"
             ? "w-full"
-            : "w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-0";
+            : "w-full max-w-2xl mx-auto px-2 sm:px-6 lg:px-0";
 
     return (
         <div className={wrapperClasses}>
             <div className="bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex flex-col">
                 {/* Header */}
-                <div className="bg-black text-white p-3 sm:p-4 lg:p-5">
-                    <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold">
+                <div className="bg-sidebarColor text-white p-3 sm:p-4 lg:p-5">
+                    <h1 className="text-sm sm:text-lg md:text-xl  font-semibold">
                         Meet Up Details
                     </h1>
                 </div>

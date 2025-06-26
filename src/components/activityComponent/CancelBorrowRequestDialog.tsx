@@ -31,7 +31,7 @@ export function CancelBorrowRequestDialog({
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button
-                    className="h-12 w-full lg:w-40  cursor-pointer"
+                    className=" h-12 w-full lg:w-40  cursor-pointer"
                     variant="destructive"
                 >
                     Cancel Borrowing
@@ -47,12 +47,6 @@ export function CancelBorrowRequestDialog({
                         request.
                     </DialogDescription>
                     <div className="w-full">
-                        <label
-                            htmlFor="reason"
-                            className="text-muted-foreground block text-sm  mb-2"
-                        >
-                            Reason For Cancelation
-                        </label>
                         <input
                             className="w-full h-10 p-4 rounded-lg"
                             onChange={(e) => setReason(e.target.value)}

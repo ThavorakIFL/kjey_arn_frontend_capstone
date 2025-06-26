@@ -45,7 +45,7 @@ export default function HistoryPageClient({
 
     return (
         <div>
-            <div className="container px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
+            <div className="">
                 {/* Header Section */}
                 <div className="mb-6 sm:mb-8">
                     <TitleBar
@@ -117,7 +117,7 @@ export default function HistoryPageClient({
                         historyBorrowEventData.length > 0 && (
                             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
                                 {/* Header */}
-                                <div className="bg-black text-white p-4 sm:p-6 space-y-3 sm:space-y-4">
+                                <div className="bg-sidebarColor text-white p-4 sm:p-6 space-y-3 sm:space-y-4">
                                     <div className="flex items-center gap-2 sm:gap-3">
                                         <History className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
                                         <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">

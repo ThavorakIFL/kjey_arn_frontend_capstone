@@ -52,7 +52,7 @@ export default function BorrowRequestIdPageClient({
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="flex items-center justify-center ">
                 <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500"></div>
             </div>
         );
@@ -109,13 +109,13 @@ export default function BorrowRequestIdPageClient({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div>
+            <div className="">
                 {/* Header Section */}
-                <div className="mb-6 sm:mb-8">
+                <div className="mb-4 sm:mb-8">
                     <TitleBar
                         title="Borrow Request Details"
-                        className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
+                        subTitle="View and manage the details of this borrow request"
                     />
                 </div>
 

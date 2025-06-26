@@ -1,6 +1,8 @@
 import React from "react";
 import { Icon } from "@iconify/react";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
+import formatTimeString from "@/utils/TimeConverter";
+import formatDateString from "@/utils/DateFormatConverter";
 
 interface GuideMessageProps {
     borrowEventData: BorrowEventType;
@@ -16,6 +18,7 @@ export function GuideMessage({
     isTimeToReturn,
 }: GuideMessageProps) {
     const getGuideMessage = (): string => {
+        console.log("Checking the borrow event data", borrowEventData);
         const isBorrower = userSubId === borrowEventData.borrower.sub;
         const isLender = userSubId === borrowEventData.lender.sub;
         const borrowStatus = borrowEventData.borrow_status.borrow_status_id;
@@ -26,6 +29,8 @@ export function GuideMessage({
         const hasActiveSuggestions =
             suggestions.length > 0 &&
             suggestions[0].suggestion_status?.[0].suggestion_status_id === 1;
+
+        const hasReport = borrowEventData.borrow_event_report;
 
         // Borrow request pending approval
         if (borrowStatus === 1) {
@@ -83,7 +88,9 @@ export function GuideMessage({
 
         // Meetup confirmed, waiting for start date
         if (borrowStatus === 2 && meetupStatus === 2 && !isStartDate) {
-            return `Meetup confirmed! The borrowing period starts on ${borrowEventData.meet_up_detail.start_date}.`;
+            return `Meetup confirmed! The borrowing period starts on 
+            
+            ${formatDateString(borrowEventData.meet_up_detail.start_date)}.`;
         }
 
         // Borrowing period active
@@ -101,7 +108,11 @@ export function GuideMessage({
 
         // Return details set, waiting for return time
         if (borrowEventData.return_detail && !isTimeToReturn) {
-            return `Return details confirmed. Book should be returned on ${borrowEventData.return_detail.return_date} at ${borrowEventData.return_detail.return_time}.`;
+            return `Return details confirmed. Book should be returned on ${formatDateString(
+                borrowEventData.return_detail.return_date
+            )} at ${formatTimeString(
+                borrowEventData.return_detail.return_time
+            )}.`;
         }
 
         // Time to return
@@ -131,6 +142,49 @@ export function GuideMessage({
             return "This borrow event has been reported and is under review.";
         }
 
+        if (hasReport) {
+            const report = borrowEventData.borrow_event_report;
+            const reportedByBorrower =
+                report?.reported_by?.toString() ===
+                borrowEventData.borrower.id?.toString();
+            const reportedByLender =
+                report?.reported_by?.toString() ===
+                borrowEventData.lender.id?.toString();
+            const status = report!.status;
+
+            if (reportedByBorrower && status === 0) {
+                if (isBorrower) {
+                    return "You have requested to deposit the book, please wait for admin to confirm the deposit.";
+                } else {
+                    return "Borrower has requested to deposit book, please wait for admin to confirm the deposit.";
+                }
+            }
+
+            if (reportedByBorrower && status === 1) {
+                if (isBorrower) {
+                    return "The book has been deposited, please wait for the lender to collect it.";
+                } else {
+                    return "The book has been deposited, please come and take it in the library.";
+                }
+            }
+
+            if (reportedByLender && status === 0) {
+                if (isBorrower) {
+                    return "You missed the return date. Please deposit the book in the library and notify the librarian to confirm.";
+                } else {
+                    return "You reported the missed return. Waiting for borrower to deposit the book.";
+                }
+            }
+
+            if (reportedByLender && status === 1) {
+                if (isBorrower) {
+                    return "The book has been deposited. The lender will collect it.";
+                } else {
+                    return "The book has been deposited, please come and collect it from the library.";
+                }
+            }
+        }
+
         // Default fallback
         return "Please follow the instructions and available actions to proceed.";
     };
@@ -145,9 +199,9 @@ export function GuideMessage({
     };
 
     return (
-        <div className="min-h-12 rounded-lg bg-white border-black border-2 flex flex-col sm:flex-row overflow-hidden shadow-sm">
+        <div className="min-h-12 rounded-lg bg-white border-sidebarColor border-2 flex flex-col sm:flex-row overflow-hidden shadow-sm">
             {/* Header Section */}
-            <div className="bg-black font-medium text-white px-3 sm:px-4 py-2 sm:py-0 flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 flex-shrink-0">
+            <div className="bg-sidebarColor font-medium text-white px-3 sm:px-4 py-2 sm:py-0 flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 flex-shrink-0">
                 <Icon
                     className={`h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 ${getIconColor()} flex-shrink-0`}
                     icon="lucide:lightbulb"

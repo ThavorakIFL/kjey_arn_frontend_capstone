@@ -1,6 +1,7 @@
 "use client";
 import HistoryDetail from "@/components/activityComponent/HistoryDetail";
 import { BookDisplayCard } from "@/components/bookComponent/BookDisplayCard";
+import TitleBar from "@/components/TitleBar";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
 import { useEffect, useState } from "react";
 
@@ -40,15 +41,13 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div>
+            <div className="">
                 {/* Header */}
-                <div className="mb-6 sm:mb-8">
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 text-center sm:text-left">
-                        Borrow History Details
-                    </h1>
-                </div>
-
+                <TitleBar
+                    title="History Details"
+                    subTitle="View detailed information about this borrowing activity"
+                />
                 {/* Main Content Layout */}
                 <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-6 xl:gap-8">
                     {/* Mobile/Tablet: Book Image */}
@@ -94,8 +93,8 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                         <div className="lg:col-span-3">
                             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
                                 {/* Header */}
-                                <div className="bg-black text-white p-3 sm:p-4">
-                                    <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-tight">
+                                <div className="bg-sidebarColor text-white p-3 sm:p-5">
+                                    <h2 className="text-lg sm:text-xl font-semibold leading-tight">
                                         Reason for{" "}
                                         {borrowEventData.borrow_status
                                             .borrow_status_id === 3
