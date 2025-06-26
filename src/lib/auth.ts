@@ -69,8 +69,9 @@ export const authOptions: NextAuthOptions = {
                         user.image = `http://127.0.0.1:8000/${data.user.picture}`;
                     }
                     return true;
+                } 
+                return false;	
                 }
-                return false;
             } catch (error) {
                 console.error("Error posting user data:", error);
                 return false;
