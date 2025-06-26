@@ -210,17 +210,16 @@ export default function ActivityPageClient({
 
     return (
         <div className="">
-            <div className="container mx-auto px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
+            <div className=" px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
                 {/* Header */}
                 <div className="mb-6 sm:mb-8">
                     <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-6">
                         {/* Title Section */}
-                        <div className="text-center sm:text-left">
-                            <TitleBar
-                                subTitle="    Track your borrowing and lending activities"
-                                title="All Activities"
-                            />
-                        </div>
+
+                        <TitleBar
+                            subTitle="Track your borrowing and lending activities"
+                            title="All Activities"
+                        />
 
                         {/* Status Filter */}
                         <div className="flex justify-center sm:justify-end">

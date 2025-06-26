@@ -11,6 +11,13 @@ interface HistoryClientProps {
 export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
     const [loading, setLoading] = useState(true);
 
+    const hasCancelorReject = () => {
+        return (
+            borrowEventData.borrow_event_cancel_reason ||
+            borrowEventData.borrow_event_reject_reason
+        );
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
@@ -83,72 +90,76 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                         />
                     </div>
 
-                    {/* Reason Card */}
-                    <div className="lg:col-span-3">
-                        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                            {/* Header */}
-                            <div className="bg-black text-white p-3 sm:p-4">
-                                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-tight">
-                                    Reason for{" "}
-                                    {borrowEventData.borrow_status
-                                        .borrow_status_id === 3
-                                        ? "rejection"
-                                        : "cancellation"}
-                                </h2>
-                            </div>
-
-                            {/* Content */}
-                            {(borrowEventData.borrow_event_reject_reason ||
-                                borrowEventData.borrow_event_cancel_reason) && (
-                                <div className="p-3 sm:p-4">
-                                    <div className="text-sm sm:text-base text-gray-800 leading-relaxed">
+                    {hasCancelorReject() && (
+                        <div className="lg:col-span-3">
+                            <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
+                                {/* Header */}
+                                <div className="bg-black text-white p-3 sm:p-4">
+                                    <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold leading-tight">
+                                        Reason for{" "}
                                         {borrowEventData.borrow_status
-                                            .borrow_status_id === 3 ? (
-                                            borrowEventData.borrow_event_reject_reason ? (
+                                            .borrow_status_id === 3
+                                            ? "rejection"
+                                            : "cancellation"}
+                                    </h2>
+                                </div>
+
+                                {/* Content */}
+                                {(borrowEventData.borrow_event_reject_reason ||
+                                    borrowEventData.borrow_event_cancel_reason) && (
+                                    <div className="p-3 sm:p-4">
+                                        <div className="text-sm sm:text-base text-gray-800 leading-relaxed">
+                                            {borrowEventData.borrow_status
+                                                .borrow_status_id === 3 ? (
+                                                borrowEventData.borrow_event_reject_reason ? (
+                                                    <p className="break-words">
+                                                        {
+                                                            borrowEventData
+                                                                .borrow_event_reject_reason
+                                                                .reason
+                                                        }
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-gray-500 italic">
+                                                        No rejection reason
+                                                        provided
+                                                    </p>
+                                                )
+                                            ) : borrowEventData.borrow_event_cancel_reason ? (
                                                 <p className="break-words">
                                                     {
                                                         borrowEventData
-                                                            .borrow_event_reject_reason
+                                                            .borrow_event_cancel_reason
                                                             .reason
                                                     }
                                                 </p>
                                             ) : (
                                                 <p className="text-gray-500 italic">
-                                                    No rejection reason provided
+                                                    No cancellation reason
+                                                    provided
                                                 </p>
-                                            )
-                                        ) : borrowEventData.borrow_event_cancel_reason ? (
-                                            <p className="break-words">
-                                                {
-                                                    borrowEventData
-                                                        .borrow_event_cancel_reason
-                                                        .reason
-                                                }
-                                            </p>
-                                        ) : (
-                                            <p className="text-gray-500 italic">
-                                                No cancellation reason provided
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* No Reason State */}
-                            {!borrowEventData.borrow_event_reject_reason &&
-                                !borrowEventData.borrow_event_cancel_reason && (
-                                    <div className="p-3 sm:p-4">
-                                        <p className="text-sm sm:text-base text-gray-500 italic">
-                                            No reason provided for this{" "}
-                                            {borrowEventData.borrow_status
-                                                .borrow_status_id === 3
-                                                ? "rejection"
-                                                : "cancellation"}
-                                        </p>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
+
+                                {/* No Reason State */}
+                                {!borrowEventData.borrow_event_reject_reason &&
+                                    !borrowEventData.borrow_event_cancel_reason && (
+                                        <div className="p-3 sm:p-4">
+                                            <p className="text-sm sm:text-base text-gray-500 italic">
+                                                No reason provided for this{" "}
+                                                {borrowEventData.borrow_status
+                                                    .borrow_status_id === 3
+                                                    ? "rejection"
+                                                    : "cancellation"}
+                                            </p>
+                                        </div>
+                                    )}
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    {/* Reason Card */}
                 </div>
             </div>
         </div>
