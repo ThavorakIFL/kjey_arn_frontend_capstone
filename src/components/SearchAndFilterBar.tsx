@@ -140,20 +140,96 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         placeholder="Search books, authors..."
                     />
 
-                    {/* Mobile: Inline Type Selector */}
                     {globalSearch && (
-                        <div className="flex items-center space-x-2 sm:space-x-3">
-                            <Separator orientation="vertical" className="h-6" />
+                        <div className="flex items-center space-x-3 sm:space-x-4">
+                            <Separator
+                                orientation="vertical"
+                                className="h-8 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-200 w-px"
+                            />
+
                             <Select value={type} onValueChange={setType}>
-                                <SelectTrigger className="w-24 sm:w-24 border-0 shadow-none text-xs sm:text-sm min-w-fit">
-                                    <SelectValue placeholder="Book" />
+                                <SelectTrigger
+                                    className="
+                                    cursor-pointer
+              w-32 sm:w-36 
+              border border-slate-200/80 
+              shadow-sm 
+              hover:shadow-md 
+              hover:border-slate-300
+              focus:border-slate-400
+              focus:ring-2 
+              focus:ring-slate-100
+              text-sm 
+              font-medium
+              bg-white
+              transition-all 
+              duration-200 
+              ease-in-out
+              rounded-lg
+              px-3 
+              py-2.5
+              text-slate-700
+              hover:bg-slate-50/50
+            "
+                                >
+                                    <SelectValue
+                                        placeholder="Select type"
+                                        className="text-slate-600"
+                                    />
                                 </SelectTrigger>
-                                <SelectContent>
+
+                                <SelectContent
+                                    className="
+              border 
+              border-slate-200/80 
+              shadow-xl 
+              rounded-lg 
+              bg-white 
+              backdrop-blur-sm
+              animate-in 
+              fade-in-0 
+              zoom-in-95
+            "
+                                >
                                     <SelectGroup>
-                                        <SelectItem value="book">
+                                        <SelectItem
+                                            value="book"
+                                            className="
+                    text-sm 
+                    font-medium 
+                    text-slate-700 
+                    hover:bg-slate-50 
+                    hover:text-slate-900
+                    focus:bg-slate-100
+                    cursor-pointer
+                    transition-colors
+                    duration-150
+                    px-3
+                    py-2
+                    rounded-md
+                    mx-1
+                  "
+                                        >
                                             Book
                                         </SelectItem>
-                                        <SelectItem value="reader">
+                                        <SelectItem
+                                            value="reader"
+                                            className="
+                    text-sm 
+                    font-medium 
+                    text-slate-700 
+                    hover:bg-slate-50 
+                    hover:text-slate-900
+                    focus:bg-slate-100
+                    cursor-pointer
+                    transition-colors
+                    duration-150
+                    px-3
+                    py-2
+                    rounded-md
+                    mx-1
+                  "
+                                        >
                                             Reader
                                         </SelectItem>
                                     </SelectGroup>
@@ -163,15 +239,14 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     )}
                 </div>
 
-                {/* Filter Button */}
-                {/* Book type */}
                 {type === "book" && (
                     <div className="flex gap-2">
                         <Button
                             className="
+                            cursor-pointer
                 flex-1 sm:flex-none sm:min-w-[140px] 
-                !h-12 sm:!h-14  // Added ! prefix
-                bg-gray-800 hover:bg-gray-700 
+                !h-12 sm:!h-14  bg-sidebarColor 
+                
                 text-xs sm:text-sm
                 px-3 sm:px-4
                 gap-2
@@ -194,9 +269,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         <Button
                             onClick={handleSearch}
                             className="
+                            cursor-pointer
                 sm:hidden flex-shrink-0
-                !h-12 !w-12  // Added ! prefix
-                bg-blue-600 hover:bg-blue-700
+                !h-12 !w-12  
+               bg-primaryBlue hover:bg-primaryBlue/90
                 p-0
             "
                         >
@@ -210,21 +286,24 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     <Button
                         onClick={handleSearch}
                         className="
-            cursor-pointer
-            flex-1 sm:flex-none sm:min-w-[140px]
-             sm:!h-14  // Changed from h-20 to !h-12, added ! prefix
-            bg-black hover:bg-black/60
+                        cursor-pointer
+            flex-1  sm:min-w-[140px]
+              h-12 sm:h-14 
+            bg-primaryBlue
+            hover:bg-primaryBlue/90 
             text-xs sm:text-sm
             px-4
         "
                     >
                         <span className="hidden sm:inline">Search</span>
-                        <Icon
-                            icon="lucide:search"
-                            width="18"
-                            height="18"
-                            className="sm:hidden"
-                        />
+                        <div className="sm:hidden h-8 flex items-center space-x-4">
+                            <Icon
+                                icon="lucide:search"
+                                width="18"
+                                height="18"
+                                className=" "
+                            />
+                        </div>
                     </Button>
                 )}
 
@@ -282,23 +361,22 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                         onClick={() => handleClearAllGenres()}
                                         type="button"
                                         size="sm"
-                                        className="text-xs sm:text-sm"
+                                        className="text-xs sm:text-sm cursor-pointer"
                                     >
                                         Clear All
                                     </Button>
-                                    <div className="flex gap-2">
-                                        <Button
-                                            onClick={() => {
-                                                handleSearch();
-                                                setShowGenreFilter(false);
-                                            }}
-                                            type="button"
-                                            size="sm"
-                                            className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm"
-                                        >
-                                            Apply Filters
-                                        </Button>
-                                    </div>
+
+                                    <Button
+                                        onClick={() => {
+                                            handleSearch();
+                                            setShowGenreFilter(false);
+                                        }}
+                                        type="button"
+                                        size="sm"
+                                        className="bg-primaryBlue hover:bg-primaryBlue/90 cursor-pointer text-xs sm:text-sm"
+                                    >
+                                        Apply Filters
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -316,6 +394,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         <div
                             key={genre}
                             className="
+                       
                                 bg-blue-100 text-blue-800 
                                 rounded-full 
                                 px-2 sm:px-3 py-1 
@@ -327,7 +406,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                             <span className="truncate">{genre}</span>
                             <button
                                 onClick={() => toggleGenre(genre)}
-                                className="hover:bg-blue-200 rounded-full p-0.5 ml-1"
+                                className="hover:bg-blue-200 rounded-full p-0.5 ml-1      cursor-pointer"
                             >
                                 <Icon icon="lucide:x" width="12" height="12" />
                             </button>

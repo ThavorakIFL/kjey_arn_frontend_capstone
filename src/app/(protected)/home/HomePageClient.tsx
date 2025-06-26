@@ -33,7 +33,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
 
     return (
         <>
-            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+            <div className=" px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-4 lg:py-8">
                 <SearchAndFilterBar globalSearch={true} />
                 {!error && books.length > 0 && (
                     <>
@@ -43,6 +43,7 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
                             }}
                             actionTitle="See All Book"
                             title="Newly Added Books"
+                            subTitle="Explore the latest additions to our collection"
                         />
                         <div className="my-4 sm:my-6 relative py-2">
                             {books.length === 0 && (

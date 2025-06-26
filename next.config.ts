@@ -35,6 +35,12 @@ const nextConfig: NextConfig = {
                 port: "8000", // this should match exactly
                 pathname: "/storage/**",
             },
+            {
+                protocol: "https",
+                hostname: "api-kjeyarn.paragoniu.app",
+                port: "", // this should match exactly
+                pathname: "/**",
+            },
         ],
     },
 

@@ -5,12 +5,23 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Providers } from "../provider";
 import "../globals.css";
+import kjeyarnlogo from "@/assets/kjeyarnlogo.png";
 import NavSideBar from "@/components/NavSideBar";
 import {
     checkBorrowEvent,
     checkUnconfirmedMeetups,
     checkUnacceptedBorrowRequests,
 } from "@/app/(protected)/home/homepage-action"; // Import here
+
+export const metadata = {
+    title: {
+        template: "%s - Kjey Arn",
+        default: "Kjey Arn",
+    },
+    icons: {
+        icon: "/kjeyarnlogo.png",
+    },
+};
 
 export default async function ProtectedLayout({
     children,

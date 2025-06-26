@@ -6,6 +6,7 @@
 /* @custom-variant dark (&:is(.dark *)); */
 
 @theme {
+    --color-primaryBlue: #667eea;
     --color-sideColor: #767294;
     --color-backgroundColor: #f1f5f9;
     --color-sidebarColor: #383740;
@@ -32,10 +33,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-}
-
-body {
-    @apply bg-gradient-to-br from-slate-50 to-blue-50;
 }
 
 /* Add these animations to your existing globals.css file */

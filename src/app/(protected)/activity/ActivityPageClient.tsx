@@ -154,7 +154,7 @@ export default function ActivityPageClient({
         return (
             <div className="space-y-4 sm:space-y-6">
                 <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                    <div className="bg-black text-white p-3 sm:p-4 lg:p-6">
+                    <div className="bg-sidebarColor text-white p-3 sm:p-4 lg:p-6">
                         <div className="flex items-center gap-2 sm:gap-3">
                             <div className="flex-shrink-0">
                                 {React.cloneElement(
@@ -165,7 +165,7 @@ export default function ActivityPageClient({
                                 )}
                             </div>
                             <div className="min-w-0 flex-1">
-                                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold truncate">
+                                <h2 className="text-lg sm:text-xl  font-semibold truncate">
                                     {title}
                                 </h2>
                                 <p className="text-gray-300 text-xs sm:text-sm mt-1">
@@ -209,24 +209,21 @@ export default function ActivityPageClient({
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="">
+            <div className="container mx-auto px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
                 {/* Header */}
                 <div className="mb-6 sm:mb-8">
                     <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-6">
                         {/* Title Section */}
                         <div className="text-center sm:text-left">
                             <TitleBar
+                                subTitle="    Track your borrowing and lending activities"
                                 title="All Activities"
-                                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
                             />
-                            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-                                Track your borrowing and lending activities
-                            </p>
                         </div>
 
                         {/* Status Filter */}
-                        <div className="flex justify-center sm:justify-start">
+                        <div className="flex justify-center sm:justify-end">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -312,11 +309,11 @@ export default function ActivityPageClient({
                         {/* Pending Request View */}
                         {status === "Pending Request" && (
                             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                                <div className="bg-black text-white p-4 sm:p-6">
+                                <div className="bg-sidebarColor text-white p-4 sm:p-6">
                                     <div className="flex items-center gap-2 sm:gap-3">
                                         <Activity className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
                                         <div className="min-w-0 flex-1">
-                                            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">
+                                            <h2 className="text-lg sm:text-xl  font-semibold">
                                                 Pending Requests
                                             </h2>
                                             <p className="text-gray-300 text-xs sm:text-sm mt-1">

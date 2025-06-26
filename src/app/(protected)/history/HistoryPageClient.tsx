@@ -44,18 +44,15 @@ export default function HistoryPageClient({
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div>
+            <div className="container px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
                 {/* Header Section */}
                 <div className="mb-6 sm:mb-8">
                     <div className="text-center sm:text-left mb-6">
                         <TitleBar
                             title="All History"
-                            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
+                            subTitle=" View all your past borrowing activities"
                         />
-                        <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-                            View all your past borrowing activities
-                        </p>
                     </div>
 
                     {/* Loading State */}
@@ -87,10 +84,10 @@ export default function HistoryPageClient({
                         !error &&
                         historyBorrowEventData.length === 0 && (
                             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                                <div className="flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20 text-center px-4 sm:px-6">
-                                    <div className="text-gray-400 mb-4 sm:mb-6">
+                                <div className="flex flex-col items-center justify-center py-12  text-center px-4 sm:px-6">
+                                    <div className="text-gray-400 mb-4 sm:mb-6 bg-gray-100 rounded-full h-24 w-24  flex items-center justify-between">
                                         <svg
-                                            className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto"
+                                            className="w-12 h-12 sm:w-16 sm:h-16 lg:w-14 lg:h-14 mx-auto"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -103,7 +100,7 @@ export default function HistoryPageClient({
                                             />
                                         </svg>
                                     </div>
-                                    <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 mb-2 sm:mb-3">
+                                    <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 sm:mb-3">
                                         No borrowing history yet
                                     </h3>
                                     <p className="text-sm sm:text-base text-gray-600 max-w-sm sm:max-w-md lg:max-w-lg leading-relaxed">

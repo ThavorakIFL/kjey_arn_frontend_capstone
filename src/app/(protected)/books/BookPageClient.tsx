@@ -66,7 +66,6 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     const router = useRouter();
     const handleBorrowBook = async () => {
         if (!startDate || !endDate) {
-            console.error("Please select both start and end dates");
             alert("Please select both start and end dates");
             return;
         }
@@ -121,7 +120,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="">
             <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
                 {/* Mobile Layout */}
                 <div className="lg:hidden space-y-6">
@@ -140,7 +139,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                     </div>
 
                     {/* Thumbnail Carousel */}
-                    <div className="bg-white rounded-lg shadow-lg p-4">
+                    <div className=" p-4 mx-8">
                         <Carousel className="w-full">
                             <CarouselContent>
                                 {book.pictures?.map((pictureObject, index) => (
@@ -290,11 +289,11 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                 </div>
 
                 {/* Desktop Layout */}
-                <div className="hidden lg:flex gap-6">
+                <div className="hidden lg:flex gap-6 my-8">
                     {/* Thumbnail Carousel */}
                     <div className="w-24">
                         <Carousel orientation="vertical" className="w-full">
-                            <CarouselContent className="h-[60vh]">
+                            <CarouselContent className="h-[50vh]">
                                 {book.pictures?.map((pictureObject, index) => (
                                     <CarouselItem
                                         key={index}

@@ -109,19 +109,13 @@ export default function BorrowRequestPageClient({
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-                {/* Header */}
-                <div className="mb-6 sm:mb-8">
-                    <TitleBar
-                        title="Borrow Requests"
-                        className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
-                    />
-                    <p className="text-sm sm:text-base text-gray-600 mt-2">
-                        Manage requests from borrowers who want to borrow your
-                        books
-                    </p>
-                </div>
+        <div className="">
+            <div className="container px-4 py-6 sm:py-8">
+                <TitleBar
+                    title="Borrow Requests"
+                    subTitle="  Manage requests from borrowers who want to borrow your books"
+                />
+
                 {/* Content */}
                 {filteredData.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
@@ -283,14 +277,6 @@ export default function BorrowRequestPageClient({
                                     ? "You haven't received any borrow requests yet. Share your books to start receiving requests!"
                                     : "Try adjusting your search terms or filters to find what you're looking for."}
                             </p>
-                            {userBorrowRequestData.length === 0 && (
-                                <Button
-                                    onClick={() => router.push("/add-book")}
-                                    className="bg-black text-white hover:bg-gray-800 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
-                                >
-                                    List Your Books
-                                </Button>
-                            )}
                             {userBorrowRequestData.length > 0 &&
                                 filteredData.length === 0 && (
                                     <Button

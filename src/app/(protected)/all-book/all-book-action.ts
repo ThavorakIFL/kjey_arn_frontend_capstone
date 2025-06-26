@@ -5,8 +5,11 @@ export async function fetchSearchData(query: {
     title?: string;
     author?: string;
     genre_ids?: number[] | string;
+    page?: number;
+    per_page?: number;
 }) {
     const searchParams = new URLSearchParams();
+
     if (query.sub) searchParams.append("sub", query.sub);
     if (query.title) searchParams.append("title", query.title);
     if (query.author) searchParams.append("author", query.author);
@@ -17,6 +20,11 @@ export async function fetchSearchData(query: {
             searchParams.append("genre_ids", query.genre_ids);
         }
     }
+
+    // Add pagination parameters
+    if (query.page) searchParams.append("page", query.page.toString());
+    if (query.per_page)
+        searchParams.append("per_page", query.per_page.toString());
 
     const res = await fetch(
         `${

@@ -39,7 +39,7 @@ const UserCard: React.FC<UserCardProps> = ({ reader, onClick }) => {
                             alt={`${reader.name}'s profile picture`}
                             className="object-cover"
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-700 font-semibold text-lg">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-100 text-primaryBlue font-semibold text-lg">
                             {reader.name
                                 ?.split(" ")
                                 .map((n) => n[0])
@@ -51,7 +51,7 @@ const UserCard: React.FC<UserCardProps> = ({ reader, onClick }) => {
                 </div>
 
                 <div className="text-center space-y-2 w-full">
-                    <h3 className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-200 truncate">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-primaryBlue transition-colors duration-200 truncate">
                         {reader.name}
                     </h3>
                     <div className="flex items-center justify-center space-x-1 text-sm text-gray-500 group-hover:text-gray-700 transition-colors duration-200">

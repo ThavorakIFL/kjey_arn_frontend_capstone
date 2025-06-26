@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { fetchSearchData } from "../all-book/all-book-action";
 import { useSession } from "next-auth/react";
 import TitleBar from "@/components/TitleBar";
@@ -10,20 +10,60 @@ import Book from "@/components/bookComponent/Book";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Plus } from "lucide-react";
+import BookCardSkeleton from "@/components/bookComponent/BookSkeleton";
+import Pagination from "@/components/Pagination";
+
+interface PaginationData {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+    has_more_pages: boolean;
+}
 
 export default function ShelfPage({}) {
     const { data: session, status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
+    const pathname = usePathname();
+
     const query = searchParams.get("q") || "";
     const type = searchParams.get("type") || "book";
     const genreIds = searchParams.get("genre_ids") || "";
+    const currentPage = parseInt(searchParams.get("page") || "1");
+    const perPage = parseInt(searchParams.get("per_page") || "14");
 
     const [books, setBooks] = React.useState<any[]>([]);
     const [error, setError] = React.useState("");
     const [loading, setLoading] = useState(true);
+    const [pagination, setPagination] = useState<PaginationData | null>(null);
 
-    const handleSearch = async () => {
+    const updateURLParams = (newPage?: number, newPerPage?: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (newPage !== undefined) {
+            if (newPage === 1) {
+                params.delete("page");
+            } else {
+                params.set("page", newPage.toString());
+            }
+        }
+
+        if (newPerPage !== undefined) {
+            if (newPerPage === 14) {
+                params.delete("per_page"); // Remove parameter when using default value
+            } else {
+                params.set("per_page", newPerPage.toString());
+            }
+        }
+
+        const newURL = `${pathname}?${params.toString()}`;
+        router.push(newURL, { scroll: false });
+    };
+
+    const handleSearch = async (page: number = currentPage) => {
         // Don't search if session is still loading
         if (status === "loading") {
             return;
@@ -45,16 +85,21 @@ export default function ShelfPage({}) {
                 title: query,
                 genre_ids,
                 sub: session?.userSubId,
+                page,
+                per_page: perPage,
             });
 
             if (res.success) {
                 setBooks(res.data.books);
+                setPagination(res.data.pagination);
             } else {
                 setBooks([]);
+                setPagination(null);
                 setError(res.message);
             }
         } catch {
             setBooks([]);
+            setPagination(null);
             setError("Something went wrong.");
         } finally {
             setLoading(false);
@@ -62,13 +107,30 @@ export default function ShelfPage({}) {
     };
 
     useEffect(() => {
-        handleSearch();
-    }, [query, genreIds, session?.userSubId, status]);
+        handleSearch(currentPage);
+    }, [query, genreIds, session?.userSubId, status, currentPage, perPage]);
+
+    const handlePageChange = (page: number) => {
+        updateURLParams(page);
+        // Scroll to top of results when changing pages
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    const handlePerPageChange = (newPerPage: number) => {
+        updateURLParams(1, newPerPage); // Reset to page 1 when changing per page
+    };
+
+    const handleRetry = () => {
+        handleSearch(currentPage);
+    };
 
     // Show loading while session is being loaded
     if (status === "loading") {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="">
                 <div className="flex items-center justify-center min-h-screen px-4">
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -88,70 +150,111 @@ export default function ShelfPage({}) {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <div className="container mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="">
+            <div className="container px-3 sm:px-4 lg:px-6 xl:px-4 py-4 sm:py-6 lg:py-8">
                 {/* Search and Filter Bar */}
-                <div className="mb-6 sm:mb-8">
-                    <SearchAndFilterBar globalSearch={false} />
-                </div>
+                <SearchAndFilterBar globalSearch={false} />
 
                 {/* Header Section */}
                 <div className="mb-6 sm:mb-8">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
                         {/* Title Section */}
-                        <div className="text-center sm:text-left">
-                            {query ? (
+                        <div className="sm:text-left w-full">
+                            {!query && (
+                                <TitleBar
+                                    title="My Shelf"
+                                    subTitle="Explore and manage your personal book collection"
+                                    onAction={() => {
+                                        router.push("/add-book");
+                                    }}
+                                    actionTitle="List Book"
+                                />
+                            )}
+
+                            {query && (
                                 <div>
-                                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                                    <h1 className="text-xl sm:text-2xl  font-semibold text-gray-900 mb-1">
                                         Search Results
                                     </h1>
-                                    <p className="text-sm sm:text-base text-gray-600">
-                                        Results for "{query}"
-                                    </p>
-                                </div>
-                            ) : (
-                                <div>
-                                    <TitleBar
-                                        title="My Shelf"
-                                        className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800"
-                                    />
-                                    <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
-                                        Manage your book collection
+                                    <p className=" text-gray-600">
+                                        Showing results for
+                                        <span className="font-semibold text-blue-primaryBlue">
+                                            "{query}"
+                                        </span>
                                     </p>
                                 </div>
                             )}
                         </div>
 
-                        {/* Action Button */}
-                        <div className="flex justify-center sm:justify-start">
-                            <Button
-                                onClick={() => router.push("/add-book")}
-                                className="w-full sm:w-auto h-10 sm:h-12 lg:h-14 px-4 sm:px-6 font-medium"
-                                size="lg"
-                            >
-                                <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                                List Book
-                            </Button>
-                        </div>
+                        {/* Items per page selector - only show when we have results */}
                     </div>
+
+                    {/* Results count */}
+                    {!loading && !error && pagination && (
+                        <div className="flex justify-between text-sm text-gray-500 mt-4">
+                            <div className="flex space-x-2  items-center ">
+                                <BookOpen className="w-4 h-4" />
+                                <span>
+                                    {pagination.total}{" "}
+                                    {pagination.total === 1 ? "book" : "books"}{" "}
+                                    found in your shelf
+                                    {pagination.total > pagination.per_page && (
+                                        <span className="ml-1">
+                                            (page {pagination.current_page} of{" "}
+                                            {pagination.last_page})
+                                        </span>
+                                    )}
+                                </span>
+                            </div>
+
+                            {!loading &&
+                                !error &&
+                                pagination &&
+                                pagination.total > 0 && (
+                                    <div className="flex items-center space-x-2">
+                                        <label
+                                            htmlFor="per-page"
+                                            className="text-sm text-gray-600"
+                                        >
+                                            Show:
+                                        </label>
+                                        <select
+                                            id="per-page"
+                                            value={perPage}
+                                            onChange={(e) =>
+                                                handlePerPageChange(
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
+                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value={14}>14</option>
+                                            <option value={28}>28</option>
+                                            <option value={42}>42</option>
+                                            <option value={84}>84</option>
+                                        </select>
+                                        <span className="text-sm text-gray-600">
+                                            per page
+                                        </span>
+                                    </div>
+                                )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Content Section */}
                 <div className="space-y-6">
-                    {/* Loading State */}
+                    {/* Loading State with Skeleton Cards */}
                     {loading && (
-                        <div className="flex items-center justify-center py-12 sm:py-16">
-                            <div className="text-center">
-                                <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-500 mx-auto mb-3 sm:mb-4"></div>
-                                <p className="text-sm sm:text-base text-gray-600">
-                                    Loading your books...
-                                </p>
-                            </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-6">
+                            {Array.from({ length: perPage }).map((_, index) => (
+                                <BookCardSkeleton key={index} />
+                            ))}
                         </div>
                     )}
 
                     {/* Error State */}
-                    {error && (
+                    {!loading && error && (
                         <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 mx-2 sm:mx-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -167,13 +270,21 @@ export default function ShelfPage({}) {
                                         />
                                     </svg>
                                 </div>
-                                <div>
+                                <div className="flex-1">
                                     <h3 className="text-sm sm:text-base font-medium text-red-800">
                                         Unable to load books
                                     </h3>
                                     <p className="text-xs sm:text-sm text-red-600 mt-1 break-words">
                                         {error}
                                     </p>
+                                    <Button
+                                        onClick={handleRetry}
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-3 text-red-600 border-red-300 hover:bg-red-50"
+                                    >
+                                        Try Again
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -181,47 +292,55 @@ export default function ShelfPage({}) {
 
                     {/* Empty State */}
                     {!loading && books.length === 0 && !error && (
-                        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                            <div className="flex flex-col items-center justify-center py-12 sm:py-16 lg:py-20 text-center px-4 sm:px-6">
-                                <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                                    <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-gray-400" />
-                                </div>
-                                <h3 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900 mb-2 sm:mb-3">
-                                    {query
-                                        ? "No books found"
-                                        : "Your shelf is empty"}
-                                </h3>
-                                <p className="text-sm sm:text-base text-gray-600 max-w-sm sm:max-w-md lg:max-w-lg leading-relaxed mb-6">
-                                    {query
-                                        ? `No books match your search for "${query}". Try different keywords or browse all books.`
-                                        : "Start building your collection by adding books to your shelf. Click 'List Book' to get started!"}
-                                </p>
-                                {!query && (
-                                    <Button
-                                        onClick={() => router.push("/add-book")}
-                                        className="w-full sm:w-auto"
-                                        size="lg"
-                                    >
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Add Your First Book
-                                    </Button>
-                                )}
+                        // <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
+                        <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
+                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                <BookOpen className="w-8 h-8 text-gray-400" />
                             </div>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                {query
+                                    ? "No books found"
+                                    : "Your shelf is empty"}
+                            </h3>
+                            <p className="text-gray-500 text-center max-w-md">
+                                {query
+                                    ? `No books match your search for "${query}". Try different keywords or browse all books.`
+                                    : "Start building your collection by adding books to your shelf. Click 'List Book' to get started!"}
+                            </p>
+                            {!query && (
+                                <Button
+                                    onClick={() => router.push("/add-book")}
+                                    className="w-full sm:w-auto"
+                                    size="lg"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Your First Book
+                                </Button>
+                            )}
                         </div>
+                        // </div>
                     )}
 
                     {/* Books Grid */}
                     {!loading && books.length > 0 && (
-                        <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
-                            <div className="p-4 sm:p-6 lg:p-8">
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-6">
-                                    {books.map((book) => (
-                                        <Book key={book.id} book={book} />
-                                    ))}
-                                </div>
-                            </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-6">
+                            {books.map((book) => (
+                                <Book key={book.id} book={book} />
+                            ))}
                         </div>
                     )}
+
+                    {/* Pagination */}
+                    {!loading &&
+                        !error &&
+                        pagination &&
+                        pagination.last_page > 1 && (
+                            <Pagination
+                                pagination={pagination}
+                                onPageChange={handlePageChange}
+                                loading={loading}
+                            />
+                        )}
                 </div>
             </div>
         </div>

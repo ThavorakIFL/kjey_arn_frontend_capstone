@@ -155,6 +155,11 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
 
     const buttonList = [
         {
+            title: "My Homepage",
+            route: `/home`,
+            icon: "lucide:home",
+        },
+        {
             title: "My Profile",
             route: `/my-profile`,
             icon: "lucide:user",
@@ -247,6 +252,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                                     }
                                                     tooltip={button.title}
                                                     className={`
+                                                        cursor-pointer
                                                         transition-all duration-300 h-11 px-6
                                                         border-l-4 rounded-none
                                                         hover:bg-sideColor hover:text-white
@@ -308,7 +314,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                         />
                                     </div>
 
-                                    <p className="text-sm sm:text-lg lg:text-xl font-normal truncate">
+                                    <p className="text-sm sm:text-lg lg:text-2xl font-medium truncate">
                                         Paragon International University
                                     </p>
                                 </div>

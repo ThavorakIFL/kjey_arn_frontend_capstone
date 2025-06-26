@@ -17,6 +17,7 @@ import {
     GripVertical,
     Plus,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface AddBookPageClientProps {
     genres: Genre[];
@@ -278,45 +279,37 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
             const response = await addBook(formDataToSend);
 
             if (response.success) {
-                // Show success message briefly before redirecting
-                setErrors({
-                    success: ["Book listed successfully! Redirecting..."],
-                });
-
-                setTimeout(() => {
-                    router.push(`/books/${response.data.book.id}`);
-                    router.refresh();
-                }, 1500);
-            } else {
-                // Handle server validation errors
-                if (response.errors) {
-                    // Transform Laravel validation errors for better display
-                    const transformedErrors: Record<string, string[]> = {};
-
-                    Object.entries(response.errors).forEach(
-                        ([key, messages]) => {
-                            if (Array.isArray(messages)) {
-                                // Handle array of messages
-                                transformedErrors[key] = messages;
-                            } else if (
-                                typeof messages === "object" &&
-                                messages !== null
-                            ) {
-                                // Handle nested error objects (like from Laravel)
-                                Object.entries(messages).forEach(
-                                    ([nestedKey, nestedMessages]) => {
-                                        if (Array.isArray(nestedMessages)) {
-                                            transformedErrors[nestedKey] =
-                                                nestedMessages;
-                                        }
-                                    }
-                                );
-                            }
+                // Use toast.promise for better UX
+                const toastPromise = new Promise((resolve) => {
+                    toast.success(
+                        response.message || "Book listed successfully!",
+                        {
+                            duration: 2000,
+                            action: {
+                                label: "View Book",
+                                onClick: () => {
+                                    router.push(
+                                        `/books/${response.data.book.id}`
+                                    );
+                                },
+                            },
+                            onDismiss: () => resolve(true),
+                            onAutoClose: () => resolve(true),
                         }
                     );
 
-                    setErrors(transformedErrors);
+                    setTimeout(() => resolve(true), 2000);
+                });
+                await toastPromise;
+                router.push(`/books/${response.data.book.id}`);
+                router.refresh();
+            } else {
+                if (response.errors) {
+                    // Handle server validation errors...
+                    setErrors(errors);
+                    toast.error("Please fix the errors below");
                 } else {
+                    toast.error(response.message || "Failed to add book");
                     setErrors({
                         general: [response.message || "Failed to add book"],
                     });
@@ -324,6 +317,9 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
             }
         } catch (error) {
             console.error("Failed to submit book:", error);
+            toast.error(
+                "Network error. Please check your connection and try again."
+            );
             setErrors({
                 general: [
                     "Network error. Please check your connection and try again.",
@@ -361,7 +357,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="">
             {previewImage && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
@@ -386,16 +382,13 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 </div>
             )}
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="px-4 py-6 sm:px-6 md:px-8 lg:px-10 xl:px-4 xl:py-8 ">
                 <div className="mb-8">
                     <TitleBar
                         title="List a New Book"
-                        className="text-4xl font-bold text-gray-800"
+                        subTitle="      Add your book details and upload images. Drag images to
+                        reorder them."
                     />
-                    <p className="text-gray-600 mt-2">
-                        Add your book details and upload images. Drag images to
-                        reorder them.
-                    </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -403,7 +396,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                         {/* Image Management Panel */}
                         <div className="xl:col-span-1">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="bg-black text-white p-6">
+                                <div className="bg-sidebarColor text-white p-6">
                                     <div className="flex items-center gap-3">
                                         <Image className="h-6 w-6" />
                                         <h2 className="text-xl font-semibold">
@@ -434,7 +427,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                                     fileInputRef.current?.click()
                                                 }
                                                 type="button"
-                                                className="w-full cursor-pointer bg-black text-white border-0 h-12 text-sm font-medium duration-200"
+                                                className="w-full cursor-pointer bg-sidebarColor text-white border-0 h-12 text-sm font-medium duration-200"
                                                 disabled={
                                                     pictures.length >=
                                                     MAX_IMAGES
@@ -549,8 +542,8 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                         {/* Book Details Panel */}
                         <div className="xl:col-span-2">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                                <div className="bg-black text-white p-6">
-                                    <h2 className="text-2xl font-semibold">
+                                <div className="bg-sidebarColor text-white p-6">
+                                    <h2 className="text-xl font-semibold">
                                         Book Information
                                     </h2>
                                     <p className="text-gray-300 text-sm mt-1">
