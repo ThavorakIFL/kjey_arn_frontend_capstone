@@ -48,12 +48,10 @@ export default function HistoryPageClient({
             <div className="container px-3 sm:px-4  py-4 sm:py-6 lg:py-8">
                 {/* Header Section */}
                 <div className="mb-6 sm:mb-8">
-                    <div className="text-center sm:text-left mb-6">
-                        <TitleBar
-                            title="All History"
-                            subTitle=" View all your past borrowing activities"
-                        />
-                    </div>
+                    <TitleBar
+                        title="All History"
+                        subTitle=" View all your past borrowing activities"
+                    />
 
                     {/* Loading State */}
                     {isLoading && (
