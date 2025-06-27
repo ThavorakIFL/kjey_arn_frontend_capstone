@@ -18,6 +18,7 @@ import {
     Plus,
 } from "lucide-react";
 import { toast } from "sonner";
+import { compressImage } from "@/utils/ImageCompressor";
 
 interface AddBookPageClientProps {
     genres: Genre[];
@@ -271,10 +272,16 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 formDataToSend.append("genres[]", genreId.toString());
             });
 
-            // Add pictures in their current order
-            pictures.forEach((picture, index) => {
-                formDataToSend.append("pictures[]", picture);
+            const compressedPictures = await Promise.all(
+                pictures.map((picture) => compressImage(picture, 2048))
+            );
+            compressedPictures.forEach((compressedPicture, index) => {
+                formDataToSend.append("pictures[]", compressedPicture);
             });
+            // Add pictures in their current order
+            // pictures.forEach((picture, index) => {
+            //     formDataToSend.append("pictures[]", picture);
+            // });
             console.log("Data to be sent", formDataToSend);
             const response = await addBook(formDataToSend);
             if (response.success) {
