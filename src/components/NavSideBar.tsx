@@ -165,7 +165,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
             icon: "lucide:user",
         },
         {
-            title: "Borrow Requests",
+            title: "My Borrow Requests",
             route: "/borrow-request",
             icon: "lucide:book",
         },
