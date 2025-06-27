@@ -87,7 +87,6 @@ export async function addBook(formData: FormData) {
                     },
                 };
             } else {
-                // Non-JSON response (likely server error)
                 return {
                     success: false,
                     message: `Server error (${response.status}). Please try again later.`,
@@ -102,7 +101,6 @@ export async function addBook(formData: FormData) {
 
         // Success response
         const data = await response.json();
-
         if (!data.success) {
             return {
                 success: false,

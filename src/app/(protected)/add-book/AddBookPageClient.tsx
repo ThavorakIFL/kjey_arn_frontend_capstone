@@ -275,9 +275,8 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
             pictures.forEach((picture, index) => {
                 formDataToSend.append("pictures[]", picture);
             });
-
+            console.log("Data to be sent", formDataToSend);
             const response = await addBook(formDataToSend);
-
             if (response.success) {
                 // Use toast.promise for better UX
                 const toastPromise = new Promise((resolve) => {
