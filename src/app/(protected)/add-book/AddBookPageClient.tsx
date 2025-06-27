@@ -305,7 +305,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 router.refresh();
             } else {
                 if (response.errors) {
-                    // Handle server validation errors...
+                    console.log("Server validation errors:", response.errors);
                     setErrors(errors);
                     toast.error("Please fix the errors below");
                 } else {
