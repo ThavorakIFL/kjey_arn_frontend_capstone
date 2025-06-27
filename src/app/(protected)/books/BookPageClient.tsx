@@ -53,12 +53,11 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
     };
     const [isBorrow, setIsBorrow] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     const [startDate, setStartDate] = useState<Date | undefined>(
         addDays(new Date(), 1)
     );
     const [endDate, setEndDate] = useState<Date | undefined>(
-        addDays(new Date(), 7)
+        addDays(new Date(), 14)
     );
     const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
     const [isEndDatePickerOpen, setIsEndDatePickerOpen] = useState(false);
@@ -587,6 +586,11 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                                 !!(
                                                     startDate &&
                                                     date <= startDate
+                                                ) ||
+                                                !!(
+                                                    startDate &&
+                                                    date >
+                                                        addDays(startDate, 13)
                                                 )
                                             }
                                             initialFocus

@@ -87,6 +87,17 @@ export async function deleteBook(bookId: string) {
 export async function requestBorrow(formData: FormData) {
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;
+
+    // Debug logging
+    console.log("=== DEBUG INFO ===");
+    console.log("API URL:", `${process.env.NEXT_PUBLIC_API_URL}borrow-event`);
+    console.log("Token:", token ? "Present" : "Missing");
+    console.log("Form data:", {
+        book_id: formData.get("book_id"),
+        start_date: formData.get("start_date"),
+        end_date: formData.get("end_date"),
+    });
+
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
@@ -103,16 +114,199 @@ export async function requestBorrow(formData: FormData) {
                 }),
             }
         );
-        const data = await res.json();
-        if (!res.ok) {
-            throw new Error(data.message || "Failed to request book borrow");
+
+        // Debug response details
+        console.log("=== RESPONSE DEBUG ===");
+        console.log("Status:", res.status);
+        console.log("Status Text:", res.statusText);
+        console.log("Headers:", Object.fromEntries(res.headers.entries()));
+
+        // Get response as text first to see what we're actually receiving
+        const responseText = await res.text();
+        console.log("=== RAW RESPONSE ===");
+        console.log("Response length:", responseText.length);
+        console.log("First 1000 characters:", responseText.substring(0, 1000));
+
+        // Check if it's HTML (Laravel error page)
+        if (
+            responseText.trim().startsWith("<!DOCTYPE") ||
+            responseText.trim().startsWith("<html")
+        ) {
+            console.log("=== LARAVEL ERROR DETECTED ===");
+
+            // Try to extract error message from HTML
+            const errorMatch = responseText.match(
+                /<title[^>]*>([^<]+)<\/title>/i
+            );
+            const errorTitle = errorMatch
+                ? errorMatch[1]
+                : "Unknown Laravel Error";
+
+            // Look for error message in the page
+            const messageMatch =
+                responseText.match(
+                    /<h1[^>]*class="exception_title"[^>]*>([^<]+)<\/h1>/i
+                ) ||
+                responseText.match(
+                    /<div[^>]*class="exception-message"[^>]*>([^<]+)<\/div>/i
+                ) ||
+                responseText.match(
+                    /<pre[^>]*class="sf-dump-search-wrapper sf-dump-search-wrapper-small"[^>]*>([^<]+)<\/pre>/i
+                );
+
+            const errorMessage = messageMatch
+                ? messageMatch[1].trim()
+                : errorTitle;
+
+            console.log("Laravel Error Title:", errorTitle);
+            console.log("Laravel Error Message:", errorMessage);
+
+            return {
+                success: false,
+                message: `Laravel Error: ${errorMessage}`,
+                errors: null,
+            };
         }
+
+        // Try to parse as JSON
+        let data;
+        try {
+            data = JSON.parse(responseText);
+            console.log("=== PARSED JSON ===");
+            console.log("Parsed data:", data);
+        } catch (parseError) {
+            console.error("=== JSON PARSE ERROR ===");
+            console.error("Parse error:", parseError);
+
+            return {
+                success: false,
+                message:
+                    "Server returned invalid response (not JSON). Check console for details.",
+                errors: null,
+            };
+        }
+
+        if (!res.ok) {
+            console.log("=== NON-OK RESPONSE ===");
+            // For validation errors (422) and other client errors (400-499)
+            if (res.status >= 400 && res.status < 500) {
+                // Handle Laravel validation errors specifically
+                if (res.status === 422 && data.errors) {
+                    console.log("=== VALIDATION ERROR ===");
+                    console.log("Validation errors:", data.errors);
+
+                    // Extract first validation error message
+                    const firstError = Object.values(data.errors)[0];
+                    const errorMessage = Array.isArray(firstError)
+                        ? firstError[0]
+                        : firstError;
+                    return {
+                        success: false,
+                        message:
+                            errorMessage || data.message || "Validation failed",
+                        errors: data.errors,
+                    };
+                }
+
+                return {
+                    success: false,
+                    message: data.message || "Failed to request book borrow",
+                    errors: data.errors || null,
+                };
+            }
+            // For server errors (500+)
+            throw new Error(data.message || "Server error occurred");
+        }
+
+        console.log("=== SUCCESS RESPONSE ===");
         return { success: true, message: data.message };
     } catch (error: any) {
+        console.error("=== NETWORK/FETCH ERROR ===");
+        console.error("Error:", error);
+        // Only catch network errors or thrown server errors
         return {
             success: false,
-            message: error.message || "An error occurred",
-            errors: error.errors || null,
+            message: error.message || "Network error occurred",
+            errors: null,
         };
     }
 }
+
+// export async function requestBorrow(formData: FormData) {
+//     const session = await getServerSession(authOptions);
+//     const token = session?.accessToken;
+
+//     try {
+//         const res = await fetch(
+//             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
+//             {
+//                 method: "POST",
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                     "Content-Type": "application/json",
+//                 },
+//                 body: JSON.stringify({
+//                     book_id: formData.get("book_id"),
+//                     start_date: formData.get("start_date"),
+//                     end_date: formData.get("end_date"),
+//                 }),
+//             }
+//         );
+
+//         const data = await res.json();
+
+//         if (!res.ok) {
+//             // For validation errors (422) and other client errors (400-499)
+//             if (res.status >= 400 && res.status < 500) {
+//                 return {
+//                     success: false,
+//                     message: data.message || "Failed to request book borrow",
+//                     errors: data.errors || null,
+//                 };
+//             }
+//             // For server errors (500+)
+//             throw new Error(data.message || "Server error occurred");
+//         }
+
+//         return { success: true, message: data.message };
+//     } catch (error: any) {
+//         // Only catch network errors or thrown server errors
+//         return {
+//             success: false,
+//             message: error.message || "Network error occurred",
+//             errors: null,
+//         };
+//     }
+// }
+// export async function requestBorrow(formData: FormData) {
+//     const session = await getServerSession(authOptions);
+//     const token = session?.accessToken;
+//     try {
+//         const res = await fetch(
+//             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
+//             {
+//                 method: "POST",
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                     "Content-Type": "application/json",
+//                 },
+//                 body: JSON.stringify({
+//                     book_id: formData.get("book_id"),
+//                     start_date: formData.get("start_date"),
+//                     end_date: formData.get("end_date"),
+//                 }),
+//             }
+//         );
+//         const data = await res.json();
+//         if (!res.ok) {
+//             throw new Error(data.message || "Failed to request book borrow");
+//         }
+//         return { success: true, message: data.message };
+//     } catch (error: any) {
+//         return {
+//             success: false,
+//             message: error.message || "An error occurred",
+//             errors: error.errors || null,
+//         };
+//     }
+// }
