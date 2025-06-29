@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
     ],
     session: {
         strategy: "jwt",
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 30 * 24 * 60 * 60,
     },
     cookies: {
         sessionToken: {
@@ -64,7 +64,11 @@ export const authOptions: NextAuthOptions = {
                 const data = await response.json();
                 if (response.ok && data.token) {
                     user.accessToken = data.token;
+                    user.tokenExpiresAt = data.expires_at; // Store expiration
+                    user.backendUserId = data.user.id;
                     console.log("User access token:", user.accessToken);
+                    console.log("Token expires at:", user.tokenExpiresAt);
+
                     if (data.picture) {
                         user.image = `http://127.0.0.1:8000/${data.user.picture}`;
                     }
@@ -80,6 +84,8 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token }) {
             session.accessToken = token.accessToken as string | undefined;
+            session.tokenExpiresAt = token.tokenExpiresAt as string | undefined;
+            session.backendUserId = token.backendUserId as string | undefined;
 
             if (session.user) {
                 session.user.image = token.picture as string;
@@ -91,8 +97,11 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.accessToken = user.accessToken;
-                token.picture = user.image;
+                token.picture = user.image || undefined;
+                token.tokenExpiresAt = user.tokenExpiresAt;
+                token.backendUserId = user.backendUserId;
             }
+
             return token;
         },
     },

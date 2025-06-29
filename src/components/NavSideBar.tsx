@@ -27,6 +27,11 @@ import {
     SidebarInset,
     useSidebar,
 } from "@/components/ui/sidebar";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Custom mobile sidebar component that slides from top
 function MobileSidebar({
@@ -322,18 +327,26 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                 {/* Right side */}
                                 <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
                                     {/* Library button */}
-                                    <div
-                                        onClick={() => router.push("/shelf")}
-                                        className="cursor-pointer flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300"
-                                    >
-                                        <Icon
-                                            icon="lucide:library"
-                                            width="20"
-                                            height="20"
-                                            className="sm:w-6 sm:h-6"
-                                        />
-                                    </div>
-
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            <div
+                                                onClick={() =>
+                                                    router.push("/shelf")
+                                                }
+                                                className="cursor-pointer flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300"
+                                            >
+                                                <Icon
+                                                    icon="lucide:library"
+                                                    width="20"
+                                                    height="20"
+                                                    className="sm:w-6 sm:h-6"
+                                                />
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p> My Shelf </p>
+                                        </TooltipContent>
+                                    </Tooltip>
                                     {/* Activity bell */}
                                     <div className="z-50 flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300 cursor-pointer">
                                         <ActivityBell />
@@ -379,7 +392,12 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                     </Popover>
 
                                     {/* User name */}
-                                    <p className="text-sm sm:text-lg lg:text-xl hidden sm:block">
+                                    <p
+                                        onClick={() => {
+                                            router.push("/my-profile");
+                                        }}
+                                        className="text-sm sm:text-lg lg:text-xl hidden sm:block cursor-pointer"
+                                    >
                                         {status === "loading" ? (
                                             <span className="inline-block w-16 sm:w-20 h-4 sm:h-6 bg-gray-300 animate-pulse rounded" />
                                         ) : (
