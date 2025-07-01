@@ -205,3 +205,86 @@ export async function checkUnacceptedBorrowRequests() {
         throw error;
     }
 }
+
+export async function checkForOverdueAcceptedEvents() {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}check-overdue-accepted-borrow-events`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Only treat actual errors as errors
+            console.error("API Error:", {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+            });
+
+            switch (response.status) {
+                case 401:
+                    throw new Error("Authentication required");
+                case 500:
+                    throw new Error("Server error occurred");
+                default:
+                    throw new Error(
+                        `Request failed: ${data.message || response.statusText}`
+                    );
+            }
+        }
+        return data;
+    } catch (error) {
+        console.error("Error checking overdue accepted events", error);
+        throw error;
+    }
+}
+export async function checkForOverdueReturnEvents() {
+    const session = await getServerSession(authOptions);
+    const token = session?.accessToken;
+    try {
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}check-overdue-return-events`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("API Error:", {
+                status: response.status,
+                statusText: response.statusText,
+                data: data,
+            });
+
+            switch (response.status) {
+                case 401:
+                    throw new Error("Authentication required");
+                case 500:
+                    throw new Error("Server error occurred");
+                default:
+                    throw new Error(
+                        `Request failed: ${data.message || response.statusText}`
+                    );
+            }
+        }
+        return data;
+    } catch (error) {
+        console.error("Error checking overdue return events", error);
+        throw error;
+    }
+}

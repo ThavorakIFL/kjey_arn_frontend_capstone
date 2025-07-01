@@ -135,7 +135,7 @@ export default function ShelfPage({}) {
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
                         <p className="text-sm sm:text-base text-gray-600">
-                            Loading books...
+                            Loading your books...
                         </p>
                     </div>
                 </div>
@@ -244,15 +244,6 @@ export default function ShelfPage({}) {
 
                 {/* Content Section */}
                 <div className="space-y-6">
-                    {/* Loading State with Skeleton Cards */}
-                    {loading && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-6">
-                            {Array.from({ length: perPage }).map((_, index) => (
-                                <BookCardSkeleton key={index} />
-                            ))}
-                        </div>
-                    )}
-
                     {/* Error State */}
                     {!loading && error && (
                         <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6 mx-2 sm:mx-0">

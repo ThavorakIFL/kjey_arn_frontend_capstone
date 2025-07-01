@@ -172,7 +172,10 @@ export default function ActivityClient({
             const day = String(currentDate.getDate()).padStart(2, "0");
             const formattedCurrentDate = `${year}-${month}-${day}`;
             const returnDate = borrowEventData.return_detail.return_date;
-            if (returnDate === formattedCurrentDate) {
+            if (
+                returnDate === formattedCurrentDate ||
+                returnDate < formattedCurrentDate
+            ) {
                 setisTimeToReturn(true);
             } else {
                 setisTimeToReturn(false);
@@ -548,7 +551,6 @@ export default function ActivityClient({
                                 />
                             )}
                             {showOwnerReceiveBookButton() &&
-                                hasReport() &&
                                 bookDepositConfirmed() && (
                                     <Button
                                         className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
@@ -598,7 +600,6 @@ export default function ActivityClient({
                                 />
                             )}
                             {showOwnerReceiveBookButton() &&
-                                hasReport() &&
                                 bookDepositConfirmed() && (
                                     <Button
                                         className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"

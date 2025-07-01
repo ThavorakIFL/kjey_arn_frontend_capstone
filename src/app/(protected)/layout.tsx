@@ -11,6 +11,8 @@ import {
     checkBorrowEvent,
     checkUnconfirmedMeetups,
     checkUnacceptedBorrowRequests,
+    checkForOverdueAcceptedEvents,
+    checkForOverdueReturnEvents,
 } from "@/app/(protected)/home/homepage-action"; // Import here
 
 export const metadata = {
@@ -39,10 +41,11 @@ export default async function ProtectedLayout({
             checkBorrowEvent(),
             checkUnconfirmedMeetups(),
             checkUnacceptedBorrowRequests(),
+            checkForOverdueAcceptedEvents(),
+            checkForOverdueReturnEvents(),
         ]);
     } catch (error) {
         console.error("Background checks failed:", error);
-        // Don't block page loading if checks fail
     }
 
     return (

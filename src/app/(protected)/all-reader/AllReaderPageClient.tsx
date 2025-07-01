@@ -113,6 +113,19 @@ export default function AllReaderPageClient() {
         updateURLParams(1, newPerPage); // Reset to page 1 when changing per page
     };
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen px-4">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <p className="text-sm sm:text-base text-gray-600">
+                        Loading all users...
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
             <div>
@@ -190,11 +203,6 @@ export default function AllReaderPageClient() {
 
                 {/* Results Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-                    {loading &&
-                        Array.from({ length: perPage }).map((_, index) => (
-                            <UserCardSkeleton key={index} />
-                        ))}
-
                     {!loading && error && (
                         <div className="col-span-full">
                             <ErrorState error={error} onRetry={handleRetry} />

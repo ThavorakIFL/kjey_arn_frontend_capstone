@@ -137,7 +137,11 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                         className="w-full focus:outline-none mx-3 sm:mx-4 text-sm sm:text-base"
-                        placeholder="Search books, authors..."
+                        placeholder={
+                            type === "book"
+                                ? "Search books, authors..."
+                                : "Search readers, names..."
+                        }
                     />
 
                     {globalSearch && (
