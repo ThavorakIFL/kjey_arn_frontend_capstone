@@ -4,6 +4,7 @@ import formatDateString from "@/utils/DateFormatConverter";
 import formatTimeString from "@/utils/TimeConverter";
 
 interface MeetUpDetailProps {
+    onSwap?: () => void;
     meetUpTime?: string;
     meetUpLocation?: string;
     startDate?: string;
@@ -17,6 +18,7 @@ export function MeetUpDetail({
     startDate,
     endDate,
     variant = "standalone", // Default to standalone for backward compatibility
+    onSwap = () => {},
 }: MeetUpDetailProps) {
     const meetUpItems = [
         {
@@ -57,10 +59,17 @@ export function MeetUpDetail({
         <div className={wrapperClasses}>
             <div className="bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex flex-col">
                 {/* Header */}
-                <div className="bg-sidebarColor text-white p-3 sm:p-4 lg:p-5">
+                <div className="bg-sidebarColor text-white p-3 sm:p-4 lg:p-5 flex items-center justify-between">
                     <h1 className="text-sm sm:text-lg md:text-xl  font-semibold">
                         Meet Up Details
                     </h1>
+                    {onSwap && (
+                        <Icon
+                            icon="lucide:arrow-right-left"
+                            className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white cursor-pointer hover:text-gray-200 transition-colors"
+                            onClick={onSwap}
+                        />
+                    )}
                 </div>
 
                 {/* Content */}

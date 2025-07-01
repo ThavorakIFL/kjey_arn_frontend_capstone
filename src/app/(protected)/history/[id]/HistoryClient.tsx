@@ -1,5 +1,7 @@
 "use client";
 import HistoryDetail from "@/components/activityComponent/HistoryDetail";
+import { MeetUpDetail } from "@/components/activityComponent/MeetUpDetail";
+import { ReturnDetail } from "@/components/activityComponent/ReturnDetail";
 import { BookDisplayCard } from "@/components/bookComponent/BookDisplayCard";
 import TitleBar from "@/components/TitleBar";
 import { BorrowEvent as BorrowEventType } from "@/types/borrow-event";
@@ -11,6 +13,11 @@ interface HistoryClientProps {
 
 export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
     const [loading, setLoading] = useState(true);
+    const [isMeetUp, setIsMeetUp] = useState(true);
+
+    const handleSwap = () => {
+        setIsMeetUp(!isMeetUp);
+    };
 
     const hasCancelorReject = () => {
         return (
@@ -89,7 +96,7 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                         />
                     </div>
 
-                    {hasCancelorReject() && (
+                    {hasCancelorReject() ? (
                         <div className="lg:col-span-3">
                             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
                                 {/* Header */}
@@ -156,6 +163,52 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                                         </div>
                                     )}
                             </div>
+                        </div>
+                    ) : (
+                        <div className="lg:col-span-3">
+                            {isMeetUp ? (
+                                <MeetUpDetail
+                                    onSwap={() => {
+                                        handleSwap();
+                                    }}
+                                    startDate={
+                                        borrowEventData.meet_up_detail
+                                            .start_date
+                                    }
+                                    endDate={
+                                        borrowEventData.meet_up_detail.end_date
+                                    }
+                                    meetUpTime={
+                                        borrowEventData.meet_up_detail
+                                            .final_time
+                                    }
+                                    meetUpLocation={
+                                        borrowEventData.meet_up_detail
+                                            .final_location
+                                    }
+                                />
+                            ) : (
+                                <ReturnDetail
+                                    onSwap={() => {
+                                        handleSwap();
+                                    }}
+                                    startDate={
+                                        borrowEventData.meet_up_detail
+                                            .start_date
+                                    }
+                                    endDate={
+                                        borrowEventData.meet_up_detail.end_date
+                                    }
+                                    returnTime={
+                                        borrowEventData.return_detail
+                                            .return_time
+                                    }
+                                    returnLocation={
+                                        borrowEventData.return_detail
+                                            .return_location
+                                    }
+                                />
+                            )}
                         </div>
                     )}
                     {/* Reason Card */}
