@@ -1,8 +1,9 @@
 "use server";
-import { PaginatedBooks } from "@/types/paginated-books"; // Adjust import path
-import { Book } from "@/types/book"; // Adjust import path
+import { PaginatedBooks } from "@/types/paginated-books";
+import { Book } from "@/types/book";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+
 interface FetchBooksOptions {
     perPage?: number;
     genres?: number[];

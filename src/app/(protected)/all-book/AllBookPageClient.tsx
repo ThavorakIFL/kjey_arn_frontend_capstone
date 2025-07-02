@@ -5,12 +5,14 @@ import { fetchSearchData } from "./all-book-action";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
 import Book from "@/components/bookComponent/Book";
+import MobileBook from "@/components/bookComponent/MobileBook"; // Add this import
 import TitleBar from "@/components/TitleBar";
 import { BookOpen } from "lucide-react";
 import BookCardSkeleton from "@/components/bookComponent/BookSkeleton";
 import BookErrorState from "@/components/bookComponent/BookErrorState";
 import BookEmptyState from "@/components/bookComponent/BookEmptyState";
 import Pagination from "@/components/Pagination";
+import React from "react";
 
 interface PaginationData {
     current_page: number;
@@ -270,7 +272,7 @@ export default function AllBookClient() {
                 </div>
 
                 {/* Results Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     {!loading && error && (
                         <div className="col-span-full">
                             <BookErrorState
@@ -289,7 +291,19 @@ export default function AllBookClient() {
                     {!loading &&
                         !error &&
                         books.length > 0 &&
-                        books.map((book) => <Book key={book.id} book={book} />)}
+                        books.map((book) => (
+                            <React.Fragment key={book.id}>
+                                {/* Mobile component - hidden on sm and up */}
+                                <div className="block sm:hidden">
+                                    <MobileBook book={book} />
+                                </div>
+
+                                {/* Desktop component - hidden on mobile, shown on sm and up */}
+                                <div className="hidden sm:block">
+                                    <Book book={book} />
+                                </div>
+                            </React.Fragment>
+                        ))}
                 </div>
 
                 {/* Pagination */}

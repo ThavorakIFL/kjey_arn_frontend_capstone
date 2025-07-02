@@ -7,6 +7,7 @@ import { fetchSearchData } from "../all-book/all-book-action";
 import { useSession } from "next-auth/react";
 import TitleBar from "@/components/TitleBar";
 import Book from "@/components/bookComponent/Book";
+import MobileBook from "@/components/bookComponent/MobileBook"; // Add this import
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Plus } from "lucide-react";
@@ -314,9 +315,19 @@ export default function ShelfPage({}) {
 
                     {/* Books Grid */}
                     {!loading && books.length > 0 && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                             {books.map((book) => (
-                                <Book key={book.id} book={book} />
+                                <React.Fragment key={book.id}>
+                                    {/* Mobile component - hidden on sm and up */}
+                                    <div className="block sm:hidden">
+                                        <MobileBook book={book} />
+                                    </div>
+
+                                    {/* Desktop component - hidden on mobile, shown on sm and up */}
+                                    <div className="hidden sm:block">
+                                        <Book book={book} />
+                                    </div>
+                                </React.Fragment>
                             ))}
                         </div>
                     )}

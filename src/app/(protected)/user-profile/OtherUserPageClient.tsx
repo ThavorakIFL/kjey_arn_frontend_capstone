@@ -7,6 +7,8 @@ import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BookOpen } from "lucide-react";
+import React from "react";
+import MobileBook from "@/components/bookComponent/MobileBook";
 
 interface OtherUserProfilePageProps {
     initialUserData: User;
@@ -110,14 +112,20 @@ export default function OtherUserProfilePage({
 
                         {/* Books Grid */}
                         {otherUserBookData.length > 0 ? (
-                            <div>
-                                <div>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-                                        {otherUserBookData.map((book) => (
-                                            <Book key={book.id} book={book} />
-                                        ))}
-                                    </div>
-                                </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                                {otherUserBookData.map((book) => (
+                                    <React.Fragment key={book.id}>
+                                        {/* Mobile component - hidden on sm and up */}
+                                        <div className="block sm:hidden">
+                                            <MobileBook book={book} />
+                                        </div>
+
+                                        {/* Desktop component - hidden on mobile, shown on sm and up */}
+                                        <div className="hidden sm:block">
+                                            <Book book={book} />
+                                        </div>
+                                    </React.Fragment>
+                                ))}
                             </div>
                         ) : (
                             /* Empty State */

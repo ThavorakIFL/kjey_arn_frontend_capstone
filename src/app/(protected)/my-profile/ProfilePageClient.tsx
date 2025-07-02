@@ -18,6 +18,8 @@ import { User } from "@/types/user";
 import Book from "@/components/bookComponent/Book";
 import { BookOpen, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import React from "react";
+import MobileBook from "@/components/bookComponent/MobileBook";
 
 interface ProfilePageClientProps {
     initialUserData: User;
@@ -204,7 +206,17 @@ export default function ProfilePageClient({
                 {userBookData.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                         {userBookData.map((book) => (
-                            <Book key={book.id} book={book} />
+                            <React.Fragment key={book.id}>
+                                {/* Mobile component - hidden on sm and up */}
+                                <div className="block sm:hidden">
+                                    <MobileBook book={book} />
+                                </div>
+
+                                {/* Desktop component - hidden on mobile, shown on sm and up */}
+                                <div className="hidden sm:block">
+                                    <Book book={book} />
+                                </div>
+                            </React.Fragment>
                         ))}
                     </div>
                 ) : (

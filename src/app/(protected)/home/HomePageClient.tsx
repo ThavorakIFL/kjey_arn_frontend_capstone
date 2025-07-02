@@ -5,6 +5,8 @@ import { Book as bookType } from "@/types/book";
 import TitleBar from "@/components/TitleBar";
 import Book from "@/components/bookComponent/Book";
 import SearchAndFilterBar from "@/components/SearchAndFilterBar";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import MobileBook from "@/components/bookComponent/MobileBook";
 
 interface HomePageClientProps {
     books: bookType[];
@@ -24,47 +26,46 @@ const HomePageClient: React.FC<HomePageClientProps> = ({ books, error }) => {
     }, [books]);
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen px-4">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                    <p className="text-sm sm:text-base text-gray-600">
-                        Loading your homepage...
-                    </p>
-                </div>
-            </div>
-        );
+        return <LoadingSpinner message="Loading your homepage..." />;
     }
 
     return (
         <>
-            <div className="">
-                <SearchAndFilterBar globalSearch={true} />
-                {!error && books.length > 0 && (
-                    <>
-                        <TitleBar
-                            onAction={() => {
-                                router.push("/all-book");
-                            }}
-                            actionTitle="See All Book"
-                            title="Newly Added Books"
-                            subTitle="Explore the latest additions to our collection"
-                        />
-                        <div className="my-4 sm:my-6 relative py-2">
-                            {books.length === 0 && (
-                                <div className="text-center text-gray-500 text-sm sm:text-base">
-                                    No books available.
-                                </div>
-                            )}
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-                                {books.map((book) => (
-                                    <Book key={book.id} book={book} />
-                                ))}
+            <SearchAndFilterBar globalSearch={true} />
+            {!error && books.length > 0 && (
+                <div>
+                    <TitleBar
+                        onAction={() => {
+                            router.push("/all-book");
+                        }}
+                        actionTitle="See All Book"
+                        title="Newly Added Books"
+                        subTitle="Explore the latest additions to our collection"
+                    />
+                    <div className="my-4 sm:my-6 relative py-2">
+                        {books.length === 0 && (
+                            <div className="text-center text-gray-500 text-sm sm:text-base">
+                                No books available.
                             </div>
+                        )}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                            {books.map((book) => (
+                                <React.Fragment key={book.id}>
+                                    {/* Mobile component - hidden on sm and up */}
+                                    <div className="block sm:hidden">
+                                        <MobileBook book={book} />
+                                    </div>
+
+                                    {/* Desktop component - hidden on mobile, shown on sm and up */}
+                                    <div className="hidden sm:block">
+                                        <Book book={book} />
+                                    </div>
+                                </React.Fragment>
+                            ))}
                         </div>
-                    </>
-                )}
-            </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
