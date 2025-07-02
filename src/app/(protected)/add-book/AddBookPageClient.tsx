@@ -32,6 +32,9 @@ interface DragState {
 export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const titleRef = useRef<HTMLInputElement>(null);
+    const authorRef = useRef<HTMLInputElement>(null);
+    const descriptionRef = useRef<HTMLTextAreaElement>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<Record<string, string[]>>({});
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -96,7 +99,6 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 //     invalidFiles.push(`${file.name} is too large (max 2MB)`);
                 //     return;
                 // }
-
                 // Check file type
                 const allowedTypes = [
                     "image/jpeg",
@@ -235,7 +237,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        setErrors({});
+        setErrors({}); // Clear previous errors
 
         try {
             // Client-side validation
@@ -245,16 +247,50 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 clientErrors.title = ["Title is required"];
             }
 
-            if (!formData.description.trim()) {
-                clientErrors.description = ["Description is required"];
+            if (!formData.author.trim()) {
+                clientErrors.author = ["Author is required"];
             }
 
             if (formData.genres.length === 0) {
                 clientErrors.genres = ["At least one genre must be selected"];
             }
 
+            if (!formData.description.trim()) {
+                clientErrors.description = ["Description is required"];
+            }
+
+            if (pictures.length === 0) {
+                clientErrors.pictures = ["At least one image is required"];
+            }
+
+            // If there are ANY client-side errors, show ALL of them
             if (Object.keys(clientErrors).length > 0) {
-                setErrors(clientErrors);
+                setErrors(clientErrors); // This shows all errors at once
+
+                if (clientErrors.title) {
+                    titleRef.current?.focus();
+                } else if (clientErrors.author) {
+                    authorRef.current?.focus();
+                } else if (clientErrors.genres) {
+                    // For genres, we can't focus since they're checkboxes
+                    // Just scroll to the section or focus the first checkbox
+                    toast.error("Please select at least one genre");
+                } else if (clientErrors.description) {
+                    descriptionRef.current?.focus();
+                } else if (clientErrors.pictures) {
+                    // Scroll to image section or show message
+                    toast.error("Please add at least one image");
+                }
+
+                // Create a summary for the toast
+                const errorCount = Object.keys(clientErrors).length;
+                const errorFields = Object.keys(clientErrors).join(", ");
+                toast.error(
+                    `Please fix ${errorCount} error${
+                        errorCount > 1 ? "s" : ""
+                    }: ${errorFields}`
+                );
+
                 setIsSubmitting(false);
                 return;
             }
@@ -272,20 +308,20 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 formDataToSend.append("genres[]", genreId.toString());
             });
 
+            // Compress and add pictures
             const compressedPictures = await Promise.all(
                 pictures.map((picture) => compressImage(picture, 2048))
             );
-            compressedPictures.forEach((compressedPicture, index) => {
+            compressedPictures.forEach((compressedPicture) => {
                 formDataToSend.append("pictures[]", compressedPicture);
             });
-            // Add pictures in their current order
-            // pictures.forEach((picture, index) => {
-            //     formDataToSend.append("pictures[]", picture);
-            // });
+
             console.log("Data to be sent", formDataToSend);
             const response = await addBook(formDataToSend);
+
             if (response.success) {
                 // Use toast.promise for better UX
+
                 const toastPromise = new Promise((resolve) => {
                     toast.success(
                         response.message || "Book listed successfully!",
@@ -304,17 +340,19 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                         }
                     );
 
-                    setTimeout(() => resolve(true), 2000);
+                    setTimeout(() => resolve(true), 1000);
                 });
                 await toastPromise;
                 router.push(`/books/${response.data.book.id}`);
                 router.refresh();
             } else {
+                // Handle server validation errors
                 if (response.errors) {
                     console.log("Server validation errors:", response.errors);
-                    setErrors(errors);
+                    setErrors(response.errors); // ✅ Fix: Use response.errors, not errors
                     toast.error("Please fix the errors below");
                 } else {
+                    // Handle general server errors
                     toast.error(response.message || "Failed to add book");
                     setErrors({
                         general: [response.message || "Failed to add book"],
@@ -351,10 +389,10 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
 
     const displaySuccess = (field: string) => {
         return errors[field] ? (
-            <div className="text-green-600 text-sm mt-1 bg-green-50 border border-green-200 rounded p-2">
+            <div className="text-primaryBlue text-sm mt-1 bg-green-50 border border-green-200 rounded p-2">
                 {errors[field].map((message, index) => (
                     <div key={index} className="flex items-start gap-2">
-                        <span className="text-green-500 mt-0.5">✓</span>
+                        <span className="text-primaryBlue mt-0.5">✓</span>
                         <span>{message}</span>
                     </div>
                 ))}
@@ -467,7 +505,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                                     dragState.draggedIndex ===
                                                         index
                                                         ? "border-blue-500 opacity-50 scale-105"
-                                                        : "border-green-300 hover:border-green-400"
+                                                        : "border-primaryBlue hover:primarBlue/90"
                                                 }`}
                                             >
                                                 {/* Drag Handle */}
@@ -479,7 +517,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
 
                                                 {/* Order Badge */}
                                                 <div className="absolute top-2 right-2 z-30">
-                                                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                                    <span className="bg-primaryBlue text-white text-xs px-2 py-1 rounded-full font-medium">
                                                         #{index + 1}
                                                     </span>
                                                 </div>
@@ -567,13 +605,13 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                             </span>
                                         </label>
                                         <input
+                                            ref={titleRef}
                                             type="text"
                                             name="title"
                                             value={formData.title}
                                             onChange={handleTextChange}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
                                             placeholder="Enter book title"
-                                            required
                                         />
                                         {displayError("title")}
                                     </div>
@@ -584,6 +622,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                             Author
                                         </label>
                                         <input
+                                            ref={authorRef}
                                             type="text"
                                             name="author"
                                             value={formData.author}
@@ -611,7 +650,7 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                                         formData.genres.includes(
                                                             genre.id
                                                         )
-                                                            ? "border-black bg-black text-white"
+                                                            ? "border-sidebarColor bg-sidebarColor text-white"
                                                             : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                                                     }`}
                                                 >
@@ -653,7 +692,6 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                                 value={formData.condition}
                                                 onChange={handleConditionChange}
                                                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                                                required
                                             />
                                             <div className="flex justify-between text-xs text-gray-500">
                                                 <span>Poor (0)</span>
@@ -673,13 +711,13 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                                             </span>
                                         </label>
                                         <textarea
+                                            ref={descriptionRef}
                                             name="description"
                                             value={formData.description}
                                             onChange={handleTextChange}
                                             rows={4}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white resize-none"
                                             placeholder="Describe your book's condition, any notable features, etc..."
-                                            required
                                         />
                                         {displayError("description")}
                                     </div>
@@ -695,16 +733,16 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                             variant="outline"
                             onClick={() => router.back()}
                             disabled={isSubmitting}
-                            className="w-full sm:w-auto"
+                            className="cursor-pointer w-full sm:w-auto"
                         >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            <ArrowLeft className=" h-4 w-4 mr-2" />
                             Cancel
                         </Button>
 
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full sm:w-auto bg-primaryBlue text-white border-0 flex items-center gap-2 px-8"
+                            className="cursor-pointer w-full sm:w-auto bg-primaryBlue hover:bg-primaryBlue/90 text-white border-0 flex items-center gap-2 px-8"
                         >
                             <Save className="h-4 w-4" />
                             {isSubmitting ? "Listing Book..." : "List Book"}
