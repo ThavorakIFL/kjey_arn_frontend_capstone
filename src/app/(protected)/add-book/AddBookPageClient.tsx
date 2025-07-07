@@ -264,15 +264,8 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                     titleRef.current?.focus();
                 } else if (clientErrors.author) {
                     authorRef.current?.focus();
-                } else if (clientErrors.genres) {
-                    // For genres, we can't focus since they're checkboxes
-                    // Just scroll to the section or focus the first checkbox
-                    toast.error("Please select at least one genre");
                 } else if (clientErrors.description) {
                     descriptionRef.current?.focus();
-                } else if (clientErrors.pictures) {
-                    // Scroll to image section or show message
-                    toast.error("Please add at least one image");
                 }
 
                 // Create a summary for the toast

@@ -49,24 +49,22 @@ export default async function ProtectedLayout({
     }
 
     return (
-        <html lang="en">
-            <body>
-                <Providers>
-                    <NavSideBar>{children}</NavSideBar>
-                    <Toaster
-                        position="bottom-right"
-                        expand={true}
-                        richColors
-                        toastOptions={{
-                            style: {
-                                background: "white",
-                                border: "1px solid #e2e8f0",
-                                color: "black",
-                            },
-                        }}
-                    />
-                </Providers>
-            </body>
-        </html>
+        <div>
+            <Providers>
+                <NavSideBar>{children}</NavSideBar>
+                <Toaster
+                    position="bottom-right"
+                    expand={true}
+                    richColors
+                    toastOptions={{
+                        style: {
+                            background: "white",
+                            border: "1px solid #e2e8f0",
+                            color: "black",
+                        },
+                    }}
+                />
+            </Providers>
+        </div>
     );
 }

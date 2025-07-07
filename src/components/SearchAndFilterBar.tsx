@@ -49,54 +49,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         useState<GenreType[]>(genreOptions);
     const [genresLoaded, setGenresLoaded] = useState(false);
 
-    // Load genres only once on mount
-    useEffect(() => {
-        const loadGenres = async () => {
-            setIsLoadingGenres(true);
-            try {
-                const {
-                    backendGenres,
-                    genreMap: fetchedGenreMap,
-                    reverseMap,
-                } = await fetchGenres();
-
-                setGenreMap(fetchedGenreMap);
-                setReverseGenreMap(reverseMap);
-
-                const availableBackendGenres = genreOptions.filter((genre) =>
-                    fetchedGenreMap.hasOwnProperty(genre)
-                );
-
-                if (availableBackendGenres.length > 0) {
-                    setAvailableGenres(availableBackendGenres);
-                } else {
-                    setAvailableGenres(genreOptions);
-                }
-
-                setGenresLoaded(true);
-            } catch (error) {
-                console.error("Failed to load genres:", error);
-
-                const fallbackMap: Record<string, number> = {};
-                const fallbackReverseMap: Record<number, string> = {};
-                genreOptions.forEach((genre, index) => {
-                    const id = index + 1;
-                    fallbackMap[genre] = id;
-                    fallbackReverseMap[id] = genre;
-                });
-
-                setGenreMap(fallbackMap);
-                setReverseGenreMap(fallbackReverseMap);
-                setAvailableGenres(genreOptions);
-                setGenresLoaded(true);
-            } finally {
-                setIsLoadingGenres(false);
-            }
-        };
-
-        loadGenres();
-    }, []); // Only run once on mount
-
     // Initialize from URL params only after genres are loaded
     useEffect(() => {
         const loadGenres = async () => {
@@ -128,7 +80,13 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                 console.log("📋 All genreOptions:", genreOptions);
 
                 if (availableBackendGenres.length > 0) {
-                    setAvailableGenres(availableBackendGenres);
+                    const allBackendGenres = backendGenres.map((g) => g.genre);
+                    console.log(
+                        "📋 Showing all backend genres:",
+                        allBackendGenres
+                    );
+                    setAvailableGenres(allBackendGenres as GenreType[]);
+                    // setAvailableGenres(availableBackendGenres);
                 } else {
                     console.log("⚠️ No matching genres found, using fallback");
                     setAvailableGenres(genreOptions);
@@ -144,7 +102,32 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         };
 
         loadGenres();
-    }, []); // Only depend on genresLoaded and reverseGenreMap
+    }, []);
+
+    // Initialize from URL params only after genres are loaded
+    useEffect(() => {
+        if (!genresLoaded) return;
+
+        const urlQuery = searchParams.get("q") || defaultQuery;
+        const urlType = searchParams.get("type") || defaultType;
+
+        setQuery(urlQuery);
+        setType(urlType);
+
+        // Only set genres from URL if genres are loaded and we have the reverse map
+        const urlGenreIds = searchParams.get("genre_ids");
+        if (urlGenreIds && Object.keys(reverseGenreMap).length > 0) {
+            const genreIds = urlGenreIds
+                .split(",")
+                .map((id) => parseInt(id.trim()));
+            const genreNames = genreIds
+                .map((id) => reverseGenreMap[id])
+                .filter((name) => name !== undefined);
+            setSelectedGenres(genreNames);
+        } else if (defaultGenres.length > 0) {
+            setSelectedGenres(defaultGenres);
+        }
+    }, [genresLoaded, reverseGenreMap]); // ← Remove searchParams from here
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -181,19 +164,52 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         );
     };
 
+    // const handleClearAllGenres = () => {
+    //     setSelectedGenres([]);
+    //     const searchDestination = getSearchDestination();
+    //     const url = new URLSearchParams();
+    //     url.set("q", query);
+    //     url.set("type", type);
+    //     router.push(`/${searchDestination}?${url.toString()}`);
+    // };
+
     const handleClearAllGenres = () => {
         setSelectedGenres([]);
         const searchDestination = getSearchDestination();
-        const url = new URLSearchParams();
-        url.set("q", query);
-        url.set("type", type);
+        const url = new URLSearchParams(searchParams.toString()); // ← Keep existing params
+
+        // Only remove genre_ids, keep query and type
+        url.delete("genre_ids");
+
         router.push(`/${searchDestination}?${url.toString()}`);
     };
 
     const handleSearch = () => {
         const searchDestination = getSearchDestination();
-        const url = new URLSearchParams();
-        url.set("q", query);
+        const url = new URLSearchParams(searchParams.toString());
+        // url.set("q", query);
+        // url.set("type", type);
+
+        // if (type === "book" && selectedGenres.length > 0) {
+        //     const genre_ids = selectedGenres
+        //         .map((genre) => genreMap[genre])
+        //         .filter((id) => id !== undefined);
+
+        //     if (genre_ids.length > 0) {
+        //         url.set("genre_ids", genre_ids.join(","));
+        //     }
+        // }
+
+        // if (onSearch) {
+        //     onSearch(query, type, selectedGenres);
+        // }
+
+        // router.push(`/${searchDestination}?${url.toString()}`);
+        if (query.trim()) {
+            url.set("q", query.trim());
+        } else {
+            url.delete("q");
+        }
         url.set("type", type);
 
         if (type === "book" && selectedGenres.length > 0) {
@@ -203,7 +219,11 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
 
             if (genre_ids.length > 0) {
                 url.set("genre_ids", genre_ids.join(","));
+            } else {
+                url.delete("genre_ids");
             }
+        } else {
+            url.delete("genre_ids");
         }
 
         if (onSearch) {

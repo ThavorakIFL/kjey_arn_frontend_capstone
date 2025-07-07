@@ -20,6 +20,15 @@ import {
     Image,
     GripVertical,
 } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 interface EditBookPageClientProps {
@@ -64,6 +73,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
     const [genres, setGenres] = useState<{ id: number; genre: string }[]>(
         book.genres
     );
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -267,45 +277,6 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
         );
     }, [imagesToDelete]);
 
-    // const handleSelectGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //     const selectedGenre = e.target.value;
-    //     if (!selectedGenre) return;
-
-    //     const matched = genreOptions.find((g) => g === selectedGenre);
-
-    //     if (!matched) return;
-
-    //     const genreMap: Record<string, number> = {
-    //         Horror: 1,
-    //         Romance: 2,
-    //         Adventure: 3,
-    //         "Science Fiction": 4,
-    //         Fantasy: 5,
-    //         Mystery: 6,
-    //         Thriller: 7,
-    //         "Historical Fiction": 8,
-    //         Biography: 9,
-    //         "Self-Help": 10,
-    //         Philosophy: 11,
-    //         Poetry: 12,
-    //         "Young Adult": 13,
-    //         "Children's": 14,
-    //         Dystopian: 15,
-    //         "Non-Fiction": 16,
-    //         Memoir: 17,
-    //         Crime: 18,
-    //         Classic: 19,
-    //         "Comic Book/Graphic Novel": 20,
-    //     };
-    //     const genreId = genreMap[selectedGenre];
-    //     if (genres.some((g) => g.id === genreId)) {
-    //         alert(`Genre "${selectedGenre}" already exists.`);
-    //         return;
-    //     }
-    //     setGenres((prev) => [...prev, { id: genreId, genre: selectedGenre }]);
-    //     e.target.value = "";
-    // };
-
     const handleSelectGenre = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedGenre = e.target.value;
         const genreId = genreMap[selectedGenre]; // Use prop directly
@@ -420,18 +391,19 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
     };
 
     const handleDelete = async () => {
-        const confirmed = window.confirm(
-            "Are you sure you want to delete this book? This action cannot be undone."
-        );
-        if (!confirmed) return;
+        setIsDeleteDialogOpen(true);
+    };
 
+    const confirmDelete = async () => {
         setIsDeleting(true);
+        setIsDeleteDialogOpen(false); // Close dialog first
+
         try {
             const response = await deleteBook(String(book.id));
             if (!response.success) {
-                alert("❌ " + response.message);
+                toast.error("Failed to delete book: " + response.message);
             } else {
-                alert("✅ Book deleted successfully.");
+                toast.success("Book deleted successfully!");
                 router.push("/");
             }
         } finally {
@@ -898,6 +870,40 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
                     ))}
                 </form>
             </div>
+            {/* Delete Confirmation Dialog */}
+            <Dialog
+                open={isDeleteDialogOpen}
+                onOpenChange={setIsDeleteDialogOpen}
+            >
+                <DialogContent className="w-[95vw] max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg">
+                            Delete Book
+                        </DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this book? This
+                            action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex flex-col sm:flex-row gap-4 justify-end">
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                            type="button"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={confirmDelete}
+                            disabled={isDeleting}
+                            type="button"
+                        >
+                            {isDeleting ? "Deleting..." : "Delete Book"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
