@@ -12,7 +12,7 @@ export async function fetchGenres(): Promise<{
     try {
         const session = await getServerSession(authOptions);
         const token = session?.accessToken;
-        const url = `${process.env.NEXT_PUBLIC_API_URL}admin/genres`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}book/genres`;
         const response = await fetch(url, {
             method: "GET",
             headers: {

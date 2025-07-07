@@ -19,6 +19,8 @@ export enum GenreEnum {
     Crime = "Crime",
     Classic = "Classic",
     ComicBookGraphicNovel = "Comic Book/Graphic Novel",
+    Notes = "Notes", // ← Add this
+    ResearchPaper = "Research Paper", // ← Add this
 }
 
 // Type for Genre values
