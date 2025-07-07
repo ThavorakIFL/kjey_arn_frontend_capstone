@@ -217,39 +217,6 @@ export default function AllBookClient() {
                                     </p>
                                 )}
                             </div>
-
-                            {/* Items per page selector */}
-                            {!loading &&
-                                !error &&
-                                pagination &&
-                                pagination.total > 0 && (
-                                    <div className="flex items-center space-x-2">
-                                        <label
-                                            htmlFor="per-page"
-                                            className="text-sm text-gray-600"
-                                        >
-                                            Show:
-                                        </label>
-                                        <select
-                                            id="per-page"
-                                            value={perPage}
-                                            onChange={(e) =>
-                                                handlePerPageChange(
-                                                    parseInt(e.target.value)
-                                                )
-                                            }
-                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <option value={14}>14</option>
-                                            <option value={24}>24</option>
-                                            <option value={48}>48</option>
-                                            <option value={96}>96</option>
-                                        </select>
-                                        <span className="text-sm text-gray-600">
-                                            per page
-                                        </span>
-                                    </div>
-                                )}
                         </div>
 
                         {!loading && !error && pagination && (
@@ -320,4 +287,38 @@ export default function AllBookClient() {
             </div>
         </div>
     );
+}
+
+{
+    /* {!loading &&
+                                !error &&
+                                pagination &&
+                                pagination.total > 0 && (
+                                    <div className="flex items-center space-x-2">
+                                        <label
+                                            htmlFor="per-page"
+                                            className="text-sm text-gray-600"
+                                        >
+                                            Show:
+                                        </label>
+                                        <select
+                                            id="per-page"
+                                            value={perPage}
+                                            onChange={(e) =>
+                                                handlePerPageChange(
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
+                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        >
+                                            <option value={14}>14</option>
+                                            <option value={24}>24</option>
+                                            <option value={48}>48</option>
+                                            <option value={96}>96</option>
+                                        </select>
+                                        <span className="text-sm text-gray-600">
+                                            per page
+                                        </span>
+                                    </div>
+                                )} */
 }
