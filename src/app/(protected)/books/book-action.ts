@@ -2,6 +2,89 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { BackendGenre, GenreResponse, GenreType } from "@/types/genre";
+import { createGenreMapping } from "@/utils/GenreHelper";
+export async function fetchGenres(): Promise<{
+    backendGenres: BackendGenre[];
+    genreMap: Record<string, number>;
+    reverseMap: Record<number, GenreType>;
+}> {
+    try {
+        const session = await getServerSession(authOptions);
+        const token = session?.accessToken;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}admin/genres`;
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result: GenreResponse = await response.json();
+
+        if (!result.success) {
+            throw new Error(result.message || "Failed to fetch genres");
+        }
+
+        const { genreMap, reverseMap } = createGenreMapping(result.data);
+
+        return {
+            backendGenres: result.data,
+            genreMap,
+            reverseMap,
+        };
+    } catch (error) {
+        console.error("Error fetching genres:", error);
+
+        // Fallback to your existing enum structure
+        const fallbackGenreMap: Record<string, number> = {
+            Horror: 1,
+            Romance: 2,
+            Adventure: 3,
+            "Science Fiction": 4,
+            Fantasy: 5,
+            Mystery: 6,
+            Thriller: 7,
+            "Historical Fiction": 8,
+            Biography: 9,
+            "Self-Help": 10,
+            Philosophy: 11,
+            Poetry: 12,
+            "Young Adult": 13,
+            "Children's": 14,
+            Dystopian: 15,
+            "Non-Fiction": 16,
+            Memoir: 17,
+            Crime: 18,
+            Classic: 19,
+            "Comic Book/Graphic Novel": 20,
+            Notes: 21,
+            "Research Paper": 22,
+        };
+
+        const fallbackReverseMap: Record<number, GenreType> = {};
+        Object.entries(fallbackGenreMap).forEach(([genre, id]) => {
+            fallbackReverseMap[id] = genre as GenreType;
+        });
+
+        const fallbackBackendGenres: BackendGenre[] = Object.entries(
+            fallbackGenreMap
+        ).map(([genre, id]) => ({
+            id,
+            genre,
+        }));
+
+        return {
+            backendGenres: fallbackBackendGenres,
+            genreMap: fallbackGenreMap,
+            reverseMap: fallbackReverseMap,
+        };
+    }
+}
 
 export const fetchBookData = async (id: string) => {
     try {
@@ -231,82 +314,3 @@ export async function requestBorrow(formData: FormData) {
         };
     }
 }
-
-// export async function requestBorrow(formData: FormData) {
-//     const session = await getServerSession(authOptions);
-//     const token = session?.accessToken;
-
-//     try {
-//         const res = await fetch(
-//             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
-//             {
-//                 method: "POST",
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                     "Content-Type": "application/json",
-//                 },
-//                 body: JSON.stringify({
-//                     book_id: formData.get("book_id"),
-//                     start_date: formData.get("start_date"),
-//                     end_date: formData.get("end_date"),
-//                 }),
-//             }
-//         );
-
-//         const data = await res.json();
-
-//         if (!res.ok) {
-//             // For validation errors (422) and other client errors (400-499)
-//             if (res.status >= 400 && res.status < 500) {
-//                 return {
-//                     success: false,
-//                     message: data.message || "Failed to request book borrow",
-//                     errors: data.errors || null,
-//                 };
-//             }
-//             // For server errors (500+)
-//             throw new Error(data.message || "Server error occurred");
-//         }
-
-//         return { success: true, message: data.message };
-//     } catch (error: any) {
-//         // Only catch network errors or thrown server errors
-//         return {
-//             success: false,
-//             message: error.message || "Network error occurred",
-//             errors: null,
-//         };
-//     }
-// }
-// export async function requestBorrow(formData: FormData) {
-//     const session = await getServerSession(authOptions);
-//     const token = session?.accessToken;
-//     try {
-//         const res = await fetch(
-//             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
-//             {
-//                 method: "POST",
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                     "Content-Type": "application/json",
-//                 },
-//                 body: JSON.stringify({
-//                     book_id: formData.get("book_id"),
-//                     start_date: formData.get("start_date"),
-//                     end_date: formData.get("end_date"),
-//                 }),
-//             }
-//         );
-//         const data = await res.json();
-//         if (!res.ok) {
-//             throw new Error(data.message || "Failed to request book borrow");
-//         }
-//         return { success: true, message: data.message };
-//     } catch (error: any) {
-//         return {
-//             success: false,
-//             message: error.message || "An error occurred",
-//             errors: error.errors || null,
-//         };
-//     }
-// }

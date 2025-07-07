@@ -37,3 +37,14 @@ export interface Genre {
 
 // If you need an array of genre values for mapping in component
 export const genreOptions = Object.values(GenreEnum);
+
+export interface BackendGenre {
+    id: number;
+    genre: string;
+}
+
+export interface GenreResponse {
+    success: boolean;
+    message: string;
+    data: BackendGenre[];
+}

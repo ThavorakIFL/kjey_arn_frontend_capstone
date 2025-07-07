@@ -93,13 +93,6 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
             const invalidFiles: string[] = [];
 
             filesArray.forEach((file) => {
-                // Check file size (2MB limit)
-                // const maxSize = 10 * 1024 * 1024; // 10MB in bytes
-                // if (file.size > maxSize) {
-                //     invalidFiles.push(`${file.name} is too large (max 2MB)`);
-                //     return;
-                // }
-                // Check file type
                 const allowedTypes = [
                     "image/jpeg",
                     "image/png",
