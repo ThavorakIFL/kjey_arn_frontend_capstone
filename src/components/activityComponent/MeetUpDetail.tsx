@@ -50,10 +50,7 @@ export function MeetUpDetail({
     ];
 
     // Use different wrapper classes based on variant
-    const wrapperClasses =
-        variant === "sidebar"
-            ? "w-full"
-            : "w-full max-w-2xl mx-auto px-2 sm:px-6 lg:px-0";
+    const wrapperClasses = variant === "sidebar" ? "w-full" : "w-full";
 
     return (
         <div className={wrapperClasses}>

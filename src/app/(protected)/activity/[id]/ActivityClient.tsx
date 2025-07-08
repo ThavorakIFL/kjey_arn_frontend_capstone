@@ -225,7 +225,7 @@ export default function ActivityClient({
         if (!hasSuggestions && isBorrower) {
             return (
                 <Button
-                    className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                    className="h-12  w-full xl:w-56 text-xs sm:text-sm"
                     onClick={handleConfirmMeetUp}
                     variant={"default"}
                 >
@@ -246,7 +246,7 @@ export default function ActivityClient({
                 if (isLender) {
                     return (
                         <Button
-                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -259,7 +259,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -283,7 +283,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[180px] text-xs sm:text-sm"
+                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -327,73 +327,87 @@ export default function ActivityClient({
 
     return (
         <div>
-            <div>
-                {/* Header */}
-                <div className="mb-4 sm:mb-6 lg:mb-8">
-                    <TitleBar
-                        title="Borrow Request Details"
-                        subTitle="View and Manage Your Borrowing Requests."
-                    />
+            {/* Header */}
+            <div className="mb-4 sm:mb-6 lg:mb-8">
+                <TitleBar
+                    title="Borrow Request Details"
+                    subTitle="View and Manage Your Borrowing Requests."
+                />
+            </div>
+
+            {/* Main Content Layout - Mobile/Tablet stacked, Large Desktop grid */}
+            <div className="space-y-4 sm:space-y-6 2xl:space-y-0 xl:grid xl:grid-cols-12 xl:gap-4 3xl:gap-6">
+                {/* Mobile/Tablet/Desktop: Book Image */}
+                <div className="xl:hidden flex justify-center">
+                    <div className="w-32 sm:w-40 md:w-48 lg:w-56">
+                        <BookDisplayCard
+                            bookImage={borrowEventData.book.pictures[0].picture}
+                        />
+                    </div>
                 </div>
 
-                {/* Main Content Layout - Mobile/Tablet stacked, Large Desktop grid */}
-                <div className="space-y-4 sm:space-y-6 2xl:space-y-0 2xl:grid 2xl:grid-cols-12 2xl:gap-4 3xl:gap-6">
-                    {/* Mobile/Tablet/Desktop: Book Image */}
-                    <div className="2xl:hidden flex justify-center">
-                        <div className="w-32 sm:w-40 md:w-48 lg:w-56">
-                            <BookDisplayCard
-                                bookImage={
-                                    borrowEventData.book.pictures[0].picture
-                                }
-                            />
-                        </div>
+                {/* Extra Large Desktop: Book Image */}
+                <div className="hidden xl:block xl:col-span-4 2xl:col-span-2 col-span-4">
+                    <div className="sticky top-4">
+                        <BookDisplayCard
+                            bookImage={borrowEventData.book.pictures[0].picture}
+                        />
+                    </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="flex flex-col  xl:col-span-8 2xl:col-span-7 space-y-3 sm:space-y-4 md:space-y-6 ">
+                    {/* Mobile/Tablet/Desktop Guide Message */}
+
+                    <div className="block 2xl:hidden mb-3 sm:mb-4">
+                        <GuideMessage
+                            borrowEventData={borrowEventData}
+                            userSubId={session?.userSubId}
+                            isStartDate={isStartDate}
+                            isTimeToReturn={isTimeToReturn}
+                        />
                     </div>
 
-                    {/* Extra Large Desktop: Book Image */}
-                    <div className="hidden 2xl:block 2xl:col-span-2">
-                        <div className="sticky top-4">
-                            <BookDisplayCard
-                                bookImage={
-                                    borrowEventData.book.pictures[0].picture
-                                }
-                            />
-                        </div>
+                    {/* Borrow Activity Detail */}
+                    <div className="mb-3 sm:mb-4 md:mb-6">
+                        <BorrowActivityDetail
+                            bookAuthor={borrowEventData.book.author}
+                            bookTitle={borrowEventData.book.title}
+                            borrowStatus={
+                                borrowEventData.borrow_status.borrow_status_id
+                            }
+                            borrowerEmail={borrowEventData.borrower.email}
+                            borrowerName={borrowEventData.borrower.name}
+                            borrowerProfileImage={
+                                borrowEventData.borrower.picture || ""
+                            }
+                            lenderProfileImage={
+                                borrowEventData.lender.picture || ""
+                            }
+                            lenderEmail={borrowEventData.lender.email}
+                            lenderName={borrowEventData.lender.name}
+                            startDate={
+                                borrowEventData.meet_up_detail.start_date
+                            }
+                            endDate={borrowEventData.meet_up_detail.end_date}
+                        />
                     </div>
 
-                    {/* Main Content Area */}
-                    <div className="flex flex-col 2xl:col-span-7 space-y-3 sm:space-y-4 md:space-y-6 justify-between">
-                        {/* Mobile/Tablet/Desktop Guide Message */}
-                        <div>
-                            <div className="block 2xl:hidden mb-3 sm:mb-4 px-2 sm:px-4 md:px-2">
-                                <GuideMessage
-                                    borrowEventData={borrowEventData}
-                                    userSubId={session?.userSubId}
-                                    isStartDate={isStartDate}
-                                    isTimeToReturn={isTimeToReturn}
-                                />
-                            </div>
+                    <div className="hidden 2xl:block">
+                        <GuideMessage
+                            borrowEventData={borrowEventData}
+                            userSubId={session?.userSubId}
+                            isStartDate={isStartDate}
+                            isTimeToReturn={isTimeToReturn}
+                        />
+                    </div>
 
-                            {/* Borrow Activity Detail */}
-                            <div className="mb-3 sm:mb-4 md:mb-6">
-                                <BorrowActivityDetail
-                                    bookAuthor={borrowEventData.book.author}
-                                    bookTitle={borrowEventData.book.title}
-                                    borrowStatus={
-                                        borrowEventData.borrow_status
-                                            .borrow_status_id
-                                    }
-                                    borrowerEmail={
-                                        borrowEventData.borrower.email
-                                    }
-                                    borrowerName={borrowEventData.borrower.name}
-                                    borrowerProfileImage={
-                                        borrowEventData.borrower.picture || ""
-                                    }
-                                    lenderProfileImage={
-                                        borrowEventData.lender.picture || ""
-                                    }
-                                    lenderEmail={borrowEventData.lender.email}
-                                    lenderName={borrowEventData.lender.name}
+                    {/* Mobile/Tablet/Desktop: Meet Up Details - Full Width Below Request Details */}
+                    <div className="2xl:hidden">
+                        {/* Suggestion Detail */}
+                        {borrowEventData.meet_up_detail.suggestions &&
+                            showSuggestionDetail() && (
+                                <SuggestMeetUpDetail
                                     startDate={
                                         borrowEventData.meet_up_detail
                                             .start_date
@@ -401,266 +415,34 @@ export default function ActivityClient({
                                     endDate={
                                         borrowEventData.meet_up_detail.end_date
                                     }
-                                />
-                            </div>
-
-                            <div className="hidden 2xl:block">
-                                <GuideMessage
-                                    borrowEventData={borrowEventData}
-                                    userSubId={session?.userSubId}
-                                    isStartDate={isStartDate}
-                                    isTimeToReturn={isTimeToReturn}
-                                />
-                            </div>
-                        </div>
-                        {/* Mobile/Tablet/Desktop: Meet Up Details - Full Width Below Request Details */}
-                        <div className="2xl:hidden">
-                            {/* Suggestion Detail */}
-                            {borrowEventData.meet_up_detail.suggestions &&
-                                showSuggestionDetail() && (
-                                    <div className="mb-4 sm:mb-6">
-                                        <SuggestMeetUpDetail
-                                            startDate={
-                                                borrowEventData.meet_up_detail
-                                                    .start_date
-                                            }
-                                            endDate={
-                                                borrowEventData.meet_up_detail
-                                                    .end_date
-                                            }
-                                            suggestMeetUpTime={
-                                                borrowEventData.meet_up_detail
-                                                    .suggestions[0]
-                                                    .suggested_time
-                                            }
-                                            suggestMeetUpLocation={
-                                                borrowEventData.meet_up_detail
-                                                    .suggestions[0]
-                                                    .suggested_location
-                                            }
-                                            suggestedReason={
-                                                borrowEventData.meet_up_detail
-                                                    .suggestions[0]
-                                                    .suggested_reason
-                                            }
-                                            suggestedByName={
-                                                borrowEventData.meet_up_detail
-                                                    .suggestions[0].user
-                                                    ?.name || "Unknown"
-                                            }
-                                            suggestedByProfilePicture={
-                                                borrowEventData.meet_up_detail
-                                                    .suggestions[0].user
-                                                    ?.picture ||
-                                                "default-profile.png"
-                                            }
-                                        />
-                                    </div>
-                                )}
-
-                            {/* Regular Meetup Detail */}
-                            {!showSuggestionDetail() && !showReturnDetail() && (
-                                <div className="mb-4 sm:mb-6">
-                                    <MeetUpDetail
-                                        startDate={
-                                            borrowEventData.meet_up_detail
-                                                .start_date
-                                        }
-                                        endDate={
-                                            borrowEventData.meet_up_detail
-                                                .end_date
-                                        }
-                                        meetUpLocation={
-                                            borrowEventData.meet_up_detail
-                                                .final_location
-                                        }
-                                        meetUpTime={
-                                            borrowEventData.meet_up_detail
-                                                .final_time
-                                        }
-                                        variant="standalone"
-                                    />
-                                </div>
-                            )}
-
-                            {/* Return Detail */}
-                            {showReturnDetail() && (
-                                <div className="mb-4 sm:mb-6">
-                                    <ReturnDetail
-                                        endDate={
-                                            borrowEventData.meet_up_detail
-                                                .end_date
-                                        }
-                                        startDate={
-                                            borrowEventData.meet_up_detail
-                                                .start_date
-                                        }
-                                        returnTime={
-                                            borrowEventData.return_detail
-                                                .return_time
-                                        }
-                                        returnLocation={
-                                            borrowEventData.return_detail
-                                                .return_location
-                                        }
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Extra Large Desktop Guide Message */}
-
-                        {/* Mobile/Tablet/Desktop Action Buttons */}
-                        <div className="2xl:hidden flex flex-wrap gap-2 justify-center sm:justify-start">
-                            {showCancelButton() && (
-                                <div className="w-full px-2">
-                                    <CancelBorrowRequestDialog
-                                        onCancel={handleCancelRequest}
-                                        isLoading={isLoading}
-                                    />
-                                </div>
-                            )}
-                            {canSuggestMeetUp() && (
-                                <SuggestMeetupDialog
-                                    locationData={locationData}
-                                    onSuggest={handleSuggestSubmit}
-                                    isSubmitting={isSubmitting}
-                                />
-                            )}
-                            {getMeetupActionButton()}
-                            {showSetReturnDetailButton() && (
-                                <ReturnDetailDialog
-                                    locationData={locationData}
-                                    isSubmitting={isSubmitting}
-                                    onSubmit={handleReturnSubmit}
-                                />
-                            )}
-                            {(showSetReturnDetailButton() ||
-                                (isTimeToReturn &&
-                                    borrowEventData.borrow_status
-                                        .borrow_status_id === 7)) && (
-                                <ReportDialog
-                                    isTimeToReturn={isTimeToReturn}
-                                    sub={borrowEventData.borrower.sub || ""}
-                                    isLoading={isLoading}
-                                    onReport={
-                                        isTimeToReturn
-                                            ? handleBorrowEventReport
-                                            : handleCancelRequest
+                                    suggestMeetUpTime={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_time
+                                    }
+                                    suggestMeetUpLocation={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_location
+                                    }
+                                    suggestedReason={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_reason
+                                    }
+                                    suggestedByName={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].user?.name ||
+                                        "Unknown"
+                                    }
+                                    suggestedByProfilePicture={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].user?.picture ||
+                                        "default-profile.png"
                                     }
                                 />
                             )}
-                            {showOwnerReceiveBookButton() &&
-                                bookDepositConfirmed() && (
-                                    <Button
-                                        className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
-                                        onClick={handleReceiveBook}
-                                    >
-                                        Received Book
-                                    </Button>
-                                )}
-                        </div>
 
-                        {/* Extra Large Desktop Action Buttons */}
-                        <div className=" hidden 2xl:flex 2xl:gap-2 3xl:gap-3 2xl:justify-end 2xl:items-center">
-                            {showCancelButton() && (
-                                <CancelBorrowRequestDialog
-                                    onCancel={handleCancelRequest}
-                                    isLoading={isLoading}
-                                />
-                            )}
-                            {canSuggestMeetUp() && (
-                                <SuggestMeetupDialog
-                                    locationData={locationData}
-                                    onSuggest={handleSuggestSubmit}
-                                    isSubmitting={isSubmitting}
-                                />
-                            )}
-                            {getMeetupActionButton()}
-                            {showSetReturnDetailButton() && (
-                                <ReturnDetailDialog
-                                    locationData={locationData}
-                                    isSubmitting={isSubmitting}
-                                    onSubmit={handleReturnSubmit}
-                                />
-                            )}
-                            {(showSetReturnDetailButton() ||
-                                (isTimeToReturn &&
-                                    borrowEventData.borrow_status
-                                        .borrow_status_id === 7)) && (
-                                <ReportDialog
-                                    isTimeToReturn={isTimeToReturn}
-                                    sub={borrowEventData.borrower.sub || ""}
-                                    isLoading={isLoading}
-                                    onReport={
-                                        isTimeToReturn
-                                            ? handleBorrowEventReport
-                                            : handleCancelRequest
-                                    }
-                                />
-                            )}
-                            {showOwnerReceiveBookButton() &&
-                                bookDepositConfirmed() && (
-                                    <Button
-                                        className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
-                                        onClick={handleReceiveBook}
-                                    >
-                                        Received Book
-                                    </Button>
-                                )}
-                            {showOwnerReceiveBookButton() && !hasReport() && (
-                                <Button
-                                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
-                                    onClick={handleReceiveBook}
-                                >
-                                    Received Book
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="hidden 2xl:block 2xl:col-span-3 space-y-3 sm:space-y-4 md:space-y-6">
-                        {borrowEventData.meet_up_detail.suggestions &&
-                            showSuggestionDetail() && (
-                                <div className="w-full">
-                                    <SuggestMeetUpDetail
-                                        startDate={
-                                            borrowEventData.meet_up_detail
-                                                .start_date
-                                        }
-                                        endDate={
-                                            borrowEventData.meet_up_detail
-                                                .end_date
-                                        }
-                                        suggestMeetUpTime={
-                                            borrowEventData.meet_up_detail
-                                                .suggestions[0].suggested_time
-                                        }
-                                        suggestMeetUpLocation={
-                                            borrowEventData.meet_up_detail
-                                                .suggestions[0]
-                                                .suggested_location
-                                        }
-                                        suggestedReason={
-                                            borrowEventData.meet_up_detail
-                                                .suggestions[0].suggested_reason
-                                        }
-                                        suggestedByName={
-                                            borrowEventData.meet_up_detail
-                                                .suggestions[0].user?.name ||
-                                            "Unknown"
-                                        }
-                                        suggestedByProfilePicture={
-                                            borrowEventData.meet_up_detail
-                                                .suggestions[0].user?.picture ||
-                                            "default-profile.png"
-                                        }
-                                    />
-                                </div>
-                            )}
-
+                        {/* Regular Meetup Detail */}
                         {!showSuggestionDetail() && !showReturnDetail() && (
-                            <div className="w-full overflow-hidden">
+                            <div className="">
                                 <MeetUpDetail
                                     startDate={
                                         borrowEventData.meet_up_detail
@@ -677,14 +459,14 @@ export default function ActivityClient({
                                         borrowEventData.meet_up_detail
                                             .final_time
                                     }
-                                    variant="sidebar"
+                                    variant="standalone"
                                 />
                             </div>
                         )}
 
                         {/* Return Detail */}
                         {showReturnDetail() && (
-                            <div className="w-full">
+                            <div className="mb-4 sm:mb-6">
                                 <ReturnDetail
                                     endDate={
                                         borrowEventData.meet_up_detail.end_date
@@ -705,6 +487,197 @@ export default function ActivityClient({
                             </div>
                         )}
                     </div>
+
+                    {/* Extra Large Desktop Guide Message */}
+
+                    {/* Mobile/Tablet/Desktop Action Buttons */}
+                    <div className="2xl:hidden flex flex-wrap gap-2 justify-center sm:justify-start">
+                        {showCancelButton() && (
+                            // <div className="w-full">
+                            <CancelBorrowRequestDialog
+                                onCancel={handleCancelRequest}
+                                isLoading={isLoading}
+                            />
+                            // </div>
+                        )}
+                        {canSuggestMeetUp() && (
+                            <SuggestMeetupDialog
+                                locationData={locationData}
+                                onSuggest={handleSuggestSubmit}
+                                isSubmitting={isSubmitting}
+                            />
+                        )}
+                        {getMeetupActionButton()}
+                        {showSetReturnDetailButton() && (
+                            <ReturnDetailDialog
+                                locationData={locationData}
+                                isSubmitting={isSubmitting}
+                                onSubmit={handleReturnSubmit}
+                            />
+                        )}
+                        {(showSetReturnDetailButton() ||
+                            (isTimeToReturn &&
+                                borrowEventData.borrow_status
+                                    .borrow_status_id === 7)) && (
+                            <ReportDialog
+                                isTimeToReturn={isTimeToReturn}
+                                sub={borrowEventData.borrower.sub || ""}
+                                isLoading={isLoading}
+                                onReport={
+                                    isTimeToReturn
+                                        ? handleBorrowEventReport
+                                        : handleCancelRequest
+                                }
+                            />
+                        )}
+                        {showOwnerReceiveBookButton() &&
+                            bookDepositConfirmed() && (
+                                <Button
+                                    className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                    onClick={handleReceiveBook}
+                                >
+                                    Received Book
+                                </Button>
+                            )}
+                    </div>
+
+                    {/* Extra Large Desktop Action Buttons */}
+                    <div className=" hidden 2xl:flex 2xl:gap-2 3xl:gap-3 2xl:justify-end 2xl:items-center">
+                        {showCancelButton() && (
+                            <CancelBorrowRequestDialog
+                                onCancel={handleCancelRequest}
+                                isLoading={isLoading}
+                            />
+                        )}
+                        {canSuggestMeetUp() && (
+                            <SuggestMeetupDialog
+                                locationData={locationData}
+                                onSuggest={handleSuggestSubmit}
+                                isSubmitting={isSubmitting}
+                            />
+                        )}
+                        {getMeetupActionButton()}
+                        {showSetReturnDetailButton() && (
+                            <ReturnDetailDialog
+                                locationData={locationData}
+                                isSubmitting={isSubmitting}
+                                onSubmit={handleReturnSubmit}
+                            />
+                        )}
+                        {(showSetReturnDetailButton() ||
+                            (isTimeToReturn &&
+                                borrowEventData.borrow_status
+                                    .borrow_status_id === 7)) && (
+                            <ReportDialog
+                                isTimeToReturn={isTimeToReturn}
+                                sub={borrowEventData.borrower.sub || ""}
+                                isLoading={isLoading}
+                                onReport={
+                                    isTimeToReturn
+                                        ? handleBorrowEventReport
+                                        : handleCancelRequest
+                                }
+                            />
+                        )}
+                        {showOwnerReceiveBookButton() &&
+                            bookDepositConfirmed() && (
+                                <Button
+                                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                    onClick={handleReceiveBook}
+                                >
+                                    Received Book
+                                </Button>
+                            )}
+                        {showOwnerReceiveBookButton() && !hasReport() && (
+                            <Button
+                                className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                onClick={handleReceiveBook}
+                            >
+                                Received Book
+                            </Button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="hidden 2xl:block 2xl:col-span-3 space-y-3 sm:space-y-4 md:space-y-6">
+                    {borrowEventData.meet_up_detail.suggestions &&
+                        showSuggestionDetail() && (
+                            <div className="w-full">
+                                <SuggestMeetUpDetail
+                                    startDate={
+                                        borrowEventData.meet_up_detail
+                                            .start_date
+                                    }
+                                    endDate={
+                                        borrowEventData.meet_up_detail.end_date
+                                    }
+                                    suggestMeetUpTime={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_time
+                                    }
+                                    suggestMeetUpLocation={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_location
+                                    }
+                                    suggestedReason={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].suggested_reason
+                                    }
+                                    suggestedByName={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].user?.name ||
+                                        "Unknown"
+                                    }
+                                    suggestedByProfilePicture={
+                                        borrowEventData.meet_up_detail
+                                            .suggestions[0].user?.picture ||
+                                        "default-profile.png"
+                                    }
+                                />
+                            </div>
+                        )}
+
+                    {!showSuggestionDetail() && !showReturnDetail() && (
+                        <div className="w-full overflow-hidden">
+                            <MeetUpDetail
+                                startDate={
+                                    borrowEventData.meet_up_detail.start_date
+                                }
+                                endDate={
+                                    borrowEventData.meet_up_detail.end_date
+                                }
+                                meetUpLocation={
+                                    borrowEventData.meet_up_detail
+                                        .final_location
+                                }
+                                meetUpTime={
+                                    borrowEventData.meet_up_detail.final_time
+                                }
+                                variant="sidebar"
+                            />
+                        </div>
+                    )}
+
+                    {/* Return Detail */}
+                    {showReturnDetail() && (
+                        <div className="w-full">
+                            <ReturnDetail
+                                endDate={
+                                    borrowEventData.meet_up_detail.end_date
+                                }
+                                startDate={
+                                    borrowEventData.meet_up_detail.start_date
+                                }
+                                returnTime={
+                                    borrowEventData.return_detail.return_time
+                                }
+                                returnLocation={
+                                    borrowEventData.return_detail
+                                        .return_location
+                                }
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

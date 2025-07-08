@@ -36,7 +36,7 @@ export function SuggestMeetUpDetail({
     const [isOpen, setIsOpen] = React.useState(false);
 
     return (
-        <div className="mx-2 bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex-col flex">
+        <div className=" bg-white shadow-lg border border-gray-200 overflow-hidden rounded-lg sm:rounded-xl flex-col flex">
             {/* Header */}
             <div className="bg-sidebarColor text-white p-3 sm:p-5">
                 <h1 className="text-lg sm:text-xl  font-semibold leading-tight">

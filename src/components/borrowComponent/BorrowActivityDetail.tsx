@@ -41,7 +41,7 @@ export default function BorrowActivityDetail({
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6 px-2 sm:px-4 lg:px-0">
+        <div className="w-full  mx-auto space-y-2 sm:space-y-3 lg:space-y-4 xl:space-y-6  lg:px-0">
             {/* Book Information */}
             <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                 <div className="bg-sidebarColor text-white p-2 sm:p-3 lg:p-5">
