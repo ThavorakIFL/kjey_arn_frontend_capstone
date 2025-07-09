@@ -1,7 +1,5 @@
-// AuthLayout.jsx
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
-import AuthNavbar from "@/components/AuthNavbar";
 import { Providers } from "../provider";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -12,29 +10,28 @@ const interFont = Inter({
     weight: ["300", "400", "500", "600", "700"],
 });
 
-export default async function AuthLayout({
+export default async function BanLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     const session = await getServerSession(authOptions);
-    if (session) {
-        // If banned, redirect to ban page
-        if (session.status === 0) {
-            redirect("/ban");
-        }
-        // If active, redirect to home
-        if (session.status === 1) {
-            redirect("/home");
-        }
+
+    // If no session, redirect to register
+    if (!session) {
+        redirect("/register");
     }
+
+    // If user is active, redirect to home
+    if (session.status === 1) {
+        redirect("/home");
+    }
+
+    // If status === 0, let them see the ban page
     return (
         <body className={interFont.className}>
             <Providers>
-                <main className="min-h-screen">
-                    <AuthNavbar />
-                    <div className="pt-20">{children}</div>
-                </main>
+                <main className="min-h-screen">{children}</main>
             </Providers>
         </body>
     );

@@ -8,6 +8,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
             profile(profile) {
                 return {
+                    status: profile.status,
                     id: profile.sub,
                     name: profile.name,
                     email: profile.email,
@@ -32,10 +33,10 @@ export const authOptions: NextAuthOptions = {
         },
     },
     callbacks: {
-        async redirect({ url, baseUrl }) {
+        async redirect({ baseUrl }) {
             return `${baseUrl}/home`;
         },
-        async signIn({ user, account, profile }) {
+        async signIn({ user }) {
             if (user.email) {
                 const emailDomain = user.email.split("@")[1];
                 if (emailDomain !== "paragoniu.edu.kh") {
@@ -63,11 +64,11 @@ export const authOptions: NextAuthOptions = {
                 );
                 const data = await response.json();
                 if (response.ok && data.token) {
+                    user.status = data.user.status;
                     user.accessToken = data.token;
                     user.tokenExpiresAt = data.expires_at; // Store expiration
                     user.backendUserId = data.user.id;
-                    console.log("User access token:", user.accessToken);
-                    console.log("Token expires at:", user.tokenExpiresAt);
+                    console.log("User data posted successfully:", data);
 
                     if (data.picture) {
                         user.image = `http://127.0.0.1:8000/${data.user.picture}`;
@@ -86,7 +87,7 @@ export const authOptions: NextAuthOptions = {
             session.accessToken = token.accessToken as string | undefined;
             session.tokenExpiresAt = token.tokenExpiresAt as string | undefined;
             session.backendUserId = token.backendUserId as string | undefined;
-
+            session.status = token.status as number;
             if (session.user) {
                 session.user.image = token.picture as string;
                 session.userSubId = token.sub;
@@ -100,6 +101,7 @@ export const authOptions: NextAuthOptions = {
                 token.picture = user.image || undefined;
                 token.tokenExpiresAt = user.tokenExpiresAt;
                 token.backendUserId = user.backendUserId;
+                token.status = user.status;
             }
 
             return token;

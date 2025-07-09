@@ -15,16 +15,6 @@ import {
     checkForOverdueReturnEvents,
 } from "@/app/(protected)/home/homepage-action"; // Import here
 
-export const metadata = {
-    title: {
-        template: "%s - Kjey Arn",
-        default: "Kjey Arn",
-    },
-    icons: {
-        icon: "/kjeyarnlogo.png",
-    },
-};
-
 export default async function ProtectedLayout({
     children,
 }: {
@@ -35,17 +25,23 @@ export default async function ProtectedLayout({
         redirect("/register");
     }
 
-    // Run checks on EVERY protected page load
-    try {
-        await Promise.all([
-            checkBorrowEvent(),
-            checkUnconfirmedMeetups(),
-            checkUnacceptedBorrowRequests(),
-            checkForOverdueAcceptedEvents(),
-            checkForOverdueReturnEvents(),
-        ]);
-    } catch (error) {
-        console.error("Background checks failed:", error);
+    if (session.status === 0) {
+        redirect("/ban");
+    }
+
+    // Only run background checks if user is active (status === 1)
+    if (session.status === 1) {
+        try {
+            await Promise.all([
+                checkBorrowEvent(),
+                checkUnconfirmedMeetups(),
+                checkUnacceptedBorrowRequests(),
+                checkForOverdueAcceptedEvents(),
+                checkForOverdueReturnEvents(),
+            ]);
+        } catch (error) {
+            console.error("Background checks failed:", error);
+        }
     }
 
     return (
