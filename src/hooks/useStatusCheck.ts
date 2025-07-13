@@ -1,11 +1,11 @@
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function useStatusCheck() {
     const { data: session, update } = useSession();
     const router = useRouter();
-
+    const pathname = usePathname();
     useEffect(() => {
         if (!session?.backendUserId || !session?.accessToken) return;
 
@@ -49,5 +49,6 @@ export function useStatusCheck() {
         session?.status,
         update,
         router,
+        pathname,
     ]);
 }
