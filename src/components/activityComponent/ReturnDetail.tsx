@@ -13,7 +13,7 @@ interface ReturnDetailProps {
 }
 
 export function ReturnDetail({
-    onSwap = () => {},
+    onSwap,
     returnTime,
     returnLocation,
     startDate,

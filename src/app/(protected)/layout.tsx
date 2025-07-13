@@ -52,7 +52,6 @@ export default async function ProtectedLayout({
                 checkUnacceptedBorrowRequests(),
                 checkForOverdueAcceptedEvents(),
                 checkForOverdueReturnEvents(),
-                ,
             ]);
         } catch (error) {
             console.error("Background checks failed:", error);

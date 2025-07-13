@@ -88,7 +88,6 @@ export default function ActivityClient({
 
     const {
         isLoading,
-        error,
         isSubmitting,
         setError,
         handleReceiveBook,
@@ -108,6 +107,20 @@ export default function ActivityClient({
         acceptSuggestion,
         reportBorrowEvent,
     });
+
+    const showReportButton = () => {
+        const userIsBorrowerOrLender =
+            session?.userSubId === borrowEventData.borrower.sub ||
+            session?.userSubId === borrowEventData.lender.sub;
+
+        return (
+            (isStartDate &&
+                borrowEventData.borrow_status.borrow_status_id === 2 &&
+                userIsBorrowerOrLender) ||
+            (isTimeToReturn &&
+                borrowEventData.borrow_status.borrow_status_id === 7)
+        );
+    };
 
     const showCancelButton = () => {
         return (
@@ -488,8 +501,6 @@ export default function ActivityClient({
                         )}
                     </div>
 
-                    {/* Extra Large Desktop Guide Message */}
-
                     {/* Mobile/Tablet/Desktop Action Buttons */}
                     <div className="2xl:hidden flex flex-wrap gap-2 justify-center sm:justify-start">
                         {showCancelButton() && (
@@ -515,10 +526,8 @@ export default function ActivityClient({
                                 onSubmit={handleReturnSubmit}
                             />
                         )}
-                        {(showSetReturnDetailButton() ||
-                            (isTimeToReturn &&
-                                borrowEventData.borrow_status
-                                    .borrow_status_id === 7)) && (
+
+                        {showReportButton() && (
                             <ReportDialog
                                 isTimeToReturn={isTimeToReturn}
                                 sub={borrowEventData.borrower.sub || ""}
@@ -530,6 +539,7 @@ export default function ActivityClient({
                                 }
                             />
                         )}
+
                         {showOwnerReceiveBookButton() &&
                             bookDepositConfirmed() && (
                                 <Button
@@ -564,10 +574,8 @@ export default function ActivityClient({
                                 onSubmit={handleReturnSubmit}
                             />
                         )}
-                        {(showSetReturnDetailButton() ||
-                            (isTimeToReturn &&
-                                borrowEventData.borrow_status
-                                    .borrow_status_id === 7)) && (
+
+                        {showReportButton() && (
                             <ReportDialog
                                 isTimeToReturn={isTimeToReturn}
                                 sub={borrowEventData.borrower.sub || ""}
@@ -579,6 +587,7 @@ export default function ActivityClient({
                                 }
                             />
                         )}
+
                         {showOwnerReceiveBookButton() &&
                             bookDepositConfirmed() && (
                                 <Button

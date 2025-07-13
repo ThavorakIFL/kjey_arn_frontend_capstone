@@ -18,7 +18,7 @@ export function MeetUpDetail({
     startDate,
     endDate,
     variant = "standalone", // Default to standalone for backward compatibility
-    onSwap = () => {},
+    onSwap,
 }: MeetUpDetailProps) {
     const meetUpItems = [
         {

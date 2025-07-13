@@ -105,20 +105,20 @@ export function ReportDialog({
     };
 
     return (
-        <div className="w-full sm:w-auto">
+        <div className="w-full md:w-auto">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
                     <Button
-                        className="h-12 w-full md:w-40 cursor-pointer whitespace-normal text-sm leading-tight"
+                        className="w-full md:w-40 h-12 cursor-pointer whitespace-normal text-sm leading-tight"
                         variant="destructive"
                     >
-                        Report
+                        {isTimeToReturn ? "Report" : "Cancel"}
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle className="text-2xl">
-                            Reason for Report
+                            Reason for Cancellation
                         </DialogTitle>
                     </DialogHeader>
                     <div className="w-full">
@@ -164,7 +164,7 @@ export function ReportDialog({
                                 ? isBorrower
                                     ? "Please deposit the book in the library and notify the librarian."
                                     : "The borrower have been notified please don't forget to get the book and confirm the deposit."
-                                : "The borrow event will be cancelled and reported to the admin."}
+                                : "Would you like to cancel this borrow activity?"}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
