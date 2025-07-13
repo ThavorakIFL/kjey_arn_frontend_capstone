@@ -3,6 +3,7 @@ import { PaginatedBooks } from "@/types/paginated-books";
 import { Book } from "@/types/book";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { authenticatedFetch, publicFetch } from "@/lib/utils";
 
 interface FetchBooksOptions {
     perPage?: number;
@@ -19,24 +20,12 @@ export async function fetchNewlyAddedBooks({
         const params = new URLSearchParams();
         params.append("limit", limit.toString());
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}newly-added-books?${params}`,
-            {
-                method: "GET",
-            }
-        );
-
-        if (!response.ok) {
-            return { books: [], error: "Failed to fetch newly added books." };
-        }
-
-        const data = await response.json();
+        const data = await publicFetch(`newly-added-books?${params}`);
         return { books: data.data, error: null };
     } catch (error) {
-        console.error("Error fetching newly added books:", error);
         return {
             books: [],
-            error: "An error occurred while fetching newly added books.",
+            error: error instanceof Error ? error.message : String(error),
         };
     }
 }
@@ -46,246 +35,61 @@ export async function fetchBooks({
     genres = [],
     page = 1,
 }: FetchBooksOptions): Promise<{ books: Book[]; error: string | null }> {
-    const params = new URLSearchParams();
+    try {
+        const params = new URLSearchParams();
+        params.append("per_page", perPage.toString());
+        params.append("page", page.toString());
 
-    params.append("per_page", perPage.toString());
-    params.append("page", page.toString());
-
-    if (genres.length > 0) {
-        genres.forEach((genreId) =>
-            params.append("genres[]", genreId.toString())
-        );
-    }
-
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}all-books`,
-        {
-            method: "GET",
+        if (genres.length > 0) {
+            genres.forEach((genreId) =>
+                params.append("genres[]", genreId.toString())
+            );
         }
-    );
-    if (!response.ok) {
-        return { books: [], error: "Failed to fetch books." }; // Return empty books and error
+        const data: PaginatedBooks = await publicFetch(`all-books?${params}`);
+        return { books: data.data.books, error: null };
+    } catch (error) {
+        return {
+            books: [],
+            error: error instanceof Error ? error.message : String(error),
+        };
     }
-
-    const data: PaginatedBooks = await response.json();
-    return { books: data.data.books, error: null }; // Return books and no error
 }
 
 export async function checkBorrowEvent() {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
-
     try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}check-borrow-event`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            // Only treat actual errors as errors
-            console.error("API Error:", {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            });
-
-            switch (response.status) {
-                case 401:
-                    throw new Error("Authentication required");
-                case 500:
-                    throw new Error("Server error occurred");
-                default:
-                    throw new Error(
-                        `Request failed: ${data.message || response.statusText}`
-                    );
-            }
-        }
-
-        // All 200 responses are successful, regardless of data content
-        return data;
+        return await authenticatedFetch("check-borrow-event");
     } catch (error) {
-        console.error("Error checking borrow event", error);
         throw error;
     }
 }
 
 export async function checkUnconfirmedMeetups() {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
-
     try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}check-unconfirmed-meetups`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            // Only treat actual errors as errors
-            console.error("API Error:", {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            });
-
-            switch (response.status) {
-                case 401:
-                    throw new Error("Authentication required");
-                case 500:
-                    throw new Error("Server error occurred");
-                default:
-                    throw new Error(
-                        `Request failed: ${data.message || response.statusText}`
-                    );
-            }
-        }
-
-        return data;
+        return await authenticatedFetch("check-unconfirmed-meetups");
     } catch (error) {
-        console.error("Error checking unconfirmed meetups", error);
         throw error;
     }
 }
 
 export async function checkUnacceptedBorrowRequests() {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
-
     try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}check-unaccepted-borrow-requests`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            // Only treat actual errors as errors
-            console.error("API Error:", {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            });
-
-            switch (response.status) {
-                case 401:
-                    throw new Error("Authentication required");
-                case 500:
-                    throw new Error("Server error occurred");
-                default:
-                    throw new Error(
-                        `Request failed: ${data.message || response.statusText}`
-                    );
-            }
-        }
-
-        return data;
+        return await authenticatedFetch("check-unaccepted-borrow-requests");
     } catch (error) {
-        console.error("Error checking unaccepted borrow requests", error);
         throw error;
     }
 }
 
 export async function checkForOverdueAcceptedEvents() {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
-
     try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}check-overdue-accepted-borrow-events`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-        const data = await response.json();
-
-        if (!response.ok) {
-            // Only treat actual errors as errors
-            console.error("API Error:", {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            });
-
-            switch (response.status) {
-                case 401:
-                    throw new Error("Authentication required");
-                case 500:
-                    throw new Error("Server error occurred");
-                default:
-                    throw new Error(
-                        `Request failed: ${data.message || response.statusText}`
-                    );
-            }
-        }
-        return data;
+        return await authenticatedFetch("check-overdue-accepted-borrow-events");
     } catch (error) {
-        console.error("Error checking overdue accepted events", error);
         throw error;
     }
 }
 export async function checkForOverdueReturnEvents() {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
     try {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}check-overdue-return-events`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error("API Error:", {
-                status: response.status,
-                statusText: response.statusText,
-                data: data,
-            });
-
-            switch (response.status) {
-                case 401:
-                    throw new Error("Authentication required");
-                case 500:
-                    throw new Error("Server error occurred");
-                default:
-                    throw new Error(
-                        `Request failed: ${data.message || response.statusText}`
-                    );
-            }
-        }
-        return data;
+        return await authenticatedFetch("check-overdue-return-events");
     } catch (error) {
-        console.error("Error checking overdue return events", error);
         throw error;
     }
 }

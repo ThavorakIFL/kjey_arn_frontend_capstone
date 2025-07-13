@@ -16,7 +16,6 @@ export async function getUserProfile() {
         const profileData = await response.json();
         return await profileData;
     } catch (error) {
-        console.error("Error fetching user profile", error);
         throw error;
     }
 }
@@ -37,12 +36,27 @@ export async function updateUserBio(bio: string) {
                 body: JSON.stringify({ bio }),
             }
         );
+
         if (!response.ok) {
-            throw new Error("Failed to update bio");
+            return {
+                success: false,
+                message: "Failed to update bio. Please try again.",
+            };
         }
+
+        return {
+            success: true,
+            message: "Bio updated successfully!",
+        };
     } catch (error) {
-        console.error("Error updating user bio:", error);
-        throw error;
+        console.error("Error updating bio:", error);
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred",
+        };
     }
 }
 
@@ -80,7 +94,6 @@ export async function fetchUserBook() {
 
         throw new Error(data.message || "Failed to fetch user books");
     } catch (error: any) {
-        console.error("Error fetching user books:", error.message);
         return {
             success: false,
             message:

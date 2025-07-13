@@ -1,6 +1,6 @@
 "use client";
-
-import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileIcon from "@/components/ProfileIcon";
@@ -70,17 +70,38 @@ export default function ProfilePageClient({
     };
 
     const handleSave = async () => {
+        console.log("handleSave called"); // Debug log
         try {
             setIsSubmitting(true);
-            await updateUserBio(bio);
-            setUserData((prev) => ({
-                ...prev,
-                bio,
-            }));
-            setSelectAction("");
-            setEditingBio(false);
+            const response = await updateUserBio(bio);
+            console.log("Response:", response); // Debug log
+
+            if (response.success) {
+                setUserData((prev) => ({
+                    ...prev,
+                    bio,
+                }));
+                setSelectAction("");
+                setEditingBio(false);
+
+                // Success toast
+                console.log("About to show success toast"); // Debug log
+                toast.success(response.message || "Bio updated successfully!");
+            } else {
+                // Error toast for failed response
+                console.log("About to show error toast"); // Debug log
+                toast.error(response.message || "Failed to update bio");
+            }
         } catch (error) {
             console.error("Failed to save bio:", error);
+
+            // Error toast for caught exceptions
+            console.log("About to show catch error toast"); // Debug log
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred"
+            );
         } finally {
             setIsSubmitting(false);
         }

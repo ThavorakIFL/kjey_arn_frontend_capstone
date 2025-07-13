@@ -4,11 +4,7 @@ import HomePageClient from "./HomePageClient";
 const HomePage = async () => {
     const response = await fetchNewlyAddedBooks({});
     const { books, error } = response;
-    return (
-        <main>
-            <HomePageClient books={books} error={error} />
-        </main>
-    );
+    return <HomePageClient books={books} error={error} />;
 };
 
 export default HomePage;

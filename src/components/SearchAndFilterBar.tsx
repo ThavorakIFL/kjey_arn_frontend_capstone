@@ -54,67 +54,37 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         const loadGenres = async () => {
             setIsLoadingGenres(true);
             try {
-                console.log("🔄 Starting to fetch genres...");
-
                 const {
                     backendGenres,
                     genreMap: fetchedGenreMap,
                     reverseMap,
                 } = await fetchGenres();
-
-                console.log("📦 Backend genres received:", backendGenres);
-                console.log("🗺️ Genre map:", fetchedGenreMap);
-                console.log("🔄 Reverse map:", reverseMap);
-
                 setGenreMap(fetchedGenreMap);
                 setReverseGenreMap(reverseMap);
-
                 const availableBackendGenres = genreOptions.filter((genre) =>
                     fetchedGenreMap.hasOwnProperty(genre)
                 );
-
-                console.log(
-                    "✅ Available backend genres:",
-                    availableBackendGenres
-                );
-                console.log("📋 All genreOptions:", genreOptions);
-
                 if (availableBackendGenres.length > 0) {
                     const allBackendGenres = backendGenres.map((g) => g.genre);
-                    console.log(
-                        "📋 Showing all backend genres:",
-                        allBackendGenres
-                    );
                     setAvailableGenres(allBackendGenres as GenreType[]);
                     // setAvailableGenres(availableBackendGenres);
                 } else {
-                    console.log("⚠️ No matching genres found, using fallback");
                     setAvailableGenres(genreOptions);
                 }
-
                 setGenresLoaded(true);
             } catch (error) {
-                console.error("❌ Failed to load genres:", error);
-                // Your fallback code...
             } finally {
                 setIsLoadingGenres(false);
             }
         };
-
         loadGenres();
     }, []);
-
-    // Initialize from URL params only after genres are loaded
     useEffect(() => {
         if (!genresLoaded) return;
-
         const urlQuery = searchParams.get("q") || defaultQuery;
         const urlType = searchParams.get("type") || defaultType;
-
         setQuery(urlQuery);
         setType(urlType);
-
-        // Only set genres from URL if genres are loaded and we have the reverse map
         const urlGenreIds = searchParams.get("genre_ids");
         if (urlGenreIds && Object.keys(reverseGenreMap).length > 0) {
             const genreIds = urlGenreIds
@@ -164,15 +134,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         );
     };
 
-    // const handleClearAllGenres = () => {
-    //     setSelectedGenres([]);
-    //     const searchDestination = getSearchDestination();
-    //     const url = new URLSearchParams();
-    //     url.set("q", query);
-    //     url.set("type", type);
-    //     router.push(`/${searchDestination}?${url.toString()}`);
-    // };
-
     const handleClearAllGenres = () => {
         setSelectedGenres([]);
         const searchDestination = getSearchDestination();
@@ -187,24 +148,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     const handleSearch = () => {
         const searchDestination = getSearchDestination();
         const url = new URLSearchParams(searchParams.toString());
-        // url.set("q", query);
-        // url.set("type", type);
 
-        // if (type === "book" && selectedGenres.length > 0) {
-        //     const genre_ids = selectedGenres
-        //         .map((genre) => genreMap[genre])
-        //         .filter((id) => id !== undefined);
-
-        //     if (genre_ids.length > 0) {
-        //         url.set("genre_ids", genre_ids.join(","));
-        //     }
-        // }
-
-        // if (onSearch) {
-        //     onSearch(query, type, selectedGenres);
-        // }
-
-        // router.push(`/${searchDestination}?${url.toString()}`);
         if (query.trim()) {
             url.set("q", query.trim());
         } else {
@@ -278,22 +222,22 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                 <SelectTrigger
                                     className="
                                     cursor-pointer
-              w-32 sm:w-36 
-              border border-slate-200/80 
-              shadow-sm 
-              hover:shadow-md 
+              w-32 sm:w-36
+              border border-slate-200/80
+              shadow-sm
+              hover:shadow-md
               hover:border-slate-300
               focus:border-slate-400
-              focus:ring-2 
+              focus:ring-2
               focus:ring-slate-100
-              text-sm 
+              text-sm
               font-medium
               bg-white
-              transition-all 
-              duration-200 
+              transition-all
+              duration-200
               ease-in-out
               rounded-lg
-              px-3 
+              px-3
               py-2.5
               text-slate-700
               hover:bg-slate-50/50
@@ -307,14 +251,14 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
 
                                 <SelectContent
                                     className="
-              border 
-              border-slate-200/80 
-              shadow-xl 
-              rounded-lg 
-              bg-white 
+              border
+              border-slate-200/80
+              shadow-xl
+              rounded-lg
+              bg-white
               backdrop-blur-sm
-              animate-in 
-              fade-in-0 
+              animate-in
+              fade-in-0
               zoom-in-95
             "
                                 >
@@ -322,10 +266,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                         <SelectItem
                                             value="book"
                                             className="
-                    text-sm 
-                    font-medium 
-                    text-slate-700 
-                    hover:bg-slate-50 
+                    text-sm
+                    font-medium
+                    text-slate-700
+                    hover:bg-slate-50
                     hover:text-slate-900
                     focus:bg-slate-100
                     cursor-pointer
@@ -342,10 +286,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                         <SelectItem
                                             value="reader"
                                             className="
-                    text-sm 
-                    font-medium 
-                    text-slate-700 
-                    hover:bg-slate-50 
+                    text-sm
+                    font-medium
+                    text-slate-700
+                    hover:bg-slate-50
                     hover:text-slate-900
                     focus:bg-slate-100
                     cursor-pointer
@@ -371,9 +315,9 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         <Button
                             className="
                             cursor-pointer
-                flex-1 sm:flex-none sm:min-w-[140px] 
-                !h-12 sm:!h-14  bg-sidebarColor 
-                
+                flex-1 sm:flex-none sm:min-w-[140px]
+                !h-12 sm:!h-14  bg-sidebarColor
+
                 text-xs sm:text-sm
                 px-3 sm:px-4
                 gap-2
@@ -409,7 +353,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                             className="
                             cursor-pointer
                 sm:hidden flex-shrink-0
-                !h-12 !w-12  
+                !h-12 !w-12
                bg-primaryBlue hover:bg-primaryBlue/90
                 p-0
             "
@@ -426,9 +370,9 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         className="
                         cursor-pointer
             flex-1  sm:min-w-[140px]
-              h-12 sm:h-14 
+              h-12 sm:h-14
             bg-primaryBlue
-            hover:bg-primaryBlue/90 
+            hover:bg-primaryBlue/90
             text-xs sm:text-sm
             px-4
         "
@@ -453,10 +397,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     {showGenreFilter && (
                         <div
                             className="
-                            w-full sm:w-80 
-                            bg-white border rounded-lg shadow-lg 
-                            p-4 
-                            max-h-64 sm:max-h-80 
+                            w-full sm:w-80
+                            bg-white border rounded-lg shadow-lg
+                            p-4
+                            max-h-64 sm:max-h-80
                             overflow-auto
                             right-0
                         "
@@ -484,7 +428,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                             <label
                                                 key={genre}
                                                 className="
-                                                    flex items-center space-x-2 cursor-pointer 
+                                                    flex items-center space-x-2 cursor-pointer
                                                     p-2 rounded hover:bg-gray-50
                                                     text-sm
                                                 "
@@ -548,10 +492,10 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         <div
                             key={genre}
                             className="
-                       
-                                bg-blue-100 text-blue-800 
-                                rounded-full 
-                                px-2 sm:px-3 py-1 
+
+                                bg-blue-100 text-blue-800
+                                rounded-full
+                                px-2 sm:px-3 py-1
                                 text-xs sm:text-sm
                                 flex items-center gap-1
                                 max-w-full
