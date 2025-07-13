@@ -5,7 +5,6 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Providers } from "../provider";
 import "../globals.css";
-import kjeyarnlogo from "@/assets/kjeyarnlogo.png";
 import NavSideBar from "@/components/NavSideBar";
 import {
     checkBorrowEvent,
@@ -13,7 +12,9 @@ import {
     checkUnacceptedBorrowRequests,
     checkForOverdueAcceptedEvents,
     checkForOverdueReturnEvents,
+    checkUserStatus,
 } from "@/app/(protected)/home/homepage-action"; // Import here
+import StatusChecker from "@/components/StatusChecker";
 
 export default async function ProtectedLayout({
     children,
@@ -25,11 +26,24 @@ export default async function ProtectedLayout({
         redirect("/register");
     }
 
+    if (session.backendUserId && session.accessToken) {
+        const currentStatus = await checkUserStatus(
+            session.backendUserId,
+            session.accessToken
+        );
+
+        if (currentStatus !== null && currentStatus !== session.status) {
+            session.status = currentStatus;
+            if (currentStatus === 0) {
+                redirect("/ban");
+            }
+        }
+    }
+
     if (session.status === 0) {
         redirect("/ban");
     }
 
-    // Only run background checks if user is active (status === 1)
     if (session.status === 1) {
         try {
             await Promise.all([
@@ -38,6 +52,7 @@ export default async function ProtectedLayout({
                 checkUnacceptedBorrowRequests(),
                 checkForOverdueAcceptedEvents(),
                 checkForOverdueReturnEvents(),
+                ,
             ]);
         } catch (error) {
             console.error("Background checks failed:", error);
@@ -47,6 +62,7 @@ export default async function ProtectedLayout({
     return (
         <div>
             <Providers>
+                <StatusChecker />
                 <NavSideBar>{children}</NavSideBar>
                 <Toaster
                     position="bottom-right"

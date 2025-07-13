@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
                 return false;
             }
         },
-        async session({ session, token }) {
+        async session({ session, token, newSession, trigger }) {
             session.accessToken = token.accessToken as string | undefined;
             session.tokenExpiresAt = token.tokenExpiresAt as string | undefined;
             session.backendUserId = token.backendUserId as string | undefined;
@@ -93,15 +93,24 @@ export const authOptions: NextAuthOptions = {
                 session.userSubId = token.sub;
             }
 
+            if (trigger === "update" && newSession?.status !== undefined) {
+                session.status = newSession.status;
+                token.status = newSession.status;
+            }
+
             return session;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, session, trigger }) {
             if (user) {
                 token.accessToken = user.accessToken;
                 token.picture = user.image || undefined;
                 token.tokenExpiresAt = user.tokenExpiresAt;
                 token.backendUserId = user.backendUserId;
                 token.status = user.status;
+            }
+
+            if (trigger === "update" && session?.status !== undefined) {
+                token.status = session.status;
             }
 
             return token;
