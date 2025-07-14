@@ -29,7 +29,7 @@ export default function AllReaderPageClient() {
 
     const query = searchParams.get("q") || "";
     const currentPage = parseInt(searchParams.get("page") || "1");
-    const perPage = parseInt(searchParams.get("per_page") || "14");
+    const perPage = parseInt(searchParams.get("per_page") || "16");
 
     const [readers, setReaders] = useState<any[]>([]);
     const [error, setError] = useState("");
