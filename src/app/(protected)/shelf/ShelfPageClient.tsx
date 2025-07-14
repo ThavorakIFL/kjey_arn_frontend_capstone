@@ -273,7 +273,7 @@ export default function ShelfPage({}) {
                             {!query && (
                                 <Button
                                     onClick={() => router.push("/add-book")}
-                                    className="w-full sm:w-auto"
+                                    className="w-full sm:w-auto mt-8"
                                     size="lg"
                                 >
                                     <Plus className="h-4 w-4 mr-2" />

@@ -605,7 +605,7 @@ export default function ActivityClient({
                         {showOwnerReceiveBookButton() &&
                             bookDepositConfirmed() && (
                                 <Button
-                                    className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                    className="h-12 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm cursor-pointer"
                                     onClick={handleReceiveBook}
                                 >
                                     Received Book
@@ -653,7 +653,7 @@ export default function ActivityClient({
                         {showOwnerReceiveBookButton() &&
                             bookDepositConfirmed() && (
                                 <Button
-                                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                    className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm cursor-pointer"
                                     onClick={handleReceiveBook}
                                 >
                                     Received Book
@@ -661,7 +661,7 @@ export default function ActivityClient({
                             )}
                         {showOwnerReceiveBookButton() && !hasReport() && (
                             <Button
-                                className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm"
+                                className="h-10 sm:h-11 md:h-12 w-full sm:w-auto sm:min-w-[140px] md:min-w-[160px] text-xs sm:text-sm cursor-pointer"
                                 onClick={handleReceiveBook}
                             >
                                 Received Book

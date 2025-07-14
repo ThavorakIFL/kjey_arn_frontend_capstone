@@ -37,11 +37,10 @@ const TitleBar: React.FC<TitleBarProps> = ({
                     onClick={onAction}
                     className="
                         bg-primaryBlue cursor-pointer 
-                        w-32 sm:w-auto 
+                        w-32 
                         min-w-[120px] sm:min-w-[140px]
                         h-12  lg:h-14 
                         hover:bg-primaryBlue/90 
-                        text-sm sm:text-base
                         px-4 sm:px-6
                         flex-shrink-0
                     "

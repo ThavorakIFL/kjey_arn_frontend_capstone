@@ -74,8 +74,6 @@ export async function fetchSearchData(query: {
             cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
-                // Add any authentication headers if needed
-                // 'Authorization': `Bearer ${token}`,
             },
         });
 

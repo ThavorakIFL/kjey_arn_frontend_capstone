@@ -96,20 +96,13 @@ export default function ActivityBell() {
             <button
                 ref={buttonRef}
                 onClick={handleClick}
-                className="relative p-2"
+                className="relative p-2 cursor-pointer"
             >
                 <Bell className="h-6 w-6" />
                 {/* Debug: Show the count even if it's 0 for testing */}
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1.5 py-0.5 min-w-[18px] text-center">
                     {newCount > 99 ? "99+" : newCount}
                 </span>
-                {/* Original conditional badge - uncomment after debugging
-                {newCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1.5 py-0.5 min-w-[18px] text-center">
-                        {newCount > 99 ? "99+" : newCount}
-                    </span>
-                )}
-                */}
             </button>
 
             {/* Portal for dropdown - renders outside the normal DOM tree */}
@@ -171,18 +164,6 @@ export default function ActivityBell() {
                                 <p className="text-xs text-gray-500 text-center">
                                     {activities.length} recent activities
                                 </p>
-                                {/* Debug: Clear localStorage button */}
-                                {/* <button
-                                    onClick={() => {
-                                        localStorage.removeItem(
-                                            "activities_last_viewed"
-                                        );
-                                        window.location.reload();
-                                    }}
-                                    className="mt-2 text-xs bg-red-100 text-red-600 px-2 py-1 rounded w-full"
-                                >
-                                    Reset "Last Viewed" (Debug)
-                                </button> */}
                             </div>
                         )}
                     </div>,

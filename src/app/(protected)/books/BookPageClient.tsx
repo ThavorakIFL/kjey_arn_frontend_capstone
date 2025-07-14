@@ -257,7 +257,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-gray-600 font-light mb-2">
+                            <h3 className="text-gray-600 font-light mb-2 break-words whitespace-pre-wrap overflow-wrap-anywhere">
                                 Description
                             </h3>
                             <p className="text-sm sm:text-base">
@@ -461,7 +461,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                 </div>
 
                                 <div>
-                                    <h3 className="text-gray-600 font-light mb-2">
+                                    <h3 className="text-gray-600 font-light mb-2 break-words whitespace-pre-wrap overflow-wrap-anywhere">
                                         Description
                                     </h3>
                                     <p>{book.description}</p>

@@ -16,6 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
+import { MapPin } from "lucide-react";
 
 interface ReturnDetailDialogProps {
     onSubmit: (data: { return_time: string; return_location: string }) => void;
@@ -71,14 +72,15 @@ export function ReturnDetailDialog({
                         name="return_time"
                         value={formData.return_time}
                         onChange={handleSelectChange}
-                        label="Return Time:"
+                        label="Return Time"
                     />
 
                     <div>
                         <label
                             htmlFor="return_location"
-                            className="block text-sm font-medium mb-2"
+                            className="text-gray-700 flex items-center gap-2 text-sm font-semibold mb-2 "
                         >
+                            <MapPin className="h-4 w-4" />
                             Return Location
                         </label>
                         <Select
@@ -90,7 +92,7 @@ export function ReturnDetailDialog({
                                 }))
                             }
                         >
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full cursor-pointer">
                                 <SelectValue placeholder="Select return location" />
                             </SelectTrigger>
                             <SelectContent>
@@ -98,6 +100,7 @@ export function ReturnDetailDialog({
                                 locationData.data?.length > 0 ? (
                                     locationData.data.map((location) => (
                                         <SelectItem
+                                            className="cursor-pointer"
                                             key={location.id}
                                             value={location.location}
                                         >
@@ -114,14 +117,14 @@ export function ReturnDetailDialog({
                     </div>
                     <div className="flex justify-end space-x-4">
                         <Button
-                            className="h-12"
+                            className="h-12 cursor-pointer"
                             variant={"outline"}
                             onClick={() => setIsOpen(false)}
                         >
                             Cancel
                         </Button>
                         <Button
-                            className="h-12"
+                            className="h-12 cursor-pointer"
                             type="button"
                             variant="default"
                             onClick={handleSubmit}

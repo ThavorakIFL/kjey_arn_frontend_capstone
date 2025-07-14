@@ -328,7 +328,7 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                 <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
                                     {/* Library button */}
                                     <Tooltip>
-                                        <TooltipTrigger>
+                                        <TooltipTrigger asChild>
                                             <div
                                                 onClick={() =>
                                                     router.push("/shelf")
@@ -348,48 +348,68 @@ function NavSideBarContent({ children }: { children: React.ReactNode }) {
                                         </TooltipContent>
                                     </Tooltip>
                                     {/* Activity bell */}
-                                    <div className="z-50 flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300 cursor-pointer">
-                                        <ActivityBell />
+                                    <div className="z-50 flex justify-center items-center w-10 h-10 sm:w-12 sm:h-12 rounded-3xl hover:bg-gray-200 transition-all duration-300 ">
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div className="cursor-pointer">
+                                                    <ActivityBell />
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Notification</p>
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </div>
 
                                     {/* Profile dropdown */}
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <div className="cursor-pointer w-10 h-10 sm:w-12 sm:h-12 rounded-3xl bg-gray-200 hover:bg-gray-300 overflow-hidden flex-shrink-0">
-                                                {status === "loading" ? (
-                                                    <div className="w-full h-full bg-gray-300 animate-pulse rounded-full" />
-                                                ) : (
-                                                    <Image
-                                                        width={48}
-                                                        height={48}
-                                                        src={
-                                                            session?.user
-                                                                ?.image ||
-                                                            "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
-                                                        }
-                                                        className="rounded-full w-full h-full object-cover"
-                                                        alt="Profile"
-                                                        onError={(e) => {
-                                                            e.currentTarget.src =
-                                                                "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg";
-                                                        }}
-                                                    />
-                                                )}
-                                            </div>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            onClick={() => {
-                                                signOut({
-                                                    callbackUrl: "/",
-                                                });
-                                            }}
-                                            className="cursor-pointer w-auto h-auto bg-red-500 px-4 py-2 text-center rounded-lg"
-                                        >
-                                            <div className="text-white">
-                                                Logout
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
+                                    <Tooltip>
+                                        <TooltipTrigger>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <div className="cursor-pointer w-10 h-10 sm:w-12 sm:h-12 rounded-3xl bg-gray-200 hover:bg-gray-300 overflow-hidden flex-shrink-0">
+                                                        {status ===
+                                                        "loading" ? (
+                                                            <div className="w-full h-full bg-gray-300 animate-pulse rounded-full" />
+                                                        ) : (
+                                                            <Image
+                                                                width={48}
+                                                                height={48}
+                                                                src={
+                                                                    session
+                                                                        ?.user
+                                                                        ?.image ||
+                                                                    "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg"
+                                                                }
+                                                                className="rounded-full w-full h-full object-cover"
+                                                                alt="Profile"
+                                                                onError={(
+                                                                    e
+                                                                ) => {
+                                                                    e.currentTarget.src =
+                                                                        "https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg";
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </PopoverTrigger>
+                                                <PopoverContent
+                                                    onClick={() => {
+                                                        signOut({
+                                                            callbackUrl: "/",
+                                                        });
+                                                    }}
+                                                    className="cursor-pointer w-auto h-auto bg-red-500 px-4 py-2 text-center rounded-lg"
+                                                >
+                                                    <div className="text-white">
+                                                        Logout
+                                                    </div>
+                                                </PopoverContent>
+                                            </Popover>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Logout?</p>
+                                        </TooltipContent>
+                                    </Tooltip>
 
                                     {/* User name */}
                                     <p
