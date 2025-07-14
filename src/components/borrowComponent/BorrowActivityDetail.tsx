@@ -1,4 +1,8 @@
+"use client";
+
 import React from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Mail, Calendar, Clock } from "lucide-react";
 import BorrowStatus from "./BorrowStatus";
@@ -9,8 +13,10 @@ interface BorrowActivityDetailProps {
     bookAuthor: string;
     borrowerProfileImage: string;
     lenderProfileImage: string;
+    borrowerSubId?: string;
     borrowerName: string;
     borrowerEmail: string;
+    lenderSubId?: string;
     lenderName: string;
     lenderEmail: string;
     startDate: string;
@@ -27,17 +33,18 @@ export default function BorrowActivityDetail({
     borrowerEmail,
     lenderName,
     lenderEmail,
-    startDate,
-    endDate,
+    borrowerSubId,
+    lenderSubId,
 }: BorrowActivityDetailProps) {
-    const formatDate = (dateString: string) => {
-        if (!dateString) return "Not specified";
-        return new Date(dateString).toLocaleDateString("en-US", {
-            weekday: "short",
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
+    const { data: session } = useSession();
+    const router = useRouter();
+
+    const handleNavigateToProfile = (subId: string) => () => {
+        if (session?.userSubId !== subId) {
+            router.push(`/user-profile/${subId}`);
+        } else {
+            router.push("/my-profile");
+        }
     };
 
     return (
@@ -77,7 +84,12 @@ export default function BorrowActivityDetail({
                                         <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                         Borrower
                                     </h4>
-                                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        onClick={handleNavigateToProfile(
+                                            borrowerSubId || ""
+                                        )}
+                                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg cursor-pointer"
+                                    >
                                         <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0">
                                             <AvatarImage
                                                 src={
@@ -113,7 +125,12 @@ export default function BorrowActivityDetail({
                                         <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                         Lender
                                     </h4>
-                                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg">
+                                    <div
+                                        onClick={handleNavigateToProfile(
+                                            lenderSubId || ""
+                                        )}
+                                        className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 lg:p-4 bg-gray-50 rounded-lg cursor-pointer"
+                                    >
                                         <Avatar className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0">
                                             <AvatarImage
                                                 src={

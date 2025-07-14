@@ -44,7 +44,6 @@ export function BorrowRequestAction({
     isSubmitting,
     locationData,
 }: BorrowRequestActionProps) {
-    console.log("Location Data in Popup", locationData);
     const [showAcceptDialog, setShowAcceptDialog] = useState(false);
     const [showRejectDialog, setShowRejectDialog] = useState(false);
     const [meetUpData, setMeetUpData] = useState({
@@ -113,17 +112,17 @@ export function BorrowRequestAction({
                     <Button
                         onClick={() => setShowRejectDialog(true)}
                         variant="destructive"
-                        className="h-12 w-full sm:w-40 cursor-pointer text-sm sm:text-base  "
+                        className="h-12 w-full sm:w-40 cursor-pointer "
                         disabled={isSubmitting}
                     >
-                        Reject Request
+                        Reject
                     </Button>
                     <Button
                         onClick={() => setShowAcceptDialog(true)}
-                        className="h-12  w-full sm:w-40 bg-black hover:bg-black/60  cursor-pointer text-sm sm:text-base"
+                        className="h-12  w-full sm:w-40 bg-primaryBlue hover:bg-primaryBlue/90   cursor-pointer "
                         disabled={isSubmitting}
                     >
-                        Accept Request
+                        Accept
                     </Button>
                 </div>
             </div>
@@ -222,14 +221,14 @@ export function BorrowRequestAction({
                         <Button
                             onClick={() => setShowAcceptDialog(false)}
                             variant="outline"
-                            className="w-full sm:w-auto text-sm sm:text-base cursor-pointer"
+                            className="w-full sm:w-auto h-12 cursor-pointer"
                             disabled={isSubmitting}
                         >
                             Cancel
                         </Button>
                         <Button
                             onClick={handleAccept}
-                            className="w-full sm:w-auto bg-primaryBlue hover:bg-primaryBlue/90 text-sm sm:text-base cursor-pointer"
+                            className="h-12 w-full sm:w-auto bg-primaryBlue hover:bg-primaryBlue/90  cursor-pointer"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Processing..." : "Confirm Accept"}
@@ -278,7 +277,7 @@ export function BorrowRequestAction({
                         <Button
                             onClick={() => setShowRejectDialog(false)}
                             variant="outline"
-                            className="w-full sm:w-auto text-sm sm:text-base"
+                            className="w-full sm:w-auto h-12 cursor-pointer"
                             disabled={isSubmitting}
                         >
                             Cancel
@@ -286,7 +285,7 @@ export function BorrowRequestAction({
                         <Button
                             onClick={handleReject}
                             variant="destructive"
-                            className="w-full sm:w-auto text-sm sm:text-base"
+                            className="w-full sm:w-auto h-12  cursor-pointer"
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? "Processing..." : "Confirm Reject"}

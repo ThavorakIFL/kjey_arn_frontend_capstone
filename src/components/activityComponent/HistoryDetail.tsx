@@ -1,4 +1,8 @@
+"use client";
+
 import React from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BorrowStatus from "@/components/borrowComponent/BorrowStatus";
 import { User } from "lucide-react";
@@ -13,6 +17,8 @@ interface HistoryDetailProps {
     borrowerEmail: string;
     lenderName: string;
     lenderEmail: string;
+    borrowerSubId?: string;
+    lenderSubId?: string;
 }
 
 export default function HistoryDetail({
@@ -21,16 +27,29 @@ export default function HistoryDetail({
     bookAuthor,
     borrowerProfileImage,
     lenderProfileImage,
+    borrowerSubId,
+    lenderSubId,
     borrowerName,
     borrowerEmail,
     lenderName,
     lenderEmail,
 }: HistoryDetailProps) {
+    const { data: session } = useSession();
+    const router = useRouter();
+
+    const handleNavigateToProfile = (subId: string) => () => {
+        if (session?.userSubId !== subId) {
+            router.push(`/user-profile/${subId}`);
+        } else {
+            router.push("/my-profile");
+        }
+    };
+
     return (
         <div className="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden mx-2 sm:mx-0">
             {/* Header */}
-            <div className="bg-sidebarColor text-white p-3 sm:p-5">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">
+            <div className="bg-sidebarColor text-white p-2 sm:p-3 lg:p-5">
+                <h2 className="text-sm sm:text-base lg:text-lg xl:text-xl font-semibold">
                     Request Details
                 </h2>
             </div>
@@ -56,7 +75,12 @@ export default function HistoryDetail({
                     {/* Borrower and Lender Section */}
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
                         {/* Borrower */}
-                        <div className="space-y-3 flex-1">
+                        <div
+                            onClick={handleNavigateToProfile(
+                                borrowerSubId || ""
+                            )}
+                            className="space-y-3 flex-1 cursor-pointer"
+                        >
                             <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
                                 <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                 Borrower
@@ -85,7 +109,10 @@ export default function HistoryDetail({
                         </div>
 
                         {/* Lender */}
-                        <div className="space-y-3 flex-1">
+                        <div
+                            onClick={handleNavigateToProfile(lenderSubId || "")}
+                            className="space-y-3 flex-1 cursor-pointer"
+                        >
                             <h4 className="text-sm sm:text-base lg:text-lg font-bold text-gray-800 flex items-center gap-1 sm:gap-2">
                                 <User className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5" />
                                 Lender

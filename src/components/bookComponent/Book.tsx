@@ -10,8 +10,6 @@ type BookProps = {
 };
 
 const Book: React.FC<BookProps> = ({ book }) => {
-    console.log(book.pictures);
-
     return (
         <Link href={`/books/${book.id}`}>
             <div className="w-full aspect-[3/4] relative group rounded-lg overflow-hidden bg-gray-200 cursor-pointer card-shadow transition-transform duration-200 hover:scale-105">

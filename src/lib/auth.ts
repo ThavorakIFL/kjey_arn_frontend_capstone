@@ -43,7 +43,6 @@ export const authOptions: NextAuthOptions = {
                     return false;
                 }
             } else {
-                console.log("No Email Available for user.");
                 return false;
             }
             try {
@@ -68,8 +67,6 @@ export const authOptions: NextAuthOptions = {
                     user.accessToken = data.token;
                     user.tokenExpiresAt = data.expires_at; // Store expiration
                     user.backendUserId = data.user.id;
-                    console.log("User data posted successfully:", data);
-
                     if (data.picture) {
                         user.image = `http://127.0.0.1:8000/${data.user.picture}`;
                     }

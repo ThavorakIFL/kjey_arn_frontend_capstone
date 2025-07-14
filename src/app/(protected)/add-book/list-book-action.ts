@@ -18,13 +18,6 @@ export async function addBook(formData: FormData) {
                 },
             };
         }
-
-        // Log the request for debugging
-        console.log(
-            "Submitting book with form data keys:",
-            Array.from(formData.keys())
-        );
-
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}list-book`,
             {

@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { BadgeAlert, MapPin } from "lucide-react";
 
 interface SuggestMeetupDialogProps {
     onSuggest: (data: {
@@ -67,13 +68,15 @@ export function SuggestMeetupDialog({
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button className="h-12 w-full xl:w-52 whitespace-normal text-sm leading-tight">
+                <Button className="h-12 w-full xl:w-52 whitespace-normal  leading-tight cursor-pointer bg-sidebarColor">
                     Suggest New Meet Up Time
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Suggest New Meet Up Time</DialogTitle>
+                    <DialogTitle>
+                        Suggest New Meet Up Time and Location
+                    </DialogTitle>
                     <DialogDescription>
                         Please provide your suggested time and location for the
                         meet up.
@@ -86,8 +89,12 @@ export function SuggestMeetupDialog({
                                 onChange={handleSelectChange}
                                 label="Suggested Time"
                             />
-                            <div>
-                                <label htmlFor="suggested_location">
+                            <div className="space-y-2">
+                                <label
+                                    className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                                    htmlFor="suggested_location"
+                                >
+                                    <MapPin className="h-4 w-4" />
                                     Suggest Location
                                 </label>
                                 <Select
@@ -95,7 +102,7 @@ export function SuggestMeetupDialog({
                                     onValueChange={handleLocationChange}
                                 >
                                     <SelectTrigger className="w-full cursor-pointer">
-                                        <SelectValue placeholder="Suggest location" />
+                                        <SelectValue placeholder="Suggest meeting location" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {locationData.success &&
@@ -120,8 +127,12 @@ export function SuggestMeetupDialog({
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="mb-4">
-                                <label htmlFor="suggested_reason">
+                            <div className="space-y-2">
+                                <label
+                                    className="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                                    htmlFor="suggested_reason"
+                                >
+                                    <BadgeAlert className="h-4 w-4" />
                                     Reason for Suggestion
                                 </label>
                                 <input
@@ -142,7 +153,7 @@ export function SuggestMeetupDialog({
                                     Cancel
                                 </Button>
                                 <Button
-                                    className="h-12 cursor-pointer"
+                                    className="h-12 cursor-pointer bg-primaryBlue hover:bg-primaryBlue/90"
                                     type="submit"
                                     variant="default"
                                     disabled={isSubmitting}

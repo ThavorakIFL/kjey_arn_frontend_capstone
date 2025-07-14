@@ -190,7 +190,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                             {session?.userSubId !== book.user?.sub &&
                                 book.availability.availability_id === 1 && (
                                     <Button
-                                        className="w-full sm:w-auto bg-black hover:bg-gray-800"
+                                        className="w-full sm:w-auto bg-sidebarColor hover:bg-sidebarColor/90 cursor-pointer"
                                         onClick={() => setIsDialogOpen(true)}
                                     >
                                         Borrow Now
@@ -265,25 +265,22 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                             </p>
                         </div>
 
-                        {session?.userSubId === book.user?.sub &&
-                            book.availability.availability_id === 1 && (
-                                <div className="flex justify-end">
-                                    <Button
-                                        className="bg-primaryBlue hover:bg-primaryBlue/90 cursor-pointer"
-                                        onClick={() =>
-                                            router.push(
-                                                `/books/${book.id}/edit`
-                                            )
-                                        }
-                                    >
-                                        <Icon
-                                            icon="lucide:edit-2"
-                                            className="mr-2"
-                                        />
-                                        Edit
-                                    </Button>
-                                </div>
-                            )}
+                        {session?.userSubId === book.user?.sub && (
+                            <div className="flex justify-end ">
+                                <Button
+                                    className=" bg-primaryBlue hover:bg-primaryBlue/90  h-12 cursor-pointer"
+                                    onClick={() =>
+                                        router.push(`/books/${book.id}/edit`)
+                                    }
+                                >
+                                    <Icon
+                                        icon="lucide:edit-2"
+                                        className="mr-2"
+                                    />
+                                    Edit
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -358,7 +355,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                         book.availability.availability_id ===
                                             1 && (
                                             <Button
-                                                className="bg-black hover:bg-gray-800 px-6 py-3"
+                                                className="bg-sidebarColor  px-6 py-3 hover:bg-sidebarColor/90 cursor-pointer"
                                                 onClick={() =>
                                                     setIsDialogOpen(true)
                                                 }
@@ -470,25 +467,24 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                     <p>{book.description}</p>
                                 </div>
 
-                                {session?.userSubId === book.user?.sub &&
-                                    book.availability.availability_id === 1 && (
-                                        <div className="flex justify-end">
-                                            <Button
-                                                className="bg-gray-800 hover:bg-gray-900"
-                                                onClick={() =>
-                                                    router.push(
-                                                        `/books/${book.id}/edit`
-                                                    )
-                                                }
-                                            >
-                                                <Icon
-                                                    icon="lucide:edit-2"
-                                                    className="mr-2"
-                                                />
-                                                Edit
-                                            </Button>
-                                        </div>
-                                    )}
+                                {session?.userSubId === book.user?.sub && (
+                                    <div className="flex justify-end ">
+                                        <Button
+                                            className="bg-gray-800 hover:bg-gray-900 cursor-pointer"
+                                            onClick={() =>
+                                                router.push(
+                                                    `/books/${book.id}/edit`
+                                                )
+                                            }
+                                        >
+                                            <Icon
+                                                icon="lucide:edit-2"
+                                                className="mr-2"
+                                            />
+                                            Edit
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -499,18 +495,17 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                     open={isDialogOpen}
                     onOpenChange={setIsDialogOpen} // Simplified handler
                 >
-                    <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl">
+                    <DialogContent className="w-[95vw] ">
                         <DialogHeader>
                             <DialogTitle className="text-lg sm:text-xl">
                                 Borrow a book
                             </DialogTitle>
-                            <DialogDescription>
-                                Select Borrow Period
-                            </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4">
                             <div>
-                                <h3 className="font-light mb-2">Start Date:</h3>
+                                <h3 className="font-semibold text-sm  text-gray-700 mb-2">
+                                    Start Date:
+                                </h3>
                                 <Popover
                                     open={isStartDatePickerOpen}
                                     onOpenChange={setIsStartDatePickerOpen}
@@ -550,7 +545,9 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                 </Popover>
                             </div>
                             <div>
-                                <h3 className="font-light mb-2">End Date:</h3>
+                                <h3 className="font-semibold text-sm  text-gray-700 mb-2">
+                                    End Date:
+                                </h3>
                                 <Popover
                                     open={isEndDatePickerOpen}
                                     onOpenChange={setIsEndDatePickerOpen}
@@ -599,15 +596,17 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                                 </Popover>
                             </div>
                         </div>
-                        <DialogFooter className="flex flex-col sm:flex-row gap-4 justify-end">
+                        <DialogFooter className="flex flex-col sm:flex-row gap-4 justify-end ">
                             <Button
                                 variant="destructive"
                                 onClick={() => setIsDialogOpen(false)}
                                 type="button"
+                                className="cursor-pointer"
                             >
                                 Cancel
                             </Button>
                             <Button
+                                className="bg-primaryBlue hover:bg-primaryBlue/90 cursor-pointer"
                                 onClick={handleBorrowBook}
                                 disabled={isBorrow}
                                 type="button"
@@ -617,6 +616,27 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+
+                {book.status === 0 && (
+                    <div className="mt-24 bg-red-50 border border-red-200 rounded-lg p-4 lg:p-6">
+                        <div className="flex items-start gap-3">
+                            <Icon
+                                icon="lucide:alert-triangle"
+                                className="text-red-600 mt-0.5 text-lg flex-shrink-0"
+                            />
+                            <div className="flex-1">
+                                <h3 className="text-red-800 font-semibold text-sm lg:text-base mb-1">
+                                    Book Suspended
+                                </h3>
+                                <p className="text-red-700 text-sm lg:text-base">
+                                    This book has been suspended by the
+                                    librarian and is currently unavailable for
+                                    borrowing. Please contact the librarian.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

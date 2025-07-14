@@ -21,12 +21,6 @@ async function fetchWithRetry(
                 const waitTime = retryAfter
                     ? parseInt(retryAfter) * 1000
                     : Math.pow(2, attempt) * 1000;
-
-                console.log(
-                    `Rate limited, waiting ${waitTime}ms before retry ${
-                        attempt + 1
-                    }/${maxRetries}`
-                );
                 await delay(waitTime);
                 continue;
             }
@@ -37,11 +31,6 @@ async function fetchWithRetry(
 
             if (attempt < maxRetries) {
                 const waitTime = Math.pow(2, attempt) * 1000; // Exponential backoff
-                console.log(
-                    `Request failed, waiting ${waitTime}ms before retry ${
-                        attempt + 1
-                    }/${maxRetries}`
-                );
                 await delay(waitTime);
             }
         }
@@ -91,8 +80,6 @@ export async function fetchSearchData(query: {
         });
 
         if (!res.ok) {
-            console.log("Failed to fetch data:", res.status, res.statusText);
-
             // Return a more specific error message for 429
             if (res.status === 429) {
                 throw new Error(

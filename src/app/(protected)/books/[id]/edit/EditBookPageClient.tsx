@@ -219,7 +219,7 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
             if (!response.success) {
                 if (response.errors) {
                     setErrors(response.errors);
-                    toast.error("Please fix the errors below");
+                    toast.error(response.message); // ✅ Use the actual backend message
                 } else {
                     toast.error("Failed to update book: " + response.message);
                     setErrors({
@@ -695,7 +695,6 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
                                     {/* Genres - Updated to match add book style */}
                                     <div className="space-y-2">
                                         <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                            <Tag className="h-4 w-4" />
                                             Genres{" "}
                                             <span className="text-red-500">
                                                 *
@@ -787,7 +786,10 @@ const EditBookPageClient: React.FC<EditBookPageClientProps> = ({
                                     {/* Description */}
                                     <div className="space-y-2">
                                         <label className="text-sm font-semibold text-gray-700">
-                                            Description
+                                            Description{" "}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
                                         </label>
                                         <textarea
                                             ref={descriptionRef}

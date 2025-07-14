@@ -92,7 +92,6 @@ export const fetchBookData = async (id: string) => {
         const response = await fetch(url);
         if (!response.ok) {
             const errorMessage = `Failed to fetch book data. Status: ${response.status}`;
-            console.error(errorMessage);
             throw new Error(errorMessage);
         }
         const data = await response.json();
@@ -106,33 +105,206 @@ export const fetchBookData = async (id: string) => {
     }
 };
 
-export async function updateBook(formData: FormData, bookId: string) {
-    const session = await getServerSession(authOptions);
-    const token = session?.accessToken;
+// export async function updateBook(formData: FormData, bookId: string) {
+//     const session = await getServerSession(authOptions);
+//     const token = session?.accessToken;
 
+//     try {
+//         const response = await fetch(
+//             `${process.env.NEXT_PUBLIC_API_URL}book/edit/${bookId}/`,
+//             {
+//                 method: "POST",
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//                 body: formData,
+//             }
+//         );
+//         const data = await response.json();
+
+//         return {
+//             success: data.success,
+//             message: data.message || "Updated",
+//             errors: data.error || null,
+//         };
+//     } catch (err: any) {
+//         return {
+//             success: false,
+//             message: err.message || "An error occurred",
+//             errors: null,
+//         };
+//     }
+// }
+
+export async function updateBook(formData: FormData, bookId: string) {
     try {
+        const session = await getServerSession(authOptions);
+        const token = session?.accessToken;
+
+        if (!token) {
+            return {
+                success: false,
+                message:
+                    "Authentication required. Please log in and try again.",
+                errors: {
+                    auth: ["You must be logged in to update a book"],
+                },
+            };
+        }
+
         const response = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}book/edit/${bookId}/`,
             {
                 method: "POST",
                 headers: {
+                    Accept: "application/json",
                     Authorization: `Bearer ${token}`,
+                    // Note: Don't set Content-Type header when sending FormData
                 },
                 body: formData,
             }
         );
+
+        // Handle different HTTP status codes
+        if (!response.ok) {
+            const contentType = response.headers.get("content-type");
+
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+
+                // Handle validation errors (422)
+                if (response.status === 422) {
+                    return {
+                        success: false,
+                        message:
+                            data.message || "Please check the form for errors",
+                        errors: data.errors || {
+                            general: [
+                                data.message ||
+                                    "Validation failed. Please check your input.",
+                            ],
+                        },
+                    };
+                }
+
+                // Handle unauthorized (401/403)
+                if (response.status === 401 || response.status === 403) {
+                    return {
+                        success: false,
+                        message:
+                            "You don't have permission to update this book",
+                        errors: {
+                            auth: [data.message || "Unauthorized access"],
+                        },
+                    };
+                }
+
+                // Handle not found (404)
+                if (response.status === 404) {
+                    return {
+                        success: false,
+                        message: "Book not found",
+                        errors: {
+                            general: [
+                                "The book you're trying to update doesn't exist",
+                            ],
+                        },
+                    };
+                }
+
+                // Handle server errors (500)
+                if (response.status >= 500) {
+                    return {
+                        success: false,
+                        message: "Server error. Please try again later.",
+                        errors: {
+                            general: [
+                                data.message ||
+                                    "Internal server error occurred",
+                            ],
+                        },
+                    };
+                }
+
+                // Handle other errors
+                return {
+                    success: false,
+                    message:
+                        data.message ||
+                        `Server returned ${response.status} error`,
+                    errors: data.errors || {
+                        general: [
+                            data.message ||
+                                "An error occurred while processing your request",
+                        ],
+                    },
+                };
+            } else {
+                return {
+                    success: false,
+                    message: `Server error (${response.status}). Please try again later.`,
+                    errors: {
+                        general: [
+                            "The server encountered an error. Please try again.",
+                        ],
+                    },
+                };
+            }
+        }
+
+        // Success response
         const data = await response.json();
+        if (!data.success) {
+            return {
+                success: false,
+                message: data.message || "Failed to update book",
+                errors: data.errors || {
+                    general: ["An error occurred while updating the book"],
+                },
+            };
+        }
 
         return {
-            success: data.success,
-            message: data.message || "Updated",
-            errors: data.error || null,
+            success: true,
+            message: data.message || "Book updated successfully",
+            data: data.data,
         };
-    } catch (err: any) {
+    } catch (error) {
+        console.error("Error updating book:", error);
+
+        // Handle different types of errors
+        if (error instanceof TypeError && error.message.includes("fetch")) {
+            return {
+                success: false,
+                message:
+                    "Network error. Please check your internet connection.",
+                errors: {
+                    network: [
+                        "Unable to connect to the server. Please check your internet connection and try again.",
+                    ],
+                },
+            };
+        }
+
+        if (error instanceof Error) {
+            return {
+                success: false,
+                message: "An unexpected error occurred",
+                errors: {
+                    general: [
+                        error.message ||
+                            "An unexpected error occurred. Please try again.",
+                    ],
+                },
+            };
+        }
+
         return {
             success: false,
-            message: err.message || "An error occurred",
-            errors: null,
+            message: "An unexpected error occurred",
+            errors: {
+                general: ["An unexpected error occurred. Please try again."],
+            },
         };
     }
 }
@@ -171,16 +343,6 @@ export async function requestBorrow(formData: FormData) {
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;
 
-    // Debug logging
-    console.log("=== DEBUG INFO ===");
-    console.log("API URL:", `${process.env.NEXT_PUBLIC_API_URL}borrow-event`);
-    console.log("Token:", token ? "Present" : "Missing");
-    console.log("Form data:", {
-        book_id: formData.get("book_id"),
-        start_date: formData.get("start_date"),
-        end_date: formData.get("end_date"),
-    });
-
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}borrow-event`,
@@ -198,25 +360,13 @@ export async function requestBorrow(formData: FormData) {
             }
         );
 
-        // Debug response details
-        console.log("=== RESPONSE DEBUG ===");
-        console.log("Status:", res.status);
-        console.log("Status Text:", res.statusText);
-        console.log("Headers:", Object.fromEntries(res.headers.entries()));
-
         // Get response as text first to see what we're actually receiving
         const responseText = await res.text();
-        console.log("=== RAW RESPONSE ===");
-        console.log("Response length:", responseText.length);
-        console.log("First 1000 characters:", responseText.substring(0, 1000));
-
         // Check if it's HTML (Laravel error page)
         if (
             responseText.trim().startsWith("<!DOCTYPE") ||
             responseText.trim().startsWith("<html")
         ) {
-            console.log("=== LARAVEL ERROR DETECTED ===");
-
             // Try to extract error message from HTML
             const errorMatch = responseText.match(
                 /<title[^>]*>([^<]+)<\/title>/i
@@ -241,9 +391,6 @@ export async function requestBorrow(formData: FormData) {
                 ? messageMatch[1].trim()
                 : errorTitle;
 
-            console.log("Laravel Error Title:", errorTitle);
-            console.log("Laravel Error Message:", errorMessage);
-
             return {
                 success: false,
                 message: `Laravel Error: ${errorMessage}`,
@@ -255,8 +402,6 @@ export async function requestBorrow(formData: FormData) {
         let data;
         try {
             data = JSON.parse(responseText);
-            console.log("=== PARSED JSON ===");
-            console.log("Parsed data:", data);
         } catch (parseError) {
             console.error("=== JSON PARSE ERROR ===");
             console.error("Parse error:", parseError);
@@ -270,14 +415,10 @@ export async function requestBorrow(formData: FormData) {
         }
 
         if (!res.ok) {
-            console.log("=== NON-OK RESPONSE ===");
             // For validation errors (422) and other client errors (400-499)
             if (res.status >= 400 && res.status < 500) {
                 // Handle Laravel validation errors specifically
                 if (res.status === 422 && data.errors) {
-                    console.log("=== VALIDATION ERROR ===");
-                    console.log("Validation errors:", data.errors);
-
                     // Extract first validation error message
                     const firstError = Object.values(data.errors)[0];
                     const errorMessage = Array.isArray(firstError)
@@ -301,11 +442,8 @@ export async function requestBorrow(formData: FormData) {
             throw new Error(data.message || "Server error occurred");
         }
 
-        console.log("=== SUCCESS RESPONSE ===");
         return { success: true, message: data.message };
     } catch (error: any) {
-        console.error("=== NETWORK/FETCH ERROR ===");
-        console.error("Error:", error);
         // Only catch network errors or thrown server errors
         return {
             success: false,

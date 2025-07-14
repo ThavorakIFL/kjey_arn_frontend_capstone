@@ -18,7 +18,6 @@ export function GuideMessage({
     isTimeToReturn,
 }: GuideMessageProps) {
     const getGuideMessage = (): string => {
-        console.log("Checking the borrow event data", borrowEventData);
         const isBorrower = userSubId === borrowEventData.borrower.sub;
         const isLender = userSubId === borrowEventData.lender.sub;
         const borrowStatus = borrowEventData.borrow_status.borrow_status_id;

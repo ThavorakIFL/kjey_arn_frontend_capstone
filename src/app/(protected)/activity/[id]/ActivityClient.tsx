@@ -80,7 +80,6 @@ export default function ActivityClient({
     borrowEventData,
     locationData,
 }: ActivityClientProps) {
-    console.log("Borrow Event Data:", borrowEventData);
     const { data: session } = useSession();
     const [isStartDate, setIsStartDate] = useState(false);
     const [isTimeToReturn, setisTimeToReturn] = useState(false);
@@ -107,6 +106,18 @@ export default function ActivityClient({
         acceptSuggestion,
         reportBorrowEvent,
     });
+
+    const isInvalidStatus = () => {
+        const statusId = borrowEventData.borrow_status.borrow_status_id;
+        return statusId === 6 || statusId === 3; // 6 = cancelled, 3 = rejected
+    };
+
+    const getStatusMessage = () => {
+        const statusId = borrowEventData.borrow_status.borrow_status_id;
+        if (statusId === 6) return "This borrow request has been cancelled.";
+        if (statusId === 3) return "This borrow request has been rejected.";
+        return "";
+    };
 
     const showReportButton = () => {
         const userIsBorrowerOrLender =
@@ -171,7 +182,7 @@ export default function ActivityClient({
             const day = String(currentDate.getDate()).padStart(2, "0");
             const formattedStartDate = `${year}-${month}-${day}`;
             const startDate = borrowEventData.meet_up_detail.start_date;
-            console.log(startDate, formattedStartDate);
+
             setIsStartDate(formattedStartDate === startDate);
         };
         checkStartDate();
@@ -238,7 +249,7 @@ export default function ActivityClient({
         if (!hasSuggestions && isBorrower) {
             return (
                 <Button
-                    className="h-12  w-full xl:w-56 text-xs sm:text-sm"
+                    className="h-12 bg-sidebarColor w-full xl:w-56 cursor-pointer"
                     onClick={handleConfirmMeetUp}
                     variant={"default"}
                 >
@@ -259,7 +270,7 @@ export default function ActivityClient({
                 if (isLender) {
                     return (
                         <Button
-                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
+                            className="h-12 bg-sidebarColor w-full xl:w-56  cursor-pointer"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -272,7 +283,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
+                            className="h-12  bg-sidebarColor w-full xl:w-56 cursor-pointer"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -296,7 +307,7 @@ export default function ActivityClient({
                 if (isBorrower) {
                     return (
                         <Button
-                            className="h-12  w-full xl:w-56 text-xs sm:text-sm"
+                            className="h-12  w-full xl:w-56 bg-sidebarColor cursor-pointer"
                             onClick={handleAcceptSuggestion}
                             variant={"default"}
                         >
@@ -337,6 +348,57 @@ export default function ActivityClient({
     const bookDepositConfirmed = () => {
         return borrowEventData.borrow_event_report?.status === 1;
     };
+
+    if (isInvalidStatus()) {
+        return (
+            <div>
+                {/* Header */}
+                <div className="mb-4 sm:mb-6 lg:mb-8">
+                    <TitleBar
+                        title="Borrow Request Details"
+                        subTitle="View and Manage Your Borrowing Requests."
+                    />
+                </div>
+
+                {/* Invalid Status Content */}
+                <div className="max-w-4xl mx-auto">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-6 sm:p-8 text-center">
+                        <div className="mb-4">
+                            <svg
+                                className="mx-auto h-12 w-12 text-red-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"
+                                />
+                            </svg>
+                        </div>
+                        <h2 className="text-lg sm:text-xl font-semibold text-red-800 mb-2">
+                            Request No Longer Available
+                        </h2>
+                        <p className="text-red-700 mb-6">
+                            {getStatusMessage()}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <Button
+                                variant="outline"
+                                onClick={() => window.history.back()}
+                                className="w-full sm:w-auto"
+                            >
+                                Go Back
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -397,6 +459,8 @@ export default function ActivityClient({
                             lenderProfileImage={
                                 borrowEventData.lender.picture || ""
                             }
+                            borrowerSubId={borrowEventData.borrower.sub}
+                            lenderSubId={borrowEventData.lender.sub}
                             lenderEmail={borrowEventData.lender.email}
                             lenderName={borrowEventData.lender.name}
                             startDate={
@@ -502,14 +566,12 @@ export default function ActivityClient({
                     </div>
 
                     {/* Mobile/Tablet/Desktop Action Buttons */}
-                    <div className="2xl:hidden flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <div className="2xl:hidden flex xl:flex-nowrap flex-wrap gap-2 justify-center sm:justify-start">
                         {showCancelButton() && (
-                            // <div className="w-full">
                             <CancelBorrowRequestDialog
                                 onCancel={handleCancelRequest}
                                 isLoading={isLoading}
                             />
-                            // </div>
                         )}
                         {canSuggestMeetUp() && (
                             <SuggestMeetupDialog

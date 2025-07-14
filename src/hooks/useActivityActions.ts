@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface UserActivityActionsProps {
     borrowEventId: string;
@@ -71,12 +72,20 @@ export function useActivityActions({
             setError(null);
             const result = await confirmReceiveBook(borrowEventId);
             if (result.success) {
+                toast.success(result.message || "Book received successfully!");
                 router.push("/activity");
             } else {
+                toast.error(
+                    result.message || "Failed to confirm receive book."
+                );
                 setError(result.message);
             }
         } catch (error) {
-            console.error("Error confirming receive book:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to confirm receive book. Please try again."
+            );
             setError("Failed to confirm receive book. Please try again.");
         } finally {
             setIsLoading(false);
@@ -126,12 +135,20 @@ export function useActivityActions({
 
             const result = await suggestMeetUpRequest(borrowEventId, formData);
             if (result.success) {
+                toast.success(
+                    result.message || "Suggestion submitted successfully!"
+                );
                 router.push("/activity");
             } else {
+                toast.error(result.message || "Failed to submit suggestion.");
                 setError(result.message);
             }
         } catch (error) {
-            console.error("Error submitting form:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "An error occurred while submitting the form."
+            );
             setError("An error occurred while submitting the form.");
         } finally {
             setIsSubmitting(false);
@@ -144,12 +161,20 @@ export function useActivityActions({
             setError(null);
             const result = await acceptSuggestion(borrowEventId);
             if (result.success) {
+                toast.success(
+                    result.message || "Suggestion accepted successfully!"
+                );
                 router.push("/activity");
             } else {
+                toast.error(result.message || "Failed to accept suggestion.");
                 setError(result.message);
             }
         } catch (error) {
-            console.error("Error accepting suggestion:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to accept suggestion. Please try again."
+            );
             setError("Failed to accept suggestion. Please try again.");
         } finally {
             setIsLoading(false);
@@ -162,12 +187,22 @@ export function useActivityActions({
             setError(null);
             const result = await cancelBorrowRequest(borrowEventId, reason);
             if (result.success) {
+                toast.success(
+                    result.message || "Borrow request canceled successfully!"
+                );
                 router.push("/activity");
             } else {
+                toast.error(
+                    result.message || "Failed to cancel borrow request"
+                );
                 setError(result.message);
             }
         } catch (error) {
-            console.error("Error canceling borrow request:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to cancel borrow request. Please try again."
+            );
             setError("Failed to cancel borrow request. Please try again.");
         } finally {
             setIsLoading(false);
@@ -180,13 +215,19 @@ export function useActivityActions({
             setError(null);
             const result = await acceptMeetUpRequest(borrowEventId, 2);
             if (result.success) {
+                toast.success(
+                    result.message || "Meet up confirmed successfully!"
+                );
                 router.push("/activity");
             } else {
-                setError(result.message);
+                toast.error(result.message || "Failed to confirm meet up");
             }
         } catch (error) {
-            console.error("Error confirming meet up:", error);
-            setError("Failed to confirm meet up. Please try again.");
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to confirm meet up. Please try again."
+            );
         } finally {
             setIsLoading(false);
         }
@@ -197,15 +238,21 @@ export function useActivityActions({
             setIsLoading(true);
             setError(null);
             const result = await reportBorrowEvent(borrowEventId, reason);
-            console.log("Reporting borrow event with reason:", reason);
-            console.log("Borrow event ID:", borrowEventId);
             if (result.success) {
+                toast.success(
+                    result.message || "Borrow event reported successfully!"
+                );
                 router.push("/activity");
             } else {
+                toast.error(result.message || "Failed to report borrow event");
                 setError(result.message);
             }
         } catch (error) {
-            console.error("Error reporting borrow event:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to report borrow event. Please try again."
+            );
             setError("Failed to report borrow event. Please try again.");
         } finally {
             setIsLoading(false);

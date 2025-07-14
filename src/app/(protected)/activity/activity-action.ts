@@ -47,7 +47,6 @@ export const fetchBorrowRequest = async (id: number) => {
         );
         const data = await response.json();
         if (!data) {
-            console.log("No data returned from API");
             throw new Error("No data found.");
         }
         return data;
@@ -146,7 +145,6 @@ export const acceptMeetUpRequest = async (
 };
 
 export const setReturnDetail = async (id: string, formData: FormData) => {
-    console.log(id, formData);
     const session = await getServerSession(authOptions);
     const token = session?.accessToken;
     try {

@@ -15,8 +15,26 @@ import {
 } from "@/components/ui/select";
 import { SelectGroup } from "@radix-ui/react-select";
 import { fetchGenres } from "@/app/(protected)/books/book-action";
+import { useDebounce } from "@/hooks/useDebounce"; // You'll need to create this hook
+
+interface BookSuggestion {
+    id: number;
+    title: string;
+    author: string;
+    display: string;
+}
+
+interface UserSuggestion {
+    id: number;
+    name: string;
+    email: string;
+    picture: string;
+    sub: string;
+    display: string;
+}
 
 interface SearchAndFilterBarProps {
+    userSub?: string;
     globalSearch?: boolean;
     defaultQuery?: string;
     defaultType?: string;
@@ -30,10 +48,13 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     defaultType = "book",
     defaultGenres = [],
     onSearch,
+    userSub,
 }) => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const suggestionDropdownRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const [query, setQuery] = useState(defaultQuery);
     const [type, setType] = useState(defaultType);
@@ -48,6 +69,17 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     const [availableGenres, setAvailableGenres] =
         useState<GenreType[]>(genreOptions);
     const [genresLoaded, setGenresLoaded] = useState(false);
+
+    const [suggestions, setSuggestions] = useState<
+        (BookSuggestion | UserSuggestion)[]
+    >([]);
+
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+
+    // Debounce the search query for autocomplete
+    const debouncedQuery = useDebounce(query, 300);
 
     // Initialize from URL params only after genres are loaded
     useEffect(() => {
@@ -67,18 +99,19 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                 if (availableBackendGenres.length > 0) {
                     const allBackendGenres = backendGenres.map((g) => g.genre);
                     setAvailableGenres(allBackendGenres as GenreType[]);
-                    // setAvailableGenres(availableBackendGenres);
                 } else {
                     setAvailableGenres(genreOptions);
                 }
                 setGenresLoaded(true);
             } catch (error) {
+                console.error("Error loading genres:", error);
             } finally {
                 setIsLoadingGenres(false);
             }
         };
         loadGenres();
     }, []);
+
     useEffect(() => {
         if (!genresLoaded) return;
         const urlQuery = searchParams.get("q") || defaultQuery;
@@ -97,8 +130,23 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         } else if (defaultGenres.length > 0) {
             setSelectedGenres(defaultGenres);
         }
-    }, [genresLoaded, reverseGenreMap]); // ← Remove searchParams from here
+    }, [genresLoaded, reverseGenreMap]);
 
+    // Fetch suggestions when debounced query changes
+    useEffect(() => {
+        if (
+            type === "book" &&
+            debouncedQuery.trim() &&
+            debouncedQuery.length > 1
+        ) {
+            fetchSuggestions(debouncedQuery);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    }, [debouncedQuery, type]);
+
+    // Handle clicks outside dropdowns
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -107,16 +155,128 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             ) {
                 setShowGenreFilter(false);
             }
+            if (
+                suggestionDropdownRef.current &&
+                !suggestionDropdownRef.current.contains(event.target as Node) &&
+                inputRef.current &&
+                !inputRef.current.contains(event.target as Node)
+            ) {
+                setShowSuggestions(false);
+            }
         };
 
-        if (showGenreFilter) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showGenreFilter]);
+    }, []);
+
+    // Fetch suggestions when debounced query changes
+    useEffect(() => {
+        if (debouncedQuery.trim() && debouncedQuery.length > 1) {
+            fetchSuggestions(debouncedQuery);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+        }
+    }, [debouncedQuery, type]); // Now works for both book and user types
+
+    const fetchSuggestions = async (searchQuery: string) => {
+        setIsLoadingSuggestions(true);
+        try {
+            // Choose API endpoint based on search type
+            let apiUrl;
+            if (type === "book") {
+                apiUrl = `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }books/suggestions?query=${encodeURIComponent(searchQuery)}`;
+                // Add user filter for shelf context
+                if (!globalSearch && userSub) {
+                    apiUrl += `&sub=${encodeURIComponent(userSub)}`;
+                }
+            } else {
+                // User suggestions
+                apiUrl = `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }users/suggestions?query=${encodeURIComponent(searchQuery)}`;
+            }
+
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Response is not JSON");
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSuggestions(data.data);
+                setShowSuggestions(data.data.length > 0);
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
+            }
+        } catch (error) {
+            console.error("Error fetching suggestions:", error);
+            setSuggestions([]);
+            setShowSuggestions(false);
+        } finally {
+            setIsLoadingSuggestions(false);
+        }
+    };
+
+    const handleSuggestionClick = (
+        suggestion: BookSuggestion | UserSuggestion
+    ) => {
+        if (type === "book") {
+            setQuery((suggestion as BookSuggestion).title);
+        } else {
+            setQuery((suggestion as UserSuggestion).name);
+        }
+        setShowSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!showSuggestions) {
+            if (e.key === "Enter") {
+                handleSearch();
+            }
+            return;
+        }
+
+        switch (e.key) {
+            case "ArrowDown":
+                e.preventDefault();
+                setSelectedSuggestionIndex((prev) =>
+                    prev < suggestions.length - 1 ? prev + 1 : prev
+                );
+                break;
+            case "ArrowUp":
+                e.preventDefault();
+                setSelectedSuggestionIndex((prev) =>
+                    prev > 0 ? prev - 1 : -1
+                );
+                break;
+            case "Enter":
+                e.preventDefault();
+                if (selectedSuggestionIndex >= 0) {
+                    handleSuggestionClick(suggestions[selectedSuggestionIndex]);
+                } else {
+                    handleSearch();
+                }
+                break;
+            case "Escape":
+                setShowSuggestions(false);
+                setSelectedSuggestionIndex(-1);
+                break;
+        }
+    };
 
     const getSearchDestination = () => {
         if (globalSearch === false) {
@@ -137,11 +297,8 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
     const handleClearAllGenres = () => {
         setSelectedGenres([]);
         const searchDestination = getSearchDestination();
-        const url = new URLSearchParams(searchParams.toString()); // ← Keep existing params
-
-        // Only remove genre_ids, keep query and type
+        const url = new URLSearchParams(searchParams.toString());
         url.delete("genre_ids");
-
         router.push(`/${searchDestination}?${url.toString()}`);
     };
 
@@ -175,12 +332,34 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
         }
 
         router.push(`/${searchDestination}?${url.toString()}`);
+        setShowSuggestions(false);
     };
 
     const handleTypeChange = (newType: string) => {
         setType(newType);
         if (newType !== "book") {
             setSelectedGenres([]);
+            setShowSuggestions(false);
+            setSuggestions([]);
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setQuery(value);
+        setSelectedSuggestionIndex(-1);
+
+        // Show suggestions only for book type and when there's input
+        if (type === "book" && value.trim()) {
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleInputFocus = () => {
+        if (type === "book" && query.trim() && suggestions.length > 0) {
+            setShowSuggestions(true);
         }
     };
 
@@ -189,7 +368,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             {/* Main Search Container */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 relative">
                 {/* Search Input Container */}
-                <div className="h-12 sm:h-14 flex items-center bg-white p-3 sm:p-4 rounded-lg w-full border border-gray-300 shadow-sm">
+                <div className="h-12 sm:h-14 flex items-center bg-white p-3 sm:p-4 rounded-lg w-full border border-gray-300 shadow-sm relative">
                     <Icon
                         icon="lucide:search"
                         className="text-gray-500 flex-shrink-0"
@@ -197,16 +376,29 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                         height="18"
                     />
                     <input
+                        ref={inputRef}
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        onFocus={handleInputFocus}
                         className="w-full focus:outline-none mx-3 sm:mx-4 text-sm sm:text-base"
                         placeholder={
                             type === "book"
                                 ? "Search books, authors..."
                                 : "Search readers, names..."
                         }
+                        autoComplete="off"
                     />
+
+                    {/* Loading indicator for suggestions */}
+                    {isLoadingSuggestions && (
+                        <Icon
+                            icon="lucide:loader-2"
+                            className="animate-spin text-gray-400 mr-2"
+                            width="16"
+                            height="16"
+                        />
+                    )}
 
                     {globalSearch && (
                         <div className="flex items-center space-x-3 sm:space-x-4">
@@ -219,87 +411,24 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                 value={type}
                                 onValueChange={handleTypeChange}
                             >
-                                <SelectTrigger
-                                    className="
-                                    cursor-pointer
-              w-32 sm:w-36
-              border border-slate-200/80
-              shadow-sm
-              hover:shadow-md
-              hover:border-slate-300
-              focus:border-slate-400
-              focus:ring-2
-              focus:ring-slate-100
-              text-sm
-              font-medium
-              bg-white
-              transition-all
-              duration-200
-              ease-in-out
-              rounded-lg
-              px-3
-              py-2.5
-              text-slate-700
-              hover:bg-slate-50/50
-            "
-                                >
+                                <SelectTrigger className="cursor-pointer w-32 sm:w-36 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-slate-300 focus:border-slate-400 focus:ring-2 focus:ring-slate-100 text-sm font-medium bg-white transition-all duration-200 ease-in-out rounded-lg px-3 py-2.5 text-slate-700 hover:bg-slate-50/50">
                                     <SelectValue
                                         placeholder="Select type"
                                         className="text-slate-600"
                                     />
                                 </SelectTrigger>
 
-                                <SelectContent
-                                    className="
-              border
-              border-slate-200/80
-              shadow-xl
-              rounded-lg
-              bg-white
-              backdrop-blur-sm
-              animate-in
-              fade-in-0
-              zoom-in-95
-            "
-                                >
+                                <SelectContent className="border border-slate-200/80 shadow-xl rounded-lg bg-white backdrop-blur-sm animate-in fade-in-0 zoom-in-95">
                                     <SelectGroup>
                                         <SelectItem
                                             value="book"
-                                            className="
-                    text-sm
-                    font-medium
-                    text-slate-700
-                    hover:bg-slate-50
-                    hover:text-slate-900
-                    focus:bg-slate-100
-                    cursor-pointer
-                    transition-colors
-                    duration-150
-                    px-3
-                    py-2
-                    rounded-md
-                    mx-1
-                  "
+                                            className="text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-100 cursor-pointer transition-colors duration-150 px-3 py-2 rounded-md mx-1"
                                         >
                                             Book
                                         </SelectItem>
                                         <SelectItem
                                             value="reader"
-                                            className="
-                    text-sm
-                    font-medium
-                    text-slate-700
-                    hover:bg-slate-50
-                    hover:text-slate-900
-                    focus:bg-slate-100
-                    cursor-pointer
-                    transition-colors
-                    duration-150
-                    px-3
-                    py-2
-                    rounded-md
-                    mx-1
-                  "
+                                            className="text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 focus:bg-slate-100 cursor-pointer transition-colors duration-150 px-3 py-2 rounded-md mx-1"
                                         >
                                             Reader
                                         </SelectItem>
@@ -308,20 +437,84 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                             </Select>
                         </div>
                     )}
+
+                    {showSuggestions && suggestions.length > 0 && (
+                        <div
+                            ref={suggestionDropdownRef}
+                            className="absolute top-full left-0 right-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-64 overflow-y-auto"
+                        >
+                            {suggestions.map((suggestion, index) => (
+                                <div
+                                    key={suggestion.id}
+                                    className={`px-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 ${
+                                        index === selectedSuggestionIndex
+                                            ? "bg-blue-50"
+                                            : ""
+                                    }`}
+                                    onClick={() =>
+                                        handleSuggestionClick(suggestion)
+                                    }
+                                >
+                                    <div className="flex items-center space-x-2">
+                                        <Icon
+                                            icon={
+                                                type === "book"
+                                                    ? "lucide:book"
+                                                    : "lucide:user"
+                                            }
+                                            className="text-gray-400 flex-shrink-0"
+                                            width="16"
+                                            height="16"
+                                        />
+                                        <div className="min-w-0 flex-1">
+                                            {type === "book" ? (
+                                                <>
+                                                    <div className="text-sm font-medium text-gray-900 truncate">
+                                                        {
+                                                            (
+                                                                suggestion as BookSuggestion
+                                                            ).title
+                                                        }
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 truncate">
+                                                        by{" "}
+                                                        {
+                                                            (
+                                                                suggestion as BookSuggestion
+                                                            ).author
+                                                        }
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="text-sm font-medium text-gray-900 truncate">
+                                                        {
+                                                            (
+                                                                suggestion as UserSuggestion
+                                                            ).name
+                                                        }
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 truncate">
+                                                        {
+                                                            (
+                                                                suggestion as UserSuggestion
+                                                            ).email
+                                                        }
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {type === "book" && (
                     <div className="flex gap-2">
                         <Button
-                            className="
-                            cursor-pointer
-                flex-1 sm:flex-none sm:min-w-[140px]
-                !h-12 sm:!h-14  bg-sidebarColor
-
-                text-xs sm:text-sm
-                px-3 sm:px-4
-                gap-2
-            "
+                            className="cursor-pointer flex-1 sm:flex-none sm:min-w-[140px] !h-12 sm:!h-14 bg-sidebarColor text-xs sm:text-sm px-3 sm:px-4 gap-2"
                             type="button"
                             onClick={() => setShowGenreFilter((prev) => !prev)}
                             disabled={isLoadingGenres}
@@ -350,13 +543,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
 
                         <Button
                             onClick={handleSearch}
-                            className="
-                            cursor-pointer
-                sm:hidden flex-shrink-0
-                !h-12 !w-12
-               bg-primaryBlue hover:bg-primaryBlue/90
-                p-0
-            "
+                            className="cursor-pointer sm:hidden flex-shrink-0 !h-12 !w-12 bg-primaryBlue hover:bg-primaryBlue/90 p-0"
                         >
                             <Icon icon="lucide:search" width="18" height="18" />
                         </Button>
@@ -367,24 +554,11 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                 {type === "reader" && (
                     <Button
                         onClick={handleSearch}
-                        className="
-                        cursor-pointer
-            flex-1  sm:min-w-[140px]
-              h-12 sm:h-14
-            bg-primaryBlue
-            hover:bg-primaryBlue/90
-            text-xs sm:text-sm
-            px-4
-        "
+                        className="cursor-pointer flex-1 sm:min-w-[140px] h-12 sm:h-14 bg-primaryBlue hover:bg-primaryBlue/90 text-xs sm:text-sm px-4"
                     >
                         <span className="hidden sm:inline">Search</span>
                         <div className="sm:hidden h-8 flex items-center space-x-4">
-                            <Icon
-                                icon="lucide:search"
-                                width="18"
-                                height="18"
-                                className=" "
-                            />
+                            <Icon icon="lucide:search" width="18" height="18" />
                         </div>
                     </Button>
                 )}
@@ -395,16 +569,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     ref={dropdownRef}
                 >
                     {showGenreFilter && (
-                        <div
-                            className="
-                            w-full sm:w-80
-                            bg-white border rounded-lg shadow-lg
-                            p-4
-                            max-h-64 sm:max-h-80
-                            overflow-auto
-                            right-0
-                        "
-                        >
+                        <div className="w-full sm:w-80 bg-white border rounded-lg shadow-lg p-4 max-h-64 sm:max-h-80 overflow-auto right-0">
                             <div className="space-y-3">
                                 <h4 className="font-medium text-gray-900 text-sm sm:text-base">
                                     Filter by Genre
@@ -427,11 +592,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                                         {availableGenres.map((genre) => (
                                             <label
                                                 key={genre}
-                                                className="
-                                                    flex items-center space-x-2 cursor-pointer
-                                                    p-2 rounded hover:bg-gray-50
-                                                    text-sm
-                                                "
+                                                className="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-gray-50 text-sm"
                                             >
                                                 <input
                                                     type="checkbox"
@@ -491,15 +652,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
                     {selectedGenres.map((genre) => (
                         <div
                             key={genre}
-                            className="
-
-                                bg-blue-100 text-blue-800
-                                rounded-full
-                                px-2 sm:px-3 py-1
-                                text-xs sm:text-sm
-                                flex items-center gap-1
-                                max-w-full
-                            "
+                            className="bg-blue-100 text-blue-800 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm flex items-center gap-1 max-w-full"
                         >
                             <span className="truncate">{genre}</span>
                             <button

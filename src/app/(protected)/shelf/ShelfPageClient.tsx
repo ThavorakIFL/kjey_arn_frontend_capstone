@@ -154,7 +154,10 @@ export default function ShelfPage({}) {
         <div className="">
             <div>
                 {/* Search and Filter Bar */}
-                <SearchAndFilterBar globalSearch={false} />
+                <SearchAndFilterBar
+                    userSub={session?.userSubId}
+                    globalSearch={false}
+                />
 
                 {/* Header Section */}
                 <div className="mb-6 sm:mb-8">

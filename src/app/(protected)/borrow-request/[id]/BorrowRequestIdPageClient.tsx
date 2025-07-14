@@ -8,6 +8,7 @@ import BorrowActivityDetail from "@/components/borrowComponent/BorrowActivityDet
 import { BorrowRequestAction } from "@/components/borrowComponent/BorrowRequestAction";
 import TitleBar from "@/components/TitleBar";
 import { MeetUpDetail } from "@/components/activityComponent/MeetUpDetail";
+import { toast } from "sonner";
 
 interface BorrowRequestIdPageClientProps {
     borrowRequestData: BorrowEventType;
@@ -74,13 +75,19 @@ export default function BorrowRequestIdPageClient({
             );
 
             if (result.success) {
+                toast.success(
+                    result.message || "Meet up details set successfully!"
+                );
                 router.push("/activity");
             } else {
-                setError(result.message);
+                toast.error(result.message || "Failed to set meet up details");
             }
         } catch (err) {
-            console.error("Error setting meet up details:", err);
-            setError("Failed to set meet up details. Please try again.");
+            toast.error(
+                err instanceof Error
+                    ? err.message
+                    : "Failed to set meet up details. Please try again."
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -95,14 +102,21 @@ export default function BorrowRequestIdPageClient({
                 reason
             );
             if (result.success) {
-                alert(result.message);
+                toast.success(
+                    result.message || "Borrow request rejected successfully!"
+                );
                 router.push("/borrow-request");
             } else {
-                setError(result.message);
+                toast.error(
+                    result.message || "Failed to reject borrow request"
+                );
             }
         } catch (error) {
-            console.error("Error rejecting borrow request:", error);
-            setError("An error occurred while rejecting the borrow request.");
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "An error occurred while rejecting the borrow request."
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -150,6 +164,8 @@ export default function BorrowRequestIdPageClient({
                                 lenderProfileImage={
                                     borrowRequestData.lender.picture || ""
                                 }
+                                borrowerSubId={borrowRequestData.borrower.sub}
+                                lenderSubId={borrowRequestData.lender.sub}
                                 borrowerName={borrowRequestData.borrower.name}
                                 borrowerEmail={borrowRequestData.borrower.email}
                                 lenderName={borrowRequestData.lender.name}
@@ -248,6 +264,8 @@ export default function BorrowRequestIdPageClient({
                                 borrowerProfileImage={
                                     borrowRequestData.borrower.picture || ""
                                 }
+                                borrowerSubId={borrowRequestData.borrower.sub}
+                                lenderSubId={borrowRequestData.lender.sub}
                                 lenderProfileImage={
                                     borrowRequestData.lender.picture || ""
                                 }

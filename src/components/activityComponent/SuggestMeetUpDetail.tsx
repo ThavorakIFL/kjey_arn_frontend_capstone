@@ -143,7 +143,7 @@ export function SuggestMeetUpDetail({
                             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                                 <DialogTrigger asChild>
                                     <Button
-                                        className="h-8 sm:h-9 text-xs sm:text-sm flex-shrink-0 w-full sm:w-auto"
+                                        className="cursor-pointer h-8 sm:h-9 text-xs sm:text-sm flex-shrink-0 w-full sm:w-auto"
                                         variant="outline"
                                         size="sm"
                                     >

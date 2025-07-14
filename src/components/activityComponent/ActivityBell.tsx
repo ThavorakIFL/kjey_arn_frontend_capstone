@@ -19,16 +19,9 @@ export default function ActivityBell() {
 
     // Debug: Log the values
     useEffect(() => {
-        console.log("ActivityBell - newCount:", newCount);
-        console.log("ActivityBell - activities length:", activities.length);
-        console.log("ActivityBell - activities:", activities);
-
         // Check localStorage
         const lastViewed = localStorage.getItem("activities_last_viewed");
-        console.log("Last viewed timestamp:", lastViewed);
-
         if (activities.length > 0) {
-            console.log("Latest activity time:", activities[0]?.created_at);
             if (lastViewed) {
                 console.log(
                     "Time comparison:",

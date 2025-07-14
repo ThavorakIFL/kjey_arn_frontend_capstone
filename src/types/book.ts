@@ -9,6 +9,7 @@ export type Book = {
     title: string;
     author: string;
     condition: number;
+    status?: number;
     description: string;
     created_at: string;
     updated_at: string;

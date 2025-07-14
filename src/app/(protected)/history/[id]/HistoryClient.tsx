@@ -83,6 +83,8 @@ export default function HistoryClient({ borrowEventData }: HistoryClientProps) {
                             borrowStatus={
                                 borrowEventData.borrow_status.borrow_status_id
                             }
+                            borrowerSubId={borrowEventData.borrower.sub}
+                            lenderSubId={borrowEventData.lender.sub}
                             borrowerEmail={borrowEventData.borrower.email}
                             lenderEmail={borrowEventData.lender.email}
                             borrowerName={borrowEventData.borrower.name}

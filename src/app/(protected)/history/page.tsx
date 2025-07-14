@@ -1,18 +1,3 @@
-// import { fetchUserHistoryBorrowEventData } from "./history-action";
-// import HistoryPageClient from "./HistoryPageClient";
-
-// export default async function HistoryPage() {
-//     const response = await fetchUserHistoryBorrowEventData();
-
-//     return (
-//         <HistoryPageClient
-//             historyBorrowEventData={response.data}
-//             error={response.error}
-//             isLoading={false}
-//         />
-//     );
-// }
-// HistoryPage.tsx - Container component that handles state and API calls
 "use client";
 
 import { useState, useEffect } from "react";
@@ -66,7 +51,6 @@ export default function HistoryPage() {
             });
 
             if (result.success) {
-                console.log("API response data:", result.data);
                 setHistoryData(result.data);
                 if (result.pagination) {
                     setPagination(result.pagination);

@@ -302,7 +302,6 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
                 formDataToSend.append("pictures[]", compressedPicture);
             });
 
-            console.log("Data to be sent", formDataToSend);
             const response = await addBook(formDataToSend);
 
             if (response.success) {
@@ -334,7 +333,6 @@ export default function AddBookPageClient({ genres }: AddBookPageClientProps) {
             } else {
                 // Handle server validation errors
                 if (response.errors) {
-                    console.log("Server validation errors:", response.errors);
                     setErrors(response.errors); // ✅ Fix: Use response.errors, not errors
                     toast.error("Please fix the errors below");
                 } else {

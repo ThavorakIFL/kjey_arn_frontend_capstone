@@ -8,14 +8,16 @@ interface BookPageProps {
 
 const BookPage = async ({ params }: BookPageProps) => {
     const { id } = await params;
+
     const book = await fetchBookData(id);
+
     if (!book) {
         notFound();
     }
     return (
-        <main>
+        <div>
             <BookPageClient book={book} />
-        </main>
+        </div>
     );
 };
 

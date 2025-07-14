@@ -22,17 +22,10 @@ export function useActivities() {
     const fetchActivities = async () => {
         if (!session?.accessToken) {
             setLoading(false);
-            console.log("No access token available");
             return;
         }
-
         setLoading(true);
-
-        // Debug: Check the full URL being called
         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}activities`;
-        console.log("API URL:", apiUrl);
-        console.log("Using token:", session.accessToken);
-
         try {
             const response = await fetch(apiUrl, {
                 method: "GET",
@@ -42,15 +35,8 @@ export function useActivities() {
                     Accept: "application/json",
                 },
             });
-
-            console.log("Response status:", response.status);
-            console.log("Response headers:", response.headers);
-            console.log("Response URL:", response.url);
-
             // Check if we're getting HTML instead of JSON
             const contentType = response.headers.get("content-type");
-            console.log("Content-Type:", contentType);
-
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error("Error response body:", errorText);
@@ -70,7 +56,6 @@ export function useActivities() {
             }
 
             const data = await response.json();
-            console.log("Activities data:", data);
 
             if (data.success) {
                 setActivities(data.activities);
@@ -96,9 +81,6 @@ export function useActivities() {
         const newActivities = activityList.filter((activity) => {
             const activityDate = new Date(activity.created_at);
             const isNew = activityDate > lastViewedDate;
-            console.log(
-                `Activity ${activity.id}: ${activityDate} > ${lastViewedDate} = ${isNew}`
-            );
             return isNew;
         });
         setNewCount(newActivities.length);
