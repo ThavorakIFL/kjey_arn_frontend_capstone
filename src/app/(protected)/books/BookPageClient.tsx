@@ -289,8 +289,8 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                 {/* Desktop Layout */}
                 <div className="hidden lg:flex gap-6 my-8">
                     {/* Thumbnail Carousel */}
-                    <div className="w-24">
-                        <Carousel orientation="vertical" className="w-full">
+                    <div className="w-24 flex flex-col justify-center">
+                        <Carousel orientation="vertical" className="">
                             <CarouselContent className="h-[50vh]">
                                 {book.pictures?.map((pictureObject, index) => (
                                     <CarouselItem
