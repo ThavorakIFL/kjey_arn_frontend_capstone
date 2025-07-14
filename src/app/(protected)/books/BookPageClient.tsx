@@ -110,6 +110,8 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
         setEndDate(date);
     };
 
+    const isOwner = session?.userSubId === book.user?.sub;
+
     useEffect(() => {
         if (book && book.pictures && book.pictures.length > 0) {
         }
@@ -617,7 +619,7 @@ const BookPageClient: React.FC<BookPageClientProps> = ({ book }) => {
                     </DialogContent>
                 </Dialog>
 
-                {book.status === 0 && (
+                {book.status === 0 && isOwner && (
                     <div className="mt-24 bg-red-50 border border-red-200 rounded-lg p-4 lg:p-6">
                         <div className="flex items-start gap-3">
                             <Icon
