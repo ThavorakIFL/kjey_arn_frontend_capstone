@@ -84,6 +84,7 @@ export default function ActivityClient({
     const [isStartDate, setIsStartDate] = useState(false);
     const [isTimeToReturn, setisTimeToReturn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [isStartDateOrAfter, setIsStartDateOrAfter] = useState(false);
 
     const {
         isLoading,
@@ -163,7 +164,7 @@ export default function ActivityClient({
             borrowEventData.return_detail &&
             borrowEventData.meet_up_detail.meet_up_detail_meet_up_status
                 ?.meet_up_status_id === 2 &&
-            isStartDate &&
+            isStartDateOrAfter &&
             borrowEventData.return_detail.return_time
         );
     };
@@ -207,6 +208,21 @@ export default function ActivityClient({
         };
         checkReturnTimeAndDate();
     }, [borrowEventData.return_detail.return_date]);
+
+    useEffect(() => {
+        const checkStartDateOrAfter = () => {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+            const day = String(currentDate.getDate()).padStart(2, "0");
+            const formattedCurrentDate = `${year}-${month}-${day}`;
+            const startDate = borrowEventData.meet_up_detail.start_date;
+
+            // Check if current date is on or after start date
+            setIsStartDateOrAfter(formattedCurrentDate >= startDate);
+        };
+        checkStartDateOrAfter();
+    }, [borrowEventData.meet_up_detail.start_date]);
 
     const canSuggestMeetUp = () => {
         if (
