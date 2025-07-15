@@ -29,7 +29,7 @@ export default function AllReaderPageClient() {
 
     const query = searchParams.get("q") || "";
     const currentPage = parseInt(searchParams.get("page") || "1");
-    const perPage = parseInt(searchParams.get("per_page") || "16");
+    const perPage = parseInt(searchParams.get("per_page") || "18");
 
     const [readers, setReaders] = useState<any[]>([]);
     const [error, setError] = useState("");
@@ -147,39 +147,6 @@ export default function AllReaderPageClient() {
                                     </p>
                                 )}
                             </div>
-
-                            {/* Items per page selector */}
-                            {!loading &&
-                                !error &&
-                                pagination &&
-                                pagination.total > 0 && (
-                                    <div className="flex items-center space-x-2">
-                                        <label
-                                            htmlFor="per-page"
-                                            className="text-sm text-gray-600"
-                                        >
-                                            Show:
-                                        </label>
-                                        <select
-                                            id="per-page"
-                                            value={perPage}
-                                            onChange={(e) =>
-                                                handlePerPageChange(
-                                                    parseInt(e.target.value)
-                                                )
-                                            }
-                                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <option value={14}>14</option>
-                                            <option value={28}>28</option>
-                                            <option value={42}>42</option>
-                                            <option value={84}>84</option>
-                                        </select>
-                                        <span className="text-sm text-gray-600">
-                                            per page
-                                        </span>
-                                    </div>
-                                )}
                         </div>
 
                         {!loading && !error && pagination && (
